@@ -9,7 +9,7 @@
   <meta name="author" content="Sameer Deshmukh">
 
   
-  <meta name="description" content="Speech is the fundamental method of communication between human beings. Everyone within Human civilization, whether literate or illiterate, can &hellip;">
+  <meta name="description" content="This post will talk about methods to access different types of matrix elements (diagonals, columns, rows, etc.) when a matrix is expressed as a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,6 +96,68 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/">Accessing Matrix Elements When Expressed as a Contiguous 1D Array</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-12T18:52:10+05:30'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:52 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post will talk about methods to access different types of matrix elements (diagonals, columns, rows, etc.) when a matrix is expressed as a continguous 1D array.</p>
+
+<p>Recently, I was working on implementing a matrix inversion routine using the Gauss-Jordan elimination technique in C++. This was part of the NMatrix ruby gem, and because of the limitations imposed by trying to interface a dynamic language like Ruby with C++, the elements of the NMatrix object had to expressed as a 1D contiguous C++ array for computation of the inverse.</p>
+
+<p>The in-place Gauss-Jordan matrix inversion technique uses many matrix elements in every pass. Lets see some simple equations that can be used for accessing different types of elements in a matrix in a loop.</p>
+
+<h4 id="diagonals">Diagonals</h4>
+
+<p>Lets say we have a square matrix A with shape <em>M</em>. If <em>k</em> is iterator we are using for going over each diagonal element of the matrix, then the equation will be something like <script type="math/tex"> k * (M + 1) </script>.</p>
+
+<p>A for loop using the equation should look like this: 
+&lt;div class=&#8217;bogus-wrapper&#8217;&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class=&#8221;highlight&#8221;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#8221;gutter&#8221;&gt;&lt;pre class=&#8221;line-numbers&#8221;&gt;<span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;<code class="c++"><span class="line"><span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">A</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)];</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// This will print all the diagonal elements of a square matrix.</span>
+</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;</p>
+
+<h4 id="rows">Rows</h4>
+
+<p>To iterate over each element in a given row of a matrix, use <script type="math/tex"> row*M + col </script>. Here <code>row</code> is the fixed row and <code>col</code> goes from 0 to M-1.</p>
+
+<h4 id="columns">Columns</h4>
+
+<p>To iterate over each element in a given column of a matrix, use <script type="math/tex"> col*M + row </script>. Here <code>col</code> is the fixed column and <code>row</code> goes from 0 to M-1.</p>
+
+<h4 id="general">General</h4>
+
+<p>In general the equation <script type="math/tex"> row*NCOLS + col </script> will yield a matrix element with row index <code>row</code> and column index <code>col</code>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -581,6 +643,10 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/">Accessing Matrix Elements When Expressed as a Contiguous 1D Array</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/10/01/an-overview-of-automatic-speech-recognition/">An Overview of Automatic Speech Recognition</a>
