@@ -3,6 +3,14 @@
   
   
   <url>
+    <loc>http://v0dro.github.io/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/</loc>
+    
+    <lastmod>2014-11-25T13:55:13+05:30</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://v0dro.github.io/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/</loc>
     
     <lastmod>2014-10-12T18:52:10+05:30</lastmod>
@@ -45,42 +53,42 @@
   
   <url>
     <loc>http://v0dro.github.io/</loc>
-    <lastmod>2014-10-12T19:44:48+05:30</lastmod>
+    <lastmod>2014-12-01T16:39:05+05:30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
     <loc>http://v0dro.github.io/blog/archives/</loc>
-    <lastmod>2014-10-12T19:44:48+05:30</lastmod>
+    <lastmod>2014-12-01T16:39:05+05:30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://v0dro.github.io/about/</loc>
-    <lastmod>2014-10-12T19:44:48+05:30</lastmod>
+    <lastmod>2014-12-01T16:39:05+05:30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://v0dro.github.io/code/</loc>
-    <lastmod>2014-10-12T19:44:48+05:30</lastmod>
+    <lastmod>2014-12-01T16:39:05+05:30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://v0dro.github.io/music/</loc>
-    <lastmod>2014-10-12T19:44:48+05:30</lastmod>
+    <lastmod>2014-12-01T16:39:05+05:30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://v0dro.github.io/travel/</loc>
-    <lastmod>2014-10-12T19:44:48+05:30</lastmod>
+    <lastmod>2014-12-01T16:39:05+05:30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
