@@ -84,7 +84,7 @@ MathJax.Hub.Config({
 </form>
   
 <ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archive</a></li>
   <li><a href="/travel">Travel</a></li>
   <li><a href="/code">Code</a></li>
   <li><a href="/music">Music</a></li>
@@ -119,9 +119,12 @@ MathJax.Hub.Config({
 
 <p>In this first article on daru, I will show you some aspects of how daru handles data and some operations that can be performed on a real-life data set.</p>
 
-<p>daru consists of two major data structures:
-* <em>Vector</em> - A named one-dimensional array-like structure.
-* <em>DataFrame</em> - A named spreadsheet-like two-dimensional frame of data.</p>
+<p>daru consists of two major data structures:</p>
+
+<ul>
+  <li><strong>Vector</strong> - A named one-dimensional array-like structure.</li>
+  <li><strong>DataFrame</strong> - A named spreadsheet-like two-dimensional frame of data.</li>
+</ul>
 
 <p>A <em>Vector</em> can either be represented by a Ruby Array, NMatrix(MRI) or MDArray(JRuby) internally. This allows for fast data manipulation in native code. Users can change the underlying implementation at will.</p>
 
@@ -283,12 +286,15 @@ MathJax.Hub.Config({
 </span><span class="line"><span class="c1">#         u          5        nil </span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>A DataFrame can be constructed from multiple sources:
-* <em>Array of hashes</em> - Where the key of each hash is the name of the column to which the value belongs.
-* <em>Hash of name-arrays</em> - Where the hash key is set as the name of the vector and the data the corresponding value.
-* <em>Hash of name-vectors</em> - This is the most advanced way of creating a DataFrame. Treats the hash key as the name of the vector. Also aligns the data correctly based on index.
-* <em>Array of Arrays</em> - This will treat each sub-array as an independent row. Use <code>.rows</code> class method.
-* <em>Array of Vectors</em> - Uses each Vector in the Array as a row of the DataFrame. Sets vector names according to the index of the Vector. Aligns vector elements by index. Use <code>.rows</code> class method.</p>
+<p>A DataFrame can be constructed from multiple sources:</p>
+
+<ul>
+  <li><strong>Array of hashes</strong> - Where the key of each hash is the name of the column to which the value belongs.</li>
+  <li><strong>Hash of name-arrays</strong> - Where the hash key is set as the name of the vector and the data the corresponding value.</li>
+  <li><strong>Hash of name-vectors</strong> - This is the most advanced way of creating a DataFrame. Treats the hash key as the name of the vector. Also aligns the data correctly based on index.</li>
+  <li><strong>Array of Arrays</strong> - This will treat each sub-array as an independent row. Use <code>.rows</code> class method.</li>
+  <li><strong>Array of Vectors</strong> - Uses each Vector in the Array as a row of the DataFrame. Sets vector names according to the index of the Vector. Aligns vector elements by index. Use <code>.rows</code> class method.</li>
+</ul>
 
 <h2 id="handling-data">Handling Data</h2>
 
@@ -384,6 +390,8 @@ MathJax.Hub.Config({
         <a class="basic-alignment left" href="/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/" title="Previous Post: Accessing matrix elements when expressed as a contiguous 1D array">&laquo; Accessing matrix elements when expressed as a contiguous 1D array</a>
       
       
+        <a class="basic-alignment right" href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/" title="Next Post: One Dimensional Interpolation: Introduction And Implementation In Ruby">One Dimensional Interpolation: Introduction And Implementation In Ruby &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -403,6 +411,10 @@ MathJax.Hub.Config({
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/">One Dimensional Interpolation: Introduction and Implementation in Ruby</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/">Data Analysis in RUby: Basic Data Manipulation and Plotting</a>
       </li>
     
@@ -415,11 +427,7 @@ MathJax.Hub.Config({
       </li>
     
       <li class="post">
-        <a href="/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby/">[code]Generalized Linear Models: Introduction and Implementation in Ruby.</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners/">[code]Managing Large Open Source Projects: For Beginners.</a>
+        <a href="/blog/2014/09/28/travel-hampi-bengaluru-allepy-part-2/">[Travel] Hampi-Bengaluru-Allepy Part 2</a>
       </li>
     
   </ul>
