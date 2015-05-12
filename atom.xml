@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2015-03-16T19:58:21+05:30</updated>
+  <updated>2015-05-12T22:16:11+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Making Statsample Work With Rb-gsl and Gsl-nmatrix]]></title>
+    <link href="http://v0dro.github.io/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/"/>
+    <updated>2015-05-12T18:23:46+05:30</updated>
+    <id>http://v0dro.github.io/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
+
+<p>Previously, it so happened that statsample would depend on <a href="https://github.com/blackwinter/rb-gsl">rb-gsl</a> to speed up a lot of computations. This is great, but the biggest drawback of this approach is that rb-gsl depends on <a href="https://github.com/masa16/narray">narray</a>, which is incompatible with <a href="https://github.com/SciRuby/nmatrix">nmatrix</a> - the numerical storage and linear algebra library from the SciRuby foundation - due to namespace collisions. </p>
+
+<p>NMatrix is used by many current and upcoming ruby scientific gems, most notably <a href="https://github.com/v0dro/daru">daru</a>, <a href="https://github.com/domitry/mikon">mikon</a>, <a href="https://github.com/thisMagpie/fftw">nmatrix-fftw</a>, etc. and the a big hurdle that these gems were facing was that they could not leverage the advanced functionality of rb-gsl or statsample because nmatrix cannot co-exist with narray. On a further note, daru’s <a href="https://github.com/v0dro/daru/blob/master/lib/daru/dataframe.rb">DataFrame</a> and <a href="https://github.com/v0dro/daru/blob/master/lib/daru/vector.rb">Vector</a> data structures are to replace statsample’s <a href="https://github.com/SciRuby/statsample/blob/master/lib/statsample/dataset.rb">Dataset</a> and <a href="https://github.com/SciRuby/statsample/blob/master/lib/statsample/vector.rb">Vector</a>, so that a dedicated library can be used for data storage and munging and statsample can be made to focus on statistical analysis.</p>
+
+<p>The most promising solution to this problem was that rb-gsl must be made to depend on nmatrix instead of narray. This problem was solved by the <a href="https://github.com/v0dro/gsl-nmatrix">gsl-nmatrix</a> gem, which is a port of rb-gsl, but uses nmatrix instead of narray. Gsl-nmatrix also allows conversion of GSL objects to NMatrix and vice versa. Also, latest changes to statsample make it completely independent of GSL, and hence all the methods in statsample are now possible with or without GSL.</p>
+
+<p>To make your installation of statsample work with gsl-nmatrix, follow these instructions:</p>
+
+<ul>
+  <li><a href="https://github.com/SciRuby/nmatrix/wiki/Installation">Install nmatrix</a> and clone, build and install the latest gsl-nmatrix from https://github.com/v0dro/gsl-nmatrix</li>
+  <li>Clone the latest statsample from https://github.com/SciRuby/statsample</li>
+  <li>Open the Gemfile of statsample and add the line <code>gem 'gsl-nmatrix', '~&gt;1.17'</code></li>
+  <li>Build statsample using <code>rake gem</code> and install the resulting <code>.gem</code> file with <code>gem install</code>.</li>
+</ul>
+
+<p>You should be good able to use statsample with gsl-nmatrix on your system now. To use with rb-gsl, just install rb-gsl from rubygems (<code>gem install rb-gsl</code>) and put <code>gem 'rb-gsl', '~&gt;1.16.0.4'</code> in the Gemfile instead of gsl-nmatrix. This will activate the rb-gsl gem and you can use rb-gsl with statsample.</p>
+
+<p>However please take note that narray and nmatrix cannot co-exist on the same gem list. Therefore, you should have either rb-gsl or gsl-nmatrix installed at a particular time otherwise things will malfunction.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Interfacing and Benchmarking High Performance Linear Algebra Libraries With Ruby]]></title>
