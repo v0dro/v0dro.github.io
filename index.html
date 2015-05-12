@@ -1,1 +1,2188 @@
-My Octopress Page is coming soon &hellip;
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Travel &lt;code&gt; Music</title>
+  <meta name="author" content="Sameer Deshmukh">
+
+  
+  <meta name="description" content="For my GSOC project, I’m trying to build an extension to NMatrix which will interface with a high performance C library for fast linear algebra &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://v0dro.github.io">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Travel &lt;code&gt; Music" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-55005305-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Travel &lt;code&gt; Music</a></h1>
+  
+    <h2>A place where I share my experiences with Travel, Programming and Music</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:v0dro.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/archives">Archive</a></li>
+  <li><a href="/travel">Travel</a></li>
+  <li><a href="/code">Code</a></li>
+  <li><a href="/music">Music</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/">Interfacing and Benchmarking High Performance Linear Algebra Libraries With Ruby</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-11T13:35:45+05:30'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:35 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For my GSOC project, I’m trying to build an extension to NMatrix which will interface with a high performance C library for fast linear algebra calculations. Since one of the major problems affecting the usability and portability of NMatrix is the effort taken for installation (adding/removing dependencies etc.), it is imperative to ship the source of this high performance C library alongwith the ruby gem.</p>
+
+<p>This leaves us with quite a few choices about the library that can be used. The most common and obvious interfaces for performing fast linear algebra calculations are LAPACK and BLAS. Thus the library bundled with the nmatrix extension must expose an interface similar to LAPACK and BLAS. Since ruby running on MRI can only interface with libraries having a C interface, the contenders in this regard are CLAPACK or LAPACKE for a LAPACK in C, and openBLAS or ATLAS for a BLAS interface.</p>
+
+<p>I need to choose an appropriate BLAS and LAPACK interface based on its speed and usability, and to do so, I decided to build some quick ruby interfaces to these libraries and benchmark the <a href="https://software.intel.com/en-us/node/520973"><code>?gesv</code> function</a>  (used for solving <em>n</em> linear equations in <em>n</em> unknowns) present in all LAPACK interfaces, so as to get an idea of what would be the fastest. This would also test the speed of the BLAS implemetation since LAPACK primarily depends on BLAS for actual computations.</p>
+
+<p>To create these benchmarks, <a href="https://github.com/v0dro/scratch/tree/master/ruby_c_exp">I made a couple of simple ruby gems</a> which linked against the binaries of these libraries. All these gems <a href="https://github.com/v0dro/scratch/blob/master/ruby_c_exp/nm_lapacke/lib/nm_lapacke.rb">define a module</a> which contains a method <code>solve_gesv</code>, which calls the C extension that interfaces with the C library. Each library was made in its own little ruby gem so as to nullify any unknown side effects and also to provide more clarity.</p>
+
+<p>To test these libraries against each other, I used the following test code:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span><span class="line">  <span class="n">x</span><span class="o">.</span><span class="n">report</span> <span class="k">do</span>
+</span><span class="line">    <span class="mi">10000</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span>
+</span><span class="line">      <span class="n">a</span> <span class="o">=</span> <span class="no">NMatrix</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="mi">76</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span>
+</span><span class="line">                              <span class="mi">27</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span>
+</span><span class="line">                              <span class="mi">18</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">32</span><span class="o">]</span><span class="p">,</span> <span class="ss">dtype</span><span class="p">:</span> <span class="ss">:float64</span><span class="p">)</span>
+</span><span class="line">      <span class="n">b</span> <span class="o">=</span> <span class="no">NMatrix</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span><span class="p">,</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span>
+</span><span class="line">                               <span class="mi">7</span><span class="p">,</span>
+</span><span class="line">                              <span class="mi">43</span><span class="o">]</span><span class="p">,</span> <span class="ss">dtype</span><span class="p">:</span> <span class="ss">:float64</span><span class="p">)</span>
+</span><span class="line">      <span class="no">NMatrix</span><span class="o">::</span><span class="no">CLAPACK</span><span class="o">.</span><span class="n">solve_gesv</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+</span><span class="line">      <span class="c1"># The `NMatrix::CLAPACK` is replaced with NMatrix::LAPACKE </span>
+</span><span class="line">      <span class="c1"># or NMatrix::LAPACKE_ATLAS as per the underlying binding. Read the</span>
+</span><span class="line">      <span class="c1"># source code for more details.</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Here I will list the libraries that I used, the functions I interfaced with, the pros and cons of using each of these libraries, and of course the reported benchmarks:</p>
+
+<h3 id="clapack-lapack-with-openblas-blas">CLAPACK (LAPACK) with openBLAS (BLAS)</h3>
+
+<p><a href="http://www.netlib.org/clapack/">CLAPACK</a> is an F2C’d version of the original LAPACK written in FORTRAN. The creators have made some changes by hand because f2c spews out unnecessary code at times, but otherwise its pretty much as fast as the original LAPACK.</p>
+
+<p>To interface with a BLAS implementation, CLAPACK uses a blas wrapper (blaswrap) to generate wrappers to the relevant CBLAS functions exposed by any BLAS implementation. The blaswrap source files and F2C source files are provided with the CLAPACK library.</p>
+
+<p>The BLAS implementation that we’ll be using is <a href="http://www.openblas.net/">openBLAS</a>, which is a very stable and tested BLAS exposing a C interface. It is extremely simple to use and install, and configures itself automatically according to the computer it is being installed upon. It claims to achieve <a href="http://en.wikipedia.org/wiki/GotoBLAS">performance comparable to intel MKL</a>, which is phenomenal.</p>
+
+<p>To compile CLAPACK with openBLAS, do the following:</p>
+
+<ul>
+  <li><code>cd</code> to your openBLAS directory and run <code>make NO_LAPACK=1</code>. This will create an openBLAS binary with the object files only for BLAS and CBLAS. LAPACK will not be compiled even though the source is present. This will generate a <code>.a</code> file which has a name that is similar to the processor that your computer uses. Mine was <code>libopenblas_sandybridgep-r0.2.13.a</code>.</li>
+  <li>Now rename the openBLAS binary file to <code>libopenblas.a</code> so its easier to type and you lessen your chances of mistakes, and copy to your CLAPACK directory.</li>
+  <li><code>cd</code> to your CLAPACK directory and open the <code>make.inc</code> file in your editor. In it, you should find a <code>BLASDIR</code> variable that points to the BLAS files to link against. Change the value of this variable to <code>../../libopenblas.a</code>.</li>
+  <li>Now run <code>make f2clib</code> to make F2C library. This is needed for interconversion between C and FORTRAN data types.</li>
+  <li>Then run <code>make lapacklib</code> from the CLAPACK root directory to compile CLAPACK against your specified implementation of CBLAS (openBLAS in this case).</li>
+  <li>At the end of this process, you should end up with the CLAPACK, F2C and openBLAS binaries in your directory.</li>
+</ul>
+
+<p>Since the automation of this compilation process would take time, I copied these binaries to the gem and <a href="">wrote the extconf.rb</a> such that they link with these libraries.</p>
+
+<p>On testing this with a ruby wrapper, the benchmarking code listed above yielded the following results:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line">    <span class="n">user</span>     <span class="nb">system</span>      <span class="n">total</span>        <span class="n">real</span>
+</span><span class="line">    <span class="mi">0</span><span class="o">.</span><span class="mi">190000</span>   <span class="mi">0</span><span class="o">.</span><span class="mo">000000</span>   <span class="mi">0</span><span class="o">.</span><span class="mi">190000</span> <span class="p">(</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">186355</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h3 id="lapacke-lapack-compiled-with-openblas-blas">LAPACKE (LAPACK) compiled with openBLAS (BLAS)</h3>
+
+<p><a href="http://www.netlib.org/lapack/lapacke.html">LAPACKE</a> is the ‘official’ C interface to the FORTRAN-written LAPACK. It consists of two levels; a high level C interface for use with C programs and a low level one that talks to the original FORTRAN LAPACK code. This is not just an f2c’d version of LAPACK, and hence the design of this library is such that it is easy to create a bridge between C and FORTRAN. </p>
+
+<p>For example, C has arrays stored in row-major format while FORTRAN had them column-major. To perform any computation, a matrix needs to be transposed to column-major form first and then be re-transposed to row-major form so as to yield correct results. This needs to be done by the programmer when using CLAPACK, but LAPACKE’s higher level interface accepts arguments (<a href="http://www.netlib.org/lapack/lapacke.html#_array_arguments">LAPACKE_ROW_MAJOR or LAPACKE_COL_MAJOR</a>) which specify whether the matrices passed to it are in row major or column major format. Thus extra (often unoptimized code) on part of the programmer for performing the tranposes is avoided.</p>
+
+<p>To build binaries of LAPACKE compiled with openBLAS, just <code>cd</code> to your openBLAS source code directory and run <code>make</code>. This will generate a <code>.a</code> file with the binaries for LAPACKE and CBLAS interface of openBLAS.</p>
+
+<p>LAPACKE benchmarks turn out to be faster mainly due to the absence of <a href="https://github.com/v0dro/scratch/blob/master/ruby_c_exp/nm_clapack/lib/nm_clapack.rb#L7">manual transposing by high-level code written in Ruby</a>  (the <a href="https://github.com/SciRuby/nmatrix/blob/master/lib/nmatrix/nmatrix.rb#L535">NMatrix#transpose</a> function in this case). I think performing the tranposing using openBLAS functions should remedy this problem.</p>
+
+<p>The benchmarks for LAPACKE are:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line">    <span class="n">user</span>     <span class="nb">system</span>      <span class="n">total</span>        <span class="n">real</span>
+</span><span class="line">    <span class="mi">0</span><span class="o">.</span><span class="mi">150000</span>   <span class="mi">0</span><span class="o">.</span><span class="mo">000000</span>   <span class="mi">0</span><span class="o">.</span><span class="mi">150000</span> <span class="p">(</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">147790</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>As you can see these are quite faster than CLAPACK with openBLAS, listed above.</p>
+
+<h3 id="clapacklapack-with-atlasblas">CLAPACK(LAPACK) with ATLAS(BLAS)</h3>
+
+<p>This is the combination that is currently in use with nmatrix. It involves installing the <code>libatlas-base-dev</code> package from the Debian repositories. This pacakage will load all the relevant clapack, atlas, blas and cblas binaries into your computer.</p>
+
+<p>The benchmarks turned out to be:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line">    <span class="n">user</span>     <span class="nb">system</span>      <span class="n">total</span>        <span class="n">real</span>
+</span><span class="line">    <span class="mi">0</span><span class="o">.</span><span class="mi">130000</span>   <span class="mi">0</span><span class="o">.</span><span class="mo">000000</span>   <span class="mi">0</span><span class="o">.</span><span class="mi">130000</span> <span class="p">(</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">130056</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>This is fast. But a big limitation on using this approach is that the CLAPACK library exposed by the <code>libatlas-base-dev</code> is outdated and no longer maintained. To top it all, it does not have all the functions that a LAPACK library is supposed to have.</p>
+
+<h3 id="lapackelapack-with-atlasblas">LAPACKE(LAPACK) with ATLAS(BLAS)</h3>
+
+<p>For this test case I compiled <a href="http://www.netlib.org/lapack/lapacke">LAPACKE (downloaded from netlib)</a> with an ATLAS implementation from the Debian repositories. I then included the generated static libraries in the sample ruby gem and compiled the gem against those.</p>
+
+<p>To do this on your machine:
+* Install the package <code>libatlas-base-dev</code> with your package manager. This will install the ATLAS and CBLAS shared objects onto your system.
+* <code>cd</code> to the lapack library and in the <code>make.inc</code> file change the <code>BLASLIB = -lblas -lcblas -latlas</code>. Then run <code>make</code>. This will compile LAPACK with ATLAS installed on your system.
+* Then <code>cd</code> to the lacpack/lapacke folder and run <code>make</code>.</p>
+
+<p>Again the function chosen was <code>LAPACKE_?gesv</code>. This test should tell us a great deal about the speed differences between openBLAS and ATLAS, since tranposing overheads are handled by LAPACKE and no Ruby code is interfering with the benchmarks.</p>
+
+<p>The benchmarks turned out to be:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line">    <span class="n">user</span>     <span class="nb">system</span>      <span class="n">total</span>        <span class="n">real</span>
+</span><span class="line">    <span class="mi">0</span><span class="o">.</span><span class="mi">140000</span>   <span class="mi">0</span><span class="o">.</span><span class="mo">000000</span>   <span class="mi">0</span><span class="o">.</span><span class="mi">140000</span> <span class="p">(</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">140540</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>As you can see from the benchmarks above, the approach followed by nmatrix currently (CLAPACK with ATLAS) is the fastest, but this approach has certain limitations:</p>
+
+<ul>
+  <li>Requires installation of tedious to install dependencies.</li>
+  <li>Many pacakages offer the same binaries, causing confusion.</li>
+  <li>CLAPACK library is outdated and not maintained any longer.</li>
+  <li>ATLAS-CLAPACK does not expose all the functions present in LAPACK.</li>
+</ul>
+
+<p>The LAPACKE-openBLAS and the LAPACKE-ATLAS, though a little slower(~10-20 ms), offer a HUGE advantage over CLAPACK-ATLAS, viz. :</p>
+
+<ul>
+  <li>LAPACKE is the ‘standard’ C interface to the LAPACK libraries and is actively maintained, with regular release cycles.</li>
+  <li>LAPACKE is compatible with intel’s MKL, in case a future need arises.</li>
+  <li>LAPACKE bridges the differences between C and FORTRAN with a well thought out interface.</li>
+  <li>LAPACKE exposes the entire LAPACK interface.</li>
+  <li>openBLAS is trivial to install.</li>
+  <li>ATLAS is a little non-trivial to install but is fast.</li>
+</ul>
+
+<p>For a further explanation of the differences between these CBLAS, CLAPACK and LAPACKE, read <a href="http://nicolas.limare.net/pro/notes/2014/10/31_cblas_clapack_lapacke/">this</a> blog post.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/02/24/data-analysis-in-ruby-part-2/">Data Analysis in RUby: Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-24T00:19:08+05:30'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:19 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I’ve just released daru version 0.0.5, which brings in a lot of new features and consolidates existing ones. <a href="https://github.com/SciRuby/nmatrix">NMatrix</a> is now well integrated into Daru and all of the operations that can be performed using Arrays as the underlying implementation can be performed using NMatrix as well (except some operations involving missing data).</p>
+
+<p>The new features include extensive support for missing data, hierarchial sorting of data frames and vectors by preserving indexing, ability to group, split and aggregate data with group by, and quickly summarizing data by generating excel-style pivot tables. This release also includes new aritmetic and statistical functions on Data Frames and Vectors. Both DataFrame and Vector are now mostly compatible with <a href="https://github.com/clbustos/statsample">statsample</a>, allowing for a much larger scope of statistical analysis by leveraging the methods already provided in statsample.</p>
+
+<p>The interface for interacting with nyaplot for plotting has also been revamped, allowing much greater control on the way graphs are handled by giving direct access to the graph object. A new class for hierarchial indexing of data (called MultiIndex) has also been added, which is immensely useful when grouping/splitting/aggregating data.</p>
+
+<p>Lets look at all these features one by one:</p>
+
+<h2 id="data-types">Data Types</h2>
+
+<p>You can now either use Ruby Arrays or NMatrix as the underlying implementation. Since NMatrix is fast and makes use of C storage, it is recommended to use nmatrix when dealing with large sets of data. Daru will store any data as Ruby Array unless explicitly specified.</p>
+
+<p>Thus to specify the data type of a Vector use the option <code>:dtype</code> and either supply it with <code>:array</code> or <code>:nmatrix</code>, and if using the NMatrix dtype, you can also specify the C data type that NMatrix will use internall by using the option <code>:nm_dtype</code> and supplying it with one of the NMatrix data types (it currently supports ints, floats, rationals and complex numbers. Check the docs for further details).</p>
+
+<p>As an example, consider creating a Vector which uses NMatrix underneath, and stores data using the <code>:float64</code> NMatrix data type, which stands for double precision floating point numbers.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="mi">44</span><span class="p">,</span><span class="mi">55</span><span class="o">.</span><span class="mi">54</span><span class="p">,</span><span class="mi">33</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="o">.</span><span class="mi">6</span><span class="o">]</span><span class="p">,</span><span class="ss">dtype</span><span class="p">:</span> <span class="ss">:nmatrix</span><span class="p">,</span> <span class="ss">nm_dtype</span><span class="p">:</span> <span class="ss">:float64</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#        nil</span>
+</span><span class="line"><span class="c1">#    0  1.44</span>
+</span><span class="line"><span class="c1">#    1 55.54</span>
+</span><span class="line"><span class="c1">#    2  33.2</span>
+</span><span class="line"><span class="c1">#    3   5.6</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">dtype</span> <span class="c1">#=&gt; :nmatrix</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">type</span>  <span class="c1">#=&gt; :float64</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Another distinction between types of data that daru offers is <code>:numeric</code> and <code>:object</code>. This is a generic feature for distinguishing numerical data from other types of data (like Strings or DateTime objects) that might be contained inside Vectors or DataFrames. These distinctions are important because statistical and arithmetic operations can only be applied on structures with type numeric.</p>
+
+<p>To query the data structure for its type, use the <code>#type</code> method. If the underlying implemetation is an NMatrix, it will return the NMatrix data type, otherwise for Ruby Arrays, it will be either <code>:numeric</code> or <code>:object</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">,</span> <span class="ss">dtype</span><span class="p">:</span> <span class="ss">:array</span><span class="p">)</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">type</span> <span class="c1">#=&gt; :numeric</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Thus Daru exposes three methods for querying the type of data: 
+* <code>#type</code> - Get the generic type of data to know whether numeric computation can be performed on the object. Get the C data type used by nmatrix in case of dtype NMatrix.
+* <code>#dtype</code> - Get the underlying data representation (either :array or :nmatrix).</p>
+
+<h2 id="working-with-missing-data">Working with Missing Data</h2>
+
+<p>Any data scientist knows how common missing data is in real-life data sets, and to address that need, daru provides a host of functions for this purpose.
+This functionality is still in its infancy but should be up to speed soon.</p>
+
+<p>The <code>#is_nil?</code> function will return a Vector object with <code>true</code> if a value is <code>nil</code> and <code>false</code> otherwise.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="kp">nil</span><span class="p">,</span><span class="kp">nil</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="p">,</span> <span class="ss">:c</span><span class="p">,</span> <span class="ss">:d</span><span class="p">,</span> <span class="ss">:e</span><span class="p">,</span> <span class="ss">:f</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">is_nil?</span>
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::Vector:93025420 @name = nil @size = 6 &gt;</span>
+</span><span class="line"><span class="c1">#        nil</span>
+</span><span class="line"><span class="c1">#    a   nil</span>
+</span><span class="line"><span class="c1">#    b   nil</span>
+</span><span class="line"><span class="c1">#    c   nil</span>
+</span><span class="line"><span class="c1">#    d  true</span>
+</span><span class="line"><span class="c1">#    e  true</span>
+</span><span class="line"><span class="c1">#    f   nil</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>#nil_positions</code> function returns an Array that contains the indexes of all the nils in the Vector.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">nil_positions</span> <span class="c1">#=&gt; [:d, :e]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>#replace_nils</code> functions replaces nils with a supplied value.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">replace_nils</span> <span class="mi">69</span>
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::Vector:92796730 @name = nil @size = 6 &gt;</span>
+</span><span class="line"><span class="c1">#    nil</span>
+</span><span class="line"><span class="c1">#  a   1</span>
+</span><span class="line"><span class="c1">#  b   2</span>
+</span><span class="line"><span class="c1">#  c   3</span>
+</span><span class="line"><span class="c1">#  d  69</span>
+</span><span class="line"><span class="c1">#  e  69</span>
+</span><span class="line"><span class="c1">#  f   4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The statistics functions implemented on Vectors ensure that missing data is not considered during computation and are thus safe to call on missing data.</p>
+
+<h2 id="hierarchical-sorting-of-dataframe">Hierarchical sorting of DataFrame</h2>
+
+<p>It is now possible to use the <code>#sort</code> function on Daru::DataFrame such that sorting happens hierarchically according to the order of the specified vector names.</p>
+
+<p>In case you want to sort according to a certain attribute of the data in a particular vector, for example sort a Vector of strings by length, then you can supply a code block to the <code>:by</code> option of the sort method.</p>
+
+<p>Supply the <code>:ascending</code> option with an Array containing ‘true’ or ‘false’ depending on whether you want the corresponding vector sorted in ascending or descending order.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;ff&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;fwwq&#39;</span><span class="p">,</span>  <span class="s1">&#39;efe&#39;</span><span class="p">,</span>  <span class="s1">&#39;a&#39;</span><span class="p">,</span>  <span class="s1">&#39;efef&#39;</span><span class="p">,</span>  <span class="s1">&#39;zzzz&#39;</span><span class="p">,</span>  <span class="s1">&#39;efgg&#39;</span><span class="p">,</span>  <span class="s1">&#39;q&#39;</span><span class="p">,</span>  <span class="s1">&#39;ggf&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;one&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">d</span><span class="p">:</span> <span class="o">[-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">e</span><span class="p">:</span> <span class="o">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">14</span><span class="o">]</span>
+</span><span class="line">  <span class="p">})</span>
+</span><span class="line">
+</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:d</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">by</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="ss">a</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">length</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">length</span> <span class="p">},</span>
+</span><span class="line">    <span class="ss">b</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">abs</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">abs</span> <span class="p">}</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="ss">ascending</span><span class="p">:</span> <span class="o">[</span><span class="kp">false</span><span class="p">,</span> <span class="kp">true</span><span class="o">]</span>
+</span><span class="line"><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/sorted_df.png" title="'Hierarchically sorted DataFrame'" /></p>
+
+<p>Vector objects also have a similar sorting method implemented. Check the docs for more details. Indexing is preserved while sorting of both DataFrame and Vector.</p>
+
+<h2 id="dsl-for-plotting-with-nyaplothttpsgithubcomdomitrynyaplot">DSL for plotting with <a href="https://github.com/domitry/nyaplot">Nyaplot</a></h2>
+
+<p>Previously plotting with daru required a lot of arguments to be supplied by the user. The interface did not take advatage of Ruby’s blocks, nor did it expose many functionalities of nyaplot. All that changes with this new version, that brings in a new DSL for easy plotting (recommended usage with <a href="https://github.com/minad/iruby">iruby notebook</a>).</p>
+
+<p>Thus to plot a line graph with data present in a DataFrame:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">44</span><span class="o">]</span><span class="p">})</span>
+</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">plot</span> <span class="ss">legends</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="o">]</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:line</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="p">,</span><span class="n">d</span><span class="o">|</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">yrange</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="o">]</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">legend</span> <span class="kp">true</span>
+</span><span class="line">  <span class="n">d</span><span class="o">.</span><span class="n">color</span> <span class="s2">&quot;green&quot;</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru2/line_graph.png" title="'Line Graph From DataFrame'" /></p>
+
+<p>As you can see, the <code>#plot</code> function exposes the <code>Nyaplot::Plot</code> and <code>Nyaplot::Diagram</code> objects to user after populating them with the relevant data. So the new interface lets experienced users utilize the full power of nyaplot but keeps basic plotting very simple to use for new users or for quick and dirty visualization needs. Unfortunately for now, until a viable solution to interfacing with nyaplot is found, you will need to use the nyaplot API directly.</p>
+
+<h2 id="statistics-and-arithmetic-on-dataframes">Statistics and arithmetic on DataFrames.</h2>
+
+<p>Daru includes a host of methods for simple statistical analysis on numeric data. You can call <code>mean</code>, <code>std</code>, <code>sum</code>, <code>product</code>, etc. directly on the DataFrame. The corresponding computation is performed on numeric Vectors within the DataFrame, and missing data if any is excluded from the calculation by default.</p>
+
+<p>So for this DataFrame:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;foo&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;one&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">d</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">e</span><span class="p">:</span> <span class="o">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">14</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">f</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">70</span><span class="o">]</span>
+</span><span class="line"><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To calculate the mean of numeric vectors:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">mean</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/df_mean.png" title="'Calculate Mean of Numeric Vectors'" /></p>
+
+<p>Apart from that you can use the <code>#describe</code> method to calculate many statistical features of numeric Vectors in one shot and see a summary of statistics for numerical vectors in the DataFrame that is returned. For example,</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">describe</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/df_describe.png" title="'Describe Multiple Statistics in One Shot'" /></p>
+
+<p>The covariance and correlation coeffiecients between the numeric vectors can also be found with <code>#cov</code> and <code>#corr</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">cov</span>
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1"># #&lt;Daru::DataFrame:91700830 @name = f5ae5d7e-9fcb-46c8-90ac-a6420c9dc27f @size # = 3&gt;</span>
+</span><span class="line"><span class="c1">#                     d          e          f </span>
+</span><span class="line"><span class="c1">#          d          4          8         40 </span>
+</span><span class="line"><span class="c1">#          e          8         16         80 </span>
+</span><span class="line"><span class="c1">#          f         40         80        400 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="hierarchial-indexing">Hierarchial indexing</h2>
+
+<p>A new way of hierarchially indexing data has been introduced in version 0.0.5. This is done with the new <code>Daru::MultiIndex</code> class. Hierarchial indexing allows grouping sets of similar data by index and lets you select sub sets of data by specifying an index name in the upper hierarchy.</p>
+
+<p>A MultiIndex can be created by passing a bunch of tuples into the Daru::MultiIndex class. A DataFrame or Vector can be created by passing it a MultiIndex object into the <code>index</code> option. A MultiIndex can be used for determining the order of Vectors in a DataFrame too.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">tuples</span> <span class="o">=</span> <span class="o">[</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span>
+</span><span class="line"><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">multi_index</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">MultiIndex</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuples</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">vector_arry1</span> <span class="o">=</span> <span class="o">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="o">]</span>
+</span><span class="line"><span class="n">vector_arry2</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">order_mi</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">MultiIndex</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]]</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">df_mi</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span>
+</span><span class="line">    <span class="n">vector_arry1</span><span class="p">,</span>
+</span><span class="line">    <span class="n">vector_arry2</span><span class="p">,</span>
+</span><span class="line">    <span class="n">vector_arry1</span><span class="p">,</span>
+</span><span class="line">    <span class="n">vector_arry2</span><span class="o">]</span><span class="p">,</span> <span class="ss">order</span><span class="p">:</span> <span class="n">order_mi</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="n">multi_index</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/multi_index_table.png" title="'DataFrame with hierarchical indexing'" /></p>
+
+<p>Selecting a top level index from the hierarchy will select all the rows under that name, and return a new DataFrame with just that much data and indexes.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df_mi</span><span class="o">.</span><span class="n">row</span><span class="o">[</span><span class="ss">:a</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/multi_index_partial.png" title="'Partial Selection Of Multi Indexed DataFrame'" /></p>
+
+<p>Alternatively passing the entire tuple will return just that row as a <code>Daru::Vector</code>, indexed according to the column index.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df_mi</span><span class="o">.</span><span class="n">row</span><span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru2/multi_index_exact.png" title="'Selecting A Single Row From A Multi Indexed DataFrame'" /></p>
+
+<p>Hierachical indexing is especially useful when aggregating or splitting data, or generating data summaries as we’ll see in the following examples.</p>
+
+<h2 id="splitting-and-aggregation-of-data">Splitting and aggregation of data</h2>
+
+<p>When dealing with large sets of scattered data, it is often useful to ‘see’ the data grouped according to similar values in a Vector instead of it being scattered all over the place.</p>
+
+<p>The <code>#group_by</code> function does exactly that. For those familiar SQL, <code>#group_by</code> works exactly like the GROUP BY clause, but is much easier since its all Ruby.</p>
+
+<p>The <code>#group_by</code> function will accept one or more Vector names and will scan those vectors for common elements that can be grouped together. In case multiple names are specified it will check for common attributes accross rows.</p>
+
+<p>So for example consider this DataFrame:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="sx">%w{foo bar foo bar   foo bar foo foo}</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="sx">%w{one one two three two two one three}</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span>   <span class="o">[</span><span class="mi">1</span>  <span class="p">,</span><span class="mi">2</span>  <span class="p">,</span><span class="mi">3</span>  <span class="p">,</span><span class="mi">1</span>    <span class="p">,</span><span class="mi">3</span>  <span class="p">,</span><span class="mi">6</span>  <span class="p">,</span><span class="mi">3</span>  <span class="p">,</span><span class="mi">8</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">d</span><span class="p">:</span>   <span class="o">[</span><span class="mi">11</span> <span class="p">,</span><span class="mi">22</span> <span class="p">,</span><span class="mi">33</span> <span class="p">,</span><span class="mi">44</span>   <span class="p">,</span><span class="mi">55</span> <span class="p">,</span><span class="mi">66</span> <span class="p">,</span><span class="mi">77</span> <span class="p">,</span><span class="mi">88</span><span class="o">]</span>
+</span><span class="line"><span class="p">})</span>
+</span><span class="line"><span class="c1">#&lt;Daru::DataFrame:88462950 @name = 0dbc2869-9a82-4044-b72d-a4ef963401fc @size = 8&gt;</span>
+</span><span class="line"><span class="c1">#            a          b          c          d </span>
+</span><span class="line"><span class="c1"># 0        foo        one          1         11 </span>
+</span><span class="line"><span class="c1"># 1        bar        one          2         22 </span>
+</span><span class="line"><span class="c1"># 2        foo        two          3         33 </span>
+</span><span class="line"><span class="c1"># 3        bar      three          1         44 </span>
+</span><span class="line"><span class="c1"># 4        foo        two          3         55 </span>
+</span><span class="line"><span class="c1"># 5        bar        two          6         66 </span>
+</span><span class="line"><span class="c1"># 6        foo        one          3         77 </span>
+</span><span class="line"><span class="c1"># 7        foo      three          8         88 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To group this DataFrame by the columns <code>:a</code> and <code>:b</code>, pass them as arguments to the <code>#group_by</code> function, which returns a <code>Daru::Core::GroupBy</code> object.</p>
+
+<p>Calling <code>#groups</code> on the returned <code>GroupBy</code> object returns a <code>Hash</code> with the grouped rows.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">groups</span>
+</span><span class="line"><span class="c1"># =&gt; {</span>
+</span><span class="line"><span class="c1">#  [&quot;bar&quot;, &quot;one&quot;]=&gt;[1],</span>
+</span><span class="line"><span class="c1">#  [&quot;bar&quot;, &quot;three&quot;]=&gt;[3],</span>
+</span><span class="line"><span class="c1">#  [&quot;bar&quot;, &quot;two&quot;]=&gt;[5],</span>
+</span><span class="line"><span class="c1">#  [&quot;foo&quot;, &quot;one&quot;]=&gt;[0, 6],</span>
+</span><span class="line"><span class="c1">#  [&quot;foo&quot;, &quot;three&quot;]=&gt;[7],</span>
+</span><span class="line"><span class="c1">#  [&quot;foo&quot;, &quot;two&quot;]=&gt;[2, 4]}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To see the first group of each group from this collection, call <code>#first</code> on the <code>grouped</code> variable. Calling <code>#last</code> will return the last member of each group.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">first</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">#=&gt;           a          b          c          d </span>
+</span><span class="line"><span class="c1">#  1        bar        one          2         22 </span>
+</span><span class="line"><span class="c1">#  3        bar      three          1         44 </span>
+</span><span class="line"><span class="c1">#  5        bar        two          6         66 </span>
+</span><span class="line"><span class="c1">#  0        foo        one          1         11 </span>
+</span><span class="line"><span class="c1">#  7        foo      three          8         88 </span>
+</span><span class="line"><span class="c1">#  2        foo        two          3         33 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>On a similar note <code>#head(n)</code> will return the first <code>n</code> groups and <code>#tail(n)</code> the last <code>n</code> groups.</p>
+
+<p>The <code>#get_group</code> function will select only the rows that a particular group belongs to and return a DataFrame with those rows. The original indexing is ofcourse preserved.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;one&quot;</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1"># #&lt;Daru::DataFrame:90777050 @name = cdd0afa8-252d-4d07-ad0f-76c7581a492a @size # = 2&gt;</span>
+</span><span class="line"><span class="c1">#                     a          b          c          d </span>
+</span><span class="line"><span class="c1">#          0        foo        one          1         11 </span>
+</span><span class="line"><span class="c1">#          6        foo        one          3         77 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>Daru::Core::GroupBy</code> object contains a bunch of methods for creating summaries of the grouped data. These currently include <code>#mean</code>, <code>#std</code>, <code>#product</code>, <code>#sum</code>, etc. and many more to be added in the future. Calling any of the aggregation methods will create a new DataFrame which will have the index as the group and the aggregated data of the non-group vectors as the corresponding value. Of course this aggregation will apply only to <code>:numeric</code> type Vectors and missing data will not be considered while aggregation.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">mean</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru2/group_by_mean.png" title="'Aggregating by Mean After Grouping'" /></p>
+
+<p>A hierarchichally indexed DataFrame is returned. Check the <code>GroupBy</code> docs for more aggregation methods.</p>
+
+<h2 id="generating-excel-style-pivot-tables">Generating Excel-style Pivot Tables</h2>
+
+<p>You can generate an excel-style pivot table with the <code>#pivot_table</code> function. The levels of the pivot table are stored in MultiIndex objects.</p>
+
+<p>To demonstrate with an example, consider <a href="https://github.com/v0dro/daru/blob/master/spec/fixtures/sales-funnel.csv">this CSV file on sales data</a>.</p>
+
+<p><img class="center" src="/images/daru2/pivot_table_data.png" title="'Data For Pivot Table Demo'" /></p>
+
+<p>To look at the data from the point of view of the manager and rep:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">sales</span><span class="o">.</span><span class="n">pivot_table</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:manager</span><span class="p">,</span> <span class="ss">:rep</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/pivot_table_index.png" title="'Data Pivoted on Index Only.'" /></p>
+
+<p>You can see that the pivot table has summarized the data and grouped it according to the manager and representative.</p>
+
+<p>To see the sales broken down by the products:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">sales</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:manager</span><span class="p">,</span><span class="ss">:rep</span><span class="o">]</span><span class="p">,</span> <span class="ss">values</span><span class="p">:</span> <span class="ss">:price</span><span class="p">,</span> <span class="ss">vectors</span><span class="p">:</span> <span class="o">[</span><span class="ss">:product</span><span class="o">]</span><span class="p">,</span> <span class="ss">agg</span><span class="p">:</span> <span class="ss">:sum</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/pivoted_data.png" title="'Data Pivoted to Reflect Sales'" /></p>
+
+<h2 id="compatibility-with-statsample">Compatibility with statsample</h2>
+
+<p>Daru is now mostly compatible with <a href="https://github.com/clbustos/statsample">statsample</a> and you can now mostly perform most of the functions by just passing it a Daru::DataFrame or Daru::Vector to perform most of the useful statistical functions provided by statsample.</p>
+
+<p>Heres an example to demonstrate:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">66</span><span class="p">,</span><span class="mi">77</span><span class="o">]</span><span class="p">})</span>
+</span><span class="line">
+</span><span class="line"><span class="no">Statsample</span><span class="o">::</span><span class="no">Analysis</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="no">Statsample</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="n">T</span><span class="p">)</span> <span class="k">do</span>
+</span><span class="line">  <span class="n">t_2</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">Test</span><span class="o">.</span><span class="n">t_two_samples_independent</span><span class="p">(</span><span class="n">df</span><span class="o">[</span><span class="ss">:a</span><span class="o">]</span><span class="p">,</span> <span class="n">df</span><span class="o">[</span><span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">  <span class="n">summary</span> <span class="n">t_2</span>
+</span><span class="line"><span class="k">end</span>
+</span><span class="line">
+</span><span class="line"><span class="no">Statsample</span><span class="o">::</span><span class="no">Analysis</span><span class="o">.</span><span class="n">run_batch</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Analysis 2015-02-25 13:34:32 +0530</span>
+</span><span class="line"><span class="c1"># = Statsample::Test::T</span>
+</span><span class="line"><span class="c1">#   == Two Sample T Test</span>
+</span><span class="line"><span class="c1">#     Mean and standard deviation</span>
+</span><span class="line"><span class="c1"># +----------+---------+---------+---+</span>
+</span><span class="line"><span class="c1"># | Variable |  mean   |   sd    | n |</span>
+</span><span class="line"><span class="c1"># +----------+---------+---------+---+</span>
+</span><span class="line"><span class="c1"># | a        | 4.0000  | 2.1602  | 7 |</span>
+</span><span class="line"><span class="c1"># | b        | 44.0000 | 23.7627 | 7 |</span>
+</span><span class="line"><span class="c1"># +----------+---------+---------+---+</span>
+</span><span class="line"><span class="c1"># </span>
+</span><span class="line"><span class="c1">#     Levene test for equality of variances : F(1, 12) = 13.6192 , p = 0.0031</span>
+</span><span class="line"><span class="c1">#     T statistics</span>
+</span><span class="line"><span class="c1"># +--------------------+---------+--------+----------------+</span>
+</span><span class="line"><span class="c1"># |        Type        |    t    |   df   | p (both tails) |</span>
+</span><span class="line"><span class="c1"># +--------------------+---------+--------+----------------+</span>
+</span><span class="line"><span class="c1"># | Equal variance     | -4.4353 | 12     | 0.0008         |</span>
+</span><span class="line"><span class="c1"># | Non equal variance | -4.4353 | 6.0992 | 0.0042         |</span>
+</span><span class="line"><span class="c1"># +--------------------+---------+--------+----------------+</span>
+</span><span class="line"><span class="c1"># </span>
+</span><span class="line"><span class="c1">#     Effect size</span>
+</span><span class="line"><span class="c1"># +-------+----------+</span>
+</span><span class="line"><span class="c1"># | x1-x2 | -40.0000 |</span>
+</span><span class="line"><span class="c1"># | d     | -12.0007 |</span>
+</span><span class="line"><span class="c1"># +-------+----------+</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="references">References</h5>
+
+<ul>
+  <li>Pivot Tables example taken from <a href="http://pbpython.com/pandas-pivot-table-explained.html">here</a>. </li>
+</ul>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/">Solving Systems of Linear Equations in Ruby</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-14T11:57:34+05:30'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>11:57 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Solving systems of linear equations is a very important part of scientific computing (some would say most important), and in this post I will show you how a system of linear equations involving <em>n</em> equations and <em>n</em> unknowns can be solved in Ruby using the <a href="https://github.com/SciRuby/nmatrix">NMatrix</a> gem and the methodology that I used for simplyfying the algorithms involved.</p>
+
+<p>This involved solving a system of linear equations using forward substution followed by back substution using the LU factorization of the matrix of co-efficients.</p>
+
+<p>The reduction techniques were quite baffling at first, because I had always solved equations in the traditional way and this was something completely new. I eventually figured it out and also <a href="https://github.com/SciRuby/nmatrix/commit/4241d241ca7744ca2ca5e090782588581160d42b">implemented it in NMatrix</a>. Here I will document how I did that. Hopefully, this will be useful to others like me!</p>
+
+<p>I’m assuming that you are familiar with the LU decomposed form of a square matrix. If not, read <a href="http://en.wikipedia.org/wiki/LU_decomposition">this</a> resource first.</p>
+
+<p>Throughout this post, I will refer to <em>A</em> as the square matrix of co-efficients, <em>x</em> as the column matrix of unknowns and <em>b</em> as column matrix of right hand sides.</p>
+
+<p>Lets say that the equation you want to solve is represented by:</p>
+
+<script type="math/tex; mode=display"> A.x = b .. (1)</script>
+
+<p>The basic idea behind an LU decomposition is that a square matrix A can be represented as the product of two matrices <em>L</em> and <em>U</em>, where <em>L</em> is a lower <a href="http://en.wikipedia.org/wiki/Triangular_matrix">triangular matrix</a> and <em>U</em> is an upper triangular matrix.</p>
+
+<script type="math/tex; mode=display"> L.U = A </script>
+
+<p>Given this, equation (1) can be represented as:</p>
+
+<script type="math/tex; mode=display"> L.(U.x) = b </script>
+
+<p>Which we can use for solving the vector <em>y</em> such that:</p>
+
+<script type="math/tex; mode=display"> L.y = b .. (2) </script>
+
+<p>and then solving:</p>
+
+<script type="math/tex; mode=display"> U.x = y ..(3) </script>
+
+<p>The LU decomposed matrix is typically carried in a single matrix to reduce storage overhead, and thus the diagonal elements of <em>L</em> are assumed to have a value <em>1</em>. The diagonal elements of <em>U</em> can have any value.</p>
+
+<p>The reason for breaking down <em>A</em> and first solving for an upper triangular matrix is that the solution of an upper triangular matrix is quite trivial and thus the solution to (2) is found using the technique of <em>forward substitution</em>. </p>
+
+<p>Forward substitution is a technique that involves scanning an upper triangular matrix from top to bottom, computing a value for the top most variable and substituting that value into subsequent variables below it. This proved to be quite intimidating, because according to <a href="http://www.nr.com/">Numerical Recipes</a>, the whole process of forward substitution can be represented by the following equation:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  y_{0} = \dfrac{b_{0}}{L_{00}}
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  y_{i} = \dfrac{1}{L_{ii}}[b_{i} - \sum_{j=0}^{i-1}L_{ii} \times y_{j}] \quad i = 1,2,\dotsc,N-1 \quad (4)
+\end{align}
+</script>
+
+<p>Figuring out what exactly is going on was quite a daunting task, but I did figure it out eventually and here is how I went about it:</p>
+
+<p>Let <em>L</em> in equation (2) to be the lower part of a 3x3 matrix A (as per (1)). So equation (2) can be represented in matrix form as:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+    \begin{pmatrix}
+      L_{00} & 0 & 0 \\
+      L_{10} & L_{11} & 0 \\
+      L_{20} & L_{21} & L_{22}
+    \end{pmatrix}
+    \begin{pmatrix}
+      y_{0} \\
+      y_{1} \\
+      y_{2}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      b_{0} \\
+      b_{1} \\
+      b_{2}
+    \end{pmatrix}
+\end{align}
+ %]]></script>
+
+<p>Our task now is calculate the column matrix containing the <em>y</em> unknowns.
+Thus by equation (4), each of them can be calculated with the following sets of equations (if you find them confusing just correlate each value with that present in the matrices above and it should be clear):</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  y_{0} = \dfrac{b_{0}}{L_{00}}
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  y_{1} = \dfrac{1}{L_{11}} \times [b_{1} - L_{00} \times y_{0}]
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  y_{2} = \dfrac{1}{L_{22}} \times [b_{2} - (L_{20} \times y_{0} + L_{21} \times y_{1})]
+\end{align}
+</script>
+
+<p>Its now quite obvious that forward substitution is called so because we start from the topmost row of the matrix and use the value of the variable calculated in that row to calculate the <em>y</em> for the following rows.</p>
+
+<p>Now that we have the solution to equation (2), we can use the values generated in the <em>y</em> column vector to compute <em>x</em> in equation (3). Recall that the matrix <em>U</em> is the upper triangular decomposed part of <em>A</em> (equation (1)). This matrix can be solved using a technique called <em>backward substitution</em>. It is the exact reverse of the <em>forward substitution</em> that we just saw, i.e. the values of the bottom-most variables are calculated first and then substituted into the rows above to calculate subsquent variables above.</p>
+
+<p>The equation describing backward substitution is described in Numerical Recipes as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  x_{N-1} = \dfrac{y_{N-1}}{U_{N-1,N-1}}
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  x_{i} = \dfrac{1}{U_{ii}}[y_{i} - \sum_{j=i+1}^{N-1}U_{ij} \times x_{j}] \quad i = N-2, N-3,\dotsc,0 \quad (5)
+\end{align}
+</script>
+
+<p>Lets try to understand this equation by extending the example we used above to understand forward substitution. To gain a better understanding of this concept, consider the equation (3) written in matrix form (keeping the same 3x3 matrix <em>A</em>):</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+
+\begin{align}
+    \begin{pmatrix}
+      U_{00} & U_{01} & U_{02} \\
+      0 & U_{11} & U_{12} \\
+      0 & 0 & U_{22}
+    \end{pmatrix}
+    \begin{pmatrix}
+      x_{0} \\
+      x_{1} \\
+      x_{2}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      y_{0} \\
+      y_{1} \\
+      y_{2}
+    \end{pmatrix}
+\end{align}
+ %]]></script>
+
+<p>Using the matrix representation above as reference, equation (5) can be expanded in terms of a 3x3 matrix as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  x_{2} = \dfrac{y_{2}}{U_{22}}
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  x_{1} = \dfrac{1}{U_{11}} \times [y_{1} - U_{12} \times x_{2}]
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+  x_{0} = \dfrac{1}{U_{00}} \times [y_{0} - (U_{01} \times x_{1} + U_{02} \times x_{2})]
+\end{align}
+</script>
+
+<p>Looking at the above equations its easy to see how backward substitution can be used to solve for unknown quantities when given a upper triangular matrix of co-efficients, by starting at the lowermost variable and gradually moving upward.</p>
+
+<p>Now that the methodology behind solving sets of linear equations is clear, lets consider a set of 3 linear equations and 3 unknowns and compute the values of the unknown quantities using the nmatrix #solve method.</p>
+
+<p>The #solve method can be called on any nxn square matrix of a floating point data type, and expects its sole argument to be a column matrix containing the right hand sides. It returns a column nmatrix object containing the computed co-efficients.</p>
+
+<p>For this example, consider these 3 equations:</p>
+
+<script type="math/tex; mode=display"> x + y − z = 4 </script>
+
+<script type="math/tex; mode=display"> x − 2y + 3z = −6 </script>
+
+<script type="math/tex; mode=display"> 2x + 3y + z = 7 </script>
+
+<p>These can be translated to Ruby code by creating an NMatrix only for the co-efficients and another one only for right hand sides:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;nmatrix&#39;</span>
+</span><span class="line"><span class="n">coeffs</span> <span class="o">=</span> <span class="no">NMatrix</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span class="line">   <span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class="line">   <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span><span class="p">,</span> <span class="ss">dtype</span><span class="p">:</span> <span class="ss">:float32</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">rhs</span> <span class="o">=</span> <span class="no">NMatrix</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="mi">4</span><span class="p">,</span>
+</span><span class="line">  <span class="o">-</span><span class="mi">6</span><span class="p">,</span>
+</span><span class="line">   <span class="mi">7</span><span class="o">]</span><span class="p">,</span> <span class="ss">dtype</span><span class="p">:</span> <span class="ss">:float32</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">solution</span> <span class="o">=</span> <span class="n">coeffs</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; [1.0, 2.0, -1.0]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/">One Dimensional Interpolation: Introduction and Implementation in Ruby</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-29T00:23:04+05:30'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:23 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Interpolation involves predicting the co-ordinates of a point given the co-ordinates of points around it. Interpolation can be done in one or more dimensions. In this article I will give you a brief introduction of one-dimensional interpolation and execute it on a sample data set using the <a href="https://github.com/v0dro/interpolation">interpolation</a> gem.</p>
+
+<p>One dimensional interpolation involves considering consecutive points along the X-axis with known Y co-ordinates and predicting the Y co-ordinate for a given X co-ordinate.</p>
+
+<p>There are several types of interpolation depending on the number of known points used for predicting the unknown point, and several methods to compute them, each with their own varying accuracy. Methods for interpolation include the classic Polynomial interpolation with Lagrange’s formula or spline interpolation using the concept of spline equations between points.</p>
+
+<p>The spline method is found to be more accurate and hence that is what is used in the interpolation gem.</p>
+
+<h2 id="common-interpolation-routines">Common Interpolation Routines</h2>
+
+<p>Install the <code>interpolation</code> gem with <code>gem install interpolation</code>. Now lets see a few common interpolation routines and their implementation in Ruby:</p>
+
+<h4 id="linear-interpolation">Linear Interpolation</h4>
+
+<p>This is the simplest kind of interpolation. It involves simply considering two points such that <em>x[j]</em> &lt; <em>num</em> &lt; <em>x[j+1]</em>, where <em>num</em> is the unknown point, and considering the slope of the straight line between <em>(x[j], y[j] )</em> and <em>(x[j+1], y[j+1])</em>, predicts the Y co-ordinate using a simple linear polynomial.</p>
+
+<p>Linear interpolation uses this equation:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+    y = (y[j] + \frac{(interpolant - x[j])}{(x[j + 1] - x[j])} \times (y[j + 1] - y[j])
+\end{align}
+</script>
+
+<p>Here <em>interpolant</em> is the value of the X co-orinate whose corresponding Y-value needs to found.</p>
+
+<p>Ruby code:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;interpolation&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span> <span class="no">Math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">int</span> <span class="o">=</span> <span class="no">Interpolation</span><span class="o">::</span><span class="no">OneDimensional</span><span class="o">.</span><span class="n">new</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:linear</span>
+</span><span class="line"><span class="n">int</span><span class="o">.</span><span class="n">interpolate</span> <span class="mi">35</span>
+</span><span class="line"><span class="c1"># =&gt; -0.328</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="cubic-spline-interpolation">Cubic Spline Interpolation</h4>
+
+<p>Cubic Spline interpolation defines a cubic spline equation for each set of points between the <em>1st</em> and <em>nth</em> points. Each equation is smooth in its first derivative and continuos in its second derivative.</p>
+
+<p>So for example, if the points on a curve are labelled <em>i</em>, where <em>i = 1..n</em>, the equations representing any two points <em>i</em> and <em>i-1</em> will look like this:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+    a_{i}x^3_{i} + b_{i}x^2_{i} + c_{i}x_{i} + d_{i} = y_{i}
+\end{align}
+</script>
+
+<script type="math/tex; mode=display">
+\begin{align}
+    a_{i-1}x^3_{i-1} + b_{i-1}x^2_{i-1} + c_{i-1}x_{i-1} + d_{i-1} = y_{i-1}
+\end{align}
+</script>
+
+<p>Cubic spline interpolation involves finding the second derivative of all points <script type="math/tex"> y_{i} </script>, which can then be used for evaluating the cubic spline polynomial, which is a function of <em>x</em>, <em>y</em> and the second derivatives of <em>y</em>.</p>
+
+<p>For more information read <a href="http://mathworld.wolfram.com/CubicSpline.html">this</a> resource.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;interpolation&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+</span><span class="line"><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="no">Math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="n">f</span> <span class="o">=</span> <span class="no">Interpolation</span><span class="o">::</span><span class="no">OneDimensional</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="vi">@x</span><span class="p">,</span> <span class="vi">@y</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:cubic</span><span class="p">,</span> <span class="ss">sorted</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class="line"><span class="n">f</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+</span><span class="line"><span class="c1"># =&gt; 12.287</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/">Data Analysis in RUby: Basic Data Manipulation and Plotting</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-25T13:55:13+05:30'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>1:55 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>daru (Data Analysis in RUby) is a ruby gem for performing various data analysis and manipulation tasks in Ruby. It draws inspiration from pandas (python) and aims to be completely cross-compatible between all ruby implementations (MRI/JRuby etc.) yet leverage the individual benefits that each interpreter offers (for example the speed of C in MRI), while offering a simple and powerful API for data analysis, manipulation and visualization.</p>
+
+<p>In this first article on daru, I will show you some aspects of how daru handles data and some operations that can be performed on a real-life data set.</p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p>daru consists of two major data structures:</p>
+
+<ul>
+  <li><strong>Vector</strong> - A named one-dimensional array-like structure.</li>
+  <li><strong>DataFrame</strong> - A named spreadsheet-like two-dimensional frame of data.</li>
+</ul>
+
+<p>A <em>Vector</em> can either be represented by a Ruby Array, NMatrix(MRI) or MDArray(JRuby) internally. This allows for fast data manipulation in native code. Users can change the underlying implementation at will (demonstrated in the <a href="/blog/2015/02/24/data-analysis-in-ruby-part-2/">next</a> blog post).</p>
+
+<p>Both of these can be indexed by the <code>Daru::Index</code> or <code>Daru::MultiIndex</code> class, which allows us to reference and operate on data by name instead of the traditional numeric indexing, and also perform index-based manipulation, equality and plotting operations.</p>
+
+<h4 id="vector">Vector</h4>
+
+<p>The easiest way to create a vector is to simply pass the elements to a <code>Daru::Vector</code> constructor:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span> <span class="o">[</span><span class="mi">23</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">66</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">11</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># This will create a Vector object v</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::Vector:78168790 @name = nil @size = 5 &gt;</span>
+</span><span class="line"><span class="c1">#   ni</span>
+</span><span class="line"><span class="c1"># 0 23</span>
+</span><span class="line"><span class="c1"># 1 44</span>
+</span><span class="line"><span class="c1"># 2 66</span>
+</span><span class="line"><span class="c1"># 3 22</span>
+</span><span class="line"><span class="c1"># 4 11</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Since no name has been specified, the vector is named <code>nil</code>, and since no index has been specified either, a numeric index from 0..4 has been generated for the vector (leftmost column).</p>
+
+<p>A better way to create vectors would be to specify the name and the indexes:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">sherlock</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span> <span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="ss">:sherlock</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:pipe</span><span class="p">,</span> <span class="ss">:hat</span><span class="p">,</span> <span class="ss">:violin</span><span class="p">,</span> <span class="ss">:cloak</span><span class="p">,</span> <span class="ss">:shoes</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">#&lt;Daru::Vector:78061610 @name = sherlock @size = 5 &gt;</span>
+</span><span class="line"><span class="c1">#         sherlock</span>
+</span><span class="line"><span class="c1">#    pipe       3</span>
+</span><span class="line"><span class="c1">#     hat       2</span>
+</span><span class="line"><span class="c1">#  violin       1</span>
+</span><span class="line"><span class="c1">#   cloak       1</span>
+</span><span class="line"><span class="c1">#   shoes       2</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>This way we can clearly see the quantity of each item possesed by Sherlock.</p>
+
+<p>Data can be retrieved with the <code>[]</code> operator:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">sherlock</span><span class="o">[</span><span class="ss">:pipe</span><span class="o">]</span> <span class="c1">#=&gt; 3</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="dataframe">DataFrame</h4>
+
+<p>A basic DataFrame can be constructed by simply specifying the names of columns and their corresponding values in a hash:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="o">]</span><span class="p">},</span> <span class="nb">name</span><span class="p">:</span> <span class="ss">:normal</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::DataFrame:77782370 @name = normal @size = 5&gt;</span>
+</span><span class="line"><span class="c1">#            a      b </span>
+</span><span class="line"><span class="c1">#     0      1     10 </span>
+</span><span class="line"><span class="c1">#     1      2     20 </span>
+</span><span class="line"><span class="c1">#     2      3     30 </span>
+</span><span class="line"><span class="c1">#     3      4     40 </span>
+</span><span class="line"><span class="c1">#     4      5     50 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>You can also specify an index for the DataFrame alongwith the data and also specify the order in which the vectors should appear. Every vector in the DataFrame will carry the same index as the DataFrame once it has been created.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">plus_one</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="o">]</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="o">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">55</span><span class="o">]</span><span class="p">},</span> <span class="nb">name</span><span class="p">:</span> <span class="ss">:plus_one</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:e</span><span class="p">,</span> <span class="ss">:i</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="ss">:u</span><span class="o">]</span><span class="p">,</span> <span class="ss">order</span><span class="p">:</span> <span class="o">[</span><span class="ss">:c</span><span class="p">,</span> <span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::DataFrame:77605450 @name = plus_one @size = 5&gt;</span>
+</span><span class="line"><span class="c1">#                c        a        b </span>
+</span><span class="line"><span class="c1">#       a       11        1       10 </span>
+</span><span class="line"><span class="c1">#       e       22        2       20 </span>
+</span><span class="line"><span class="c1">#       i       33        3       30 </span>
+</span><span class="line"><span class="c1">#       o       44        4       40 </span>
+</span><span class="line"><span class="c1">#       u       55        5       50</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>daru will also add <code>nil</code> values to vectors that fall short of elements.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">missing</span> <span class="o">=</span>  <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">},</span> <span class="nb">name</span><span class="p">:</span> <span class="ss">:missing</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">#&lt;Daru::DataFrame:76043900 @name = missing @size = 3&gt;</span>
+</span><span class="line"><span class="c1">#                    a          b </span>
+</span><span class="line"><span class="c1">#         0          1          1 </span>
+</span><span class="line"><span class="c1">#         1          2        nil </span>
+</span><span class="line"><span class="c1">#         2          3        nil </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Creating a DataFrame by specifying <code>Vector</code> objects in place of the values in the hash will correctly align the values according to the index of each vector. If a vector is missing an index present in another vector, that index will be added to the vector with the corresponding value set to <code>nil</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">a</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:e</span><span class="p">,</span> <span class="ss">:i</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="ss">:u</span><span class="o">]</span>
+</span><span class="line"><span class="n">b</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span> <span class="o">[</span><span class="mi">43</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">13</span><span class="o">]</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:i</span><span class="p">,</span> <span class="ss">:a</span><span class="p">,</span> <span class="ss">:queen</span><span class="o">]</span>
+</span><span class="line"><span class="n">on_steroids</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="n">b</span><span class="p">},</span> <span class="nb">name</span><span class="p">:</span> <span class="ss">:on_steroids</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">#&lt;Daru::DataFrame:75841450 @name = on_steroids @size = 6&gt;</span>
+</span><span class="line"><span class="c1">#                    a          b </span>
+</span><span class="line"><span class="c1">#         a          1         22 </span>
+</span><span class="line"><span class="c1">#         e          2        nil </span>
+</span><span class="line"><span class="c1">#         i          3         43 </span>
+</span><span class="line"><span class="c1">#         o          4        nil </span>
+</span><span class="line"><span class="c1">#     queen        nil         13 </span>
+</span><span class="line"><span class="c1">#         u          5        nil </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>A DataFrame can be constructed from multiple sources:</p>
+
+<ul>
+  <li>To construct by columns:
+    <ul>
+      <li><strong>Array of hashes</strong> - Where the key of each hash is the name of the column to which the value belongs.</li>
+      <li><strong>Name-Array Hash</strong> - Where the hash key is set as the name of the vector and the data the corresponding value.</li>
+      <li><strong>Name-Vector Hash</strong> - This is the most advanced way of creating a DataFrame. Treats the hash key as the name of the vector. Also aligns the data correctly based on index.</li>
+      <li><strong>Array of Arrays</strong> - Each sub array will be considered as a Vector in the DataFrame.</li>
+    </ul>
+  </li>
+  <li>To construct by rows using the <code>.rows</code> class method:
+    <ul>
+      <li><strong>Array of Arrays</strong> - This will treat each sub-array as an independent row.</li>
+      <li><strong>Array of Vectors</strong> - Uses each Vector in the Array as a row of the DataFrame. Sets vector names according to the index of the Vector. Aligns vector elements by index.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="handling-data">Handling Data</h2>
+
+<p>Now that you have a basic idea about representing data in daru, lets see some more features of daru by loading some real-life data from a CSV file and performing some operations on it.</p>
+
+<p>For this purpose, we will use <a href="https://rubygems.org/gems/iruby">iruby</a> notebook, with which daru is compatible. iruby provides a great interface for visualizing and playing around with data. I highly recommend installing it for full utilization of this tutorial.</p>
+
+<h4 id="loading-data-from-files">Loading Data From Files</h4>
+
+<p>Let us load some data about the music listening history of one user from this subset of the <a href="https://github.com/v0dro/daru/blob/master/spec/fixtures/music_data.tsv">Last.fm data set</a>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">from_csv</span> <span class="s1">&#39;music_data.tsv&#39;</span><span class="p">,</span> <span class="ss">col_sep</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru1/create_music_df.png" title="'Create a DataFrame from a TSV file.'" /></p>
+
+<p>As you can see the <em>timestamp</em> field is in a somewhat non-Ruby format which is pretty difficult for the default Time class to understand, so we destructively map time zone information (IST in this case) and then change every <em>timestamp</em> string field into a Ruby <em>Time</em> object, so that operations on time can be easily performed.</p>
+
+<p>Notice the syntax for referencing a particular vector. Use ‘row’ for referencing any row.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">map!</span> <span class="p">{</span> <span class="o">|</span><span class="n">ts</span><span class="o">|</span> <span class="n">ts</span> <span class="o">+=</span> <span class="s2">&quot;+5:30&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru1/dmap_vector.png" title="'Destructively map a given vector.'" /></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;date&#39;</span>
+</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">map_rows</span> <span class="k">do</span> <span class="o">|</span><span class="n">row</span><span class="o">|</span>
+</span><span class="line">  <span class="n">row</span><span class="o">[</span><span class="ss">:timestamp</span><span class="o">]</span> <span class="o">=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">row</span><span class="o">[</span><span class="ss">:timestamp</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-%dT%H:%M:%SZ%z&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_time</span>
+</span><span class="line">  <span class="n">row</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru1/df_row_map.png" title="center 'Map all rows of a DataFrame.'" /></p>
+
+<h4 id="basic-querying">Basic Querying</h4>
+
+<p>A bunch of rows can be selected by specifying a range:</p>
+
+<p><code>df.row[900..923]</code></p>
+
+<p><img class="center" src="/images/daru1/range_row_access.png" title="center 'Accessing rows with a range'" /></p>
+
+<h4 id="data-analysis">Data Analysis</h4>
+
+<p>Lets dive deeper by actually trying to extract something useful from the data that we have. Say we want to know the name of the artist heard the maximum number of times. So we create a Vector which consists of the names of the artists as the index and the number of times the name appears in the data as the corresponding values:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="c1"># Group by artist name and call &#39;size&#39; to see the number of rows each artist populates.</span>
+</span><span class="line"><span class="n">artists</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="ss">:artname</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru1/get_max_artists.png" title="'Create a vector of artist names vs number of times they appear.'" /></p>
+
+<p>To get the maximum value out of these, use <code>#max_index</code>. This will return a Vector which has the max:</p>
+
+<p><code>count.max_index</code></p>
+
+<p><img class="center" src="/images/daru1/artists_max.png" title="'Obtain the most heard artist.'" /></p>
+
+<h4 id="plotting">Plotting</h4>
+
+<p>daru uses <a href="https://github.com/domitry/nyaplot">Nyaplot</a> for plotting, which is an optional dependency. Install nyaplot with <code>gem install nyaplot</code> and proceed.</p>
+
+<p>To demonstrate, lets find the top ten artists heard by this user and plot the number of times their songs have been heard against their names in a bar graph. For this, use the <code>#sort</code> function, which will preserve the indexing of the vector.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">top_ten</span> <span class="o">=</span> <span class="n">artists</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="ss">ascending</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">top_ten</span><span class="o">.</span><span class="n">plot</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:bar</span> <span class="k">do</span> <span class="o">|</span><span class="n">plt</span><span class="o">|</span>
+</span><span class="line">  <span class="n">plt</span><span class="o">.</span><span class="n">width</span> <span class="mi">1120</span>
+</span><span class="line">  <span class="n">plt</span><span class="o">.</span><span class="n">height</span> <span class="mi">500</span>
+</span><span class="line">  <span class="n">plt</span><span class="o">.</span><span class="n">legend</span> <span class="kp">true</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru1/plot_top_ten.png" title="'Top ten artists plotted.'" /></p>
+
+<h2 id="further-reading">Further Reading</h2>
+
+<ul>
+  <li>This was but a very small subset of the capabilities of daru. Go through the <a href="https://rubygems.org/gems/daru">documentation</a> for more methods of analysing your data with daru.</li>
+  <li>You can find all the above examples implemented in <a href="http://nbviewer.ipython.org/github/v0dro/daru/blob/master/notebooks/intro_with_music_data_.ipynb">this notebook</a>.</li>
+  <li>Contribute to daru on <a href="https://github.com/v0dro/daru">github</a>. Any contributions will be greatly appreciated!</li>
+  <li>Many thanks to <a href="http://www.last.fm/">last.fm</a> for providing the data.</li>
+  <li>Check out the <a href="/blog/2015/02/24/data-analysis-in-ruby-part-2/">next blog post in this series</a>, elaborating on the next release of daru.</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/">Accessing Matrix Elements When Expressed as a Contiguous 1D Array</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-12T18:52:10+05:30'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>6:52 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post will talk about methods to access different types of matrix elements (diagonals, columns, rows, etc.) when a matrix is expressed as a continguous 1D array.</p>
+
+<p>Recently, I was working on implementing a matrix inversion routine using the Gauss-Jordan elimination technique in C++. This was part of the NMatrix ruby gem, and because of the limitations imposed by trying to interface a dynamic language like Ruby with C++, the elements of the NMatrix object had to expressed as a 1D contiguous C++ array for computation of the inverse.</p>
+
+<p>The in-place Gauss-Jordan matrix inversion technique uses many matrix elements in every pass. Lets see some simple equations that can be used for accessing different types of elements in a matrix in a loop.</p>
+
+<h4 id="diagonals">Diagonals</h4>
+
+<p>Lets say we have a square matrix A with shape <em>M</em>. If <em>k</em> is iterator we are using for going over each diagonal element of the matrix, then the equation will be something like <script type="math/tex"> k * (M + 1) </script>.</p>
+
+<p>A for loop using the equation should look like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="cpp"><span class="line"><span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">;</span> <span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="line">    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">A</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)];</span>
+</span><span class="line"><span class="p">}</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">// This will print all the diagonal elements of a square matrix.</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h4 id="rows">Rows</h4>
+
+<p>To iterate over each element in a given row of a matrix, use <script type="math/tex"> row*M + col </script>. Here <code>row</code> is the fixed row and <code>col</code> goes from 0 to M-1.</p>
+
+<h4 id="columns">Columns</h4>
+
+<p>To iterate over each element in a given column of a matrix, use <script type="math/tex"> col*M + row </script>. Here <code>col</code> is the fixed column and <code>row</code> goes from 0 to M-1.</p>
+
+<h4 id="general">General</h4>
+
+<p>In general the equation <script type="math/tex"> row*NCOLS + col </script> will yield a matrix element with row index <code>row</code> and column index <code>col</code>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/01/an-overview-of-automatic-speech-recognition/">An Overview of Automatic Speech Recognition</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-01T18:59:11+05:30'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>6:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Speech is the fundamental method of communication between human beings. Everyone within Human civilization, whether literate or illiterate, can communicate with the people around them through speech.</p>
+
+<p>Using a computer can be a scary proposition for most people. It involves GUIs, text, images, video; intangible entities that many first time users are unable to relate to.</p>
+
+<p>In contrast to the rapid evolution of computing, development of modes of communication between human and computer has been painfully slow and has been primarily restricted to text, images, videos and the like. </p>
+
+<p>This is where the idea of Automatic Speech Recognition comes in. It aims to bridge the communication gap between humans and computers and bring it as close as possible to a human-human interaction. In aims to teach a computer the primary method of communication between humans: speech.</p>
+
+<p>To cite Wikipedia, Automatic Speech Recognition is the translation of spoken words into text. Once we have text (which is the most portable method of information transfer), we can do absolutely anything with it.</p>
+
+<p>In this article, we will be gaining a brief overview of Automatic Speech Recognition (ASR), and take a look at a few algorithms that are used for the same. Most of the methods listed here are language neutral, unless explicitly stated. Let us start with how speech is actually produced by a normal Human being.</p>
+
+<p>The primary organ of speech production is the Vocal Tract. The lungs push out the air, which passes through the vocal tract and mouth and then is released into the atmosphere. On its way out of the mouth, the air is manipulated by a series of obstacles present in the vocal tract, nose and mouth. These manipulations in the raw air pushed through the lungs manifest as speech. </p>
+
+<p>Air first passes through the glottis, which is the combination of the vocal folds (vocal cords) and the space in between the folds. It then passes through the mouth, where the tongue plays a major role in overall speech modulation. Factors like constriction of the vocal tract (for /g/ in ‘ghost’), aspirated stops and nasal tones play a major role in modulating the overall sound wave.</p>
+
+<p><img class="center" src="/images/speech_recognition/glottis.jpg" title="&#34;An Diagram Of The Human Glottis&#34;" alt="&#34;An Diagram Of The Human Glottis&#34;" /></p>
+
+<p>The primary organ of speech production is the Vocal Tract. The lungs push out the air, which passes through the vocal tract and mouth and then is released into the atmosphere. On its way out of the mouth, the air is manipulated by a series of obstacles present in the vocal tract, nose and mouth. These manipulations in the raw air pushed through the lungs manifest as speech. </p>
+
+<p>Air first passes through the glottis, which is the combination of the vocal folds (vocal cords) and the space in between the folds. It then passes through the mouth, where the tongue plays a major role in overall speech modulation. Factors like constriction of the vocal tract (for /g/ in ‘ghost’), aspirated stops and nasal tones play a major role in modulating the overall sound wave. </p>
+
+<p>For the purpose of processing speech using computers, there is a need to digitize the signal. When we receive a speech signal in a computer, we first sample the analog signal at a frequency such that the original waveform is completely preserved. We then perform some basic pre-filtering; for example, observations indicate that human speech is the range of 0-4 kHz, so we pass the sampled signal through a low-pass filter to remove any frequecies above 4 kHz.</p>
+
+<p>Before proceeding with the working of an ASR, we make some fundamental assumptions: 
+* Vocal tract changes shape rather slowly in continuos speech and it can be assumed that the vocal tract has fixed shape and characterestics for 10 ms. Thus on an average, the shape of the vocal tract changes every 10 ms.
+* Source of excitation (lungs) and vocal tract are independent of each other.</p>
+
+<p>To extract any meaning from sound, we need to make certain measurements from the sampled wave. Let us explore these one by one:</p>
+
+<ul>
+  <li>Zero Crossing Count - This is number of times the signal crosses the zero-line per unit time. This gives an idea of the frequency of the wave per unit time.</li>
+  <li>Energy - Energy of a signal is represented by the square of each sample of the signal, over the entire duration of the signal. </li>
+</ul>
+
+<p><img class="center" src="/images/speech_recognition/energy_equation.jpg" title="&#34;Energy Equation&#34;" alt="&#34;Energy Equation&#34;" /></p>
+
+<ul>
+  <li>Pitch period of utterances - It is found that most utterances have a certain ‘pseudo periodicity’ associated with them. This is called the pitch period.</li>
+</ul>
+
+<p>Speech can be classified into two broad categories - VOICED speech(top) and UNVOICED speech(bottom).</p>
+
+<p><img class="center" src="/images/speech_recognition/voiced_speech.jpg" title="&#34;Waveform of voiced speech&#34;" alt="&#34;Waveform of voiced speech&#34;" />
+<img class="center" src="/images/speech_recognition/unvoiced_speech.jpg" title="&#34;Waveform of unvoiced speech&#34;" alt="&#34;Waveform of unvoiced speech&#34;" /></p>
+
+<p>Voiced speech is characterized in a signal with many undulations (ups and downs). Voiced signals tend to be louder like the vowels /<em>a</em>/, /<em>e</em>/, /<em>i</em>/, /<em>u</em>/, /<em>o</em>/. Unvoiced speech is more of a high frequency, low energy signal, which makes it difficult to interpret since it is difficult to distinguish it from noise. Unvoiced signals, by contrast, do not entail the use of the vocal cords, for example, /<em>s</em>/, /<em>z</em>/, /<em>f</em>/ and /<em>v</em>/. </p>
+
+<p>A basic ASR will consist of three basic steps - </p>
+
+<ul>
+  <li>End Point Detection - Marking the beginning and ending points of the actual utterance of the word in the given speech signal is called End Point Detection.</li>
+  <li>Phoneme<sup id="fnref:3"><a href="#fn:3" class="footnote">1</a></sup> Segmentation - Segregating individual phonemes from a speech signal is called Phoneme Segmentation.</li>
+  <li>Phoneme Identification - Recognizing the phoneme present in each phoneme segment of the waveform is called Phoneme Identification. </li>
+</ul>
+
+<p>Every step in the speech recognition process is an intricate algorithm in itself, and over the years, numerous approaches have been suggested by many people. Let us look at a few simple ones: </p>
+
+<ul>
+  <li>End Point Detection:
+    <ul>
+      <li>We make use of the Zero Crossing Count and Energy parameters of a sound wave for calculating the end points of an utterance in an input sound wave.- It assumes that the first 100 ms of the speech waveform are noise. Based on this assumption, it comes up with the ZCC and energy of the noise signal, through which it computes the points where the speech segment begins and ends. A detailed discussion would be out of the scope of this article, but those interested can always go through the paper written by Rabiner and Sambur<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img class="center" src="/images/speech_recognition/waveform_and_end_points.jpg" title="&#34;A speech waveform (top) and the detected End Points (bottom)&#34;" alt="&#34;A speech waveform (top) and the detected End Points (bottom)&#34;" /></p>
+
+<ul>
+  <li>Phoneme Segmentation
+    <ul>
+      <li>This step in the process is the most important step because what Phoneme gets detected from a particular speech waveform is completely dependent on what wave we pass to the Phoneme Recognition algorithm. </li>
+      <li>The algorithm proposed by Bapat and Nagalkar<sup id="fnref:2"><a href="#fn:2" class="footnote">3</a></sup> functions based on the fact that each phoneme will have a different energy and amplitude, and whenever a variation drastic deviation in these parameters is detected in the sound wave, it is marked as a different phoneme.</li>
+    </ul>
+  </li>
+  <li>Phoneme Recognition
+    <ul>
+      <li>This is by far the most intriguing and researched. Extensive work has been done in this domain, ranging from simple spectral energy analysis of signals, to more complicated Neural Network algorithms. One can find several hypotheses all over the internet regarding this domain. A discussion on these algorithms would get too large, but we will discuss a very simple algorithm which utilises the frequency domain representation of a signal to segregate ‘varnas’ or classes of Phonemes found in the Devnagiri script: 
+        <ul>
+          <li>Each class of phonemes in Devnagiri is generated using the same organ but with different air pressure and time of touch for each individual alphabet. This property of Devangiri can be used for detecting only the class of a particular phoneme. </li>
+          <li>If we divide the entire frequency axis of 4 kHz into 17 bands of ~ 235 Hz each, and observe some sample utterances through this grid, we find that the phonemes of a particular class show peak frequencies in the same band or a very predictable set of 2-3 bands. Taking note of these peaks, one can identify the phoneme class by observing which bands the peaks fall into. </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>We have discussed some major characterestics and components of an Automatic Speech Recognition engine, and have also seen some interesting facets of digital signals along the way. </p>
+
+<p>It is interesting to note how some basic principles of Digital Signal Processing can be applied to the real world for useful applications. </p>
+
+<hr />
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:3">
+      <p>Phoneme - A phoneme is a basic unit of a language’s phonology, which is combined with other phonemes to form meaningful units such as words. Alternatively, a phoneme is a set of phones or a set of sound features that are thought of as the same element within the phonology of a particular language.  <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:1">
+      <p><a href="http://web.cs.wpi.edu/~cs529/f04/slides/RS75.pdf">An Algorithm For Determining The Endpoints For Isolated Utterances ; L.R. Rabiner and M.R. Sambur</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p><a href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&amp;arnumber=4798390&amp;url=http%3A%2F%2Fieeexplore.ieee.org%2Fiel5%2F4796894%2F4798312%2F04798390.pdf%3Farnumber%3D4798390">Phonetic Speech Analysis for Speech to Text; A. V. Bapat, L. K. Nagalkar</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/09/28/travel-hampi-bengaluru-allepy-part-2/">[Travel] Hampi-Bengaluru-Allepy Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-09-28T16:14:07+05:30'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:14 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2 id="hampi---day-2">Hampi - Day 2</h2>
+
+<p>The day started at 5 am, and we proceeded to Matanga Hill to watch the sunrise, reaching the foot after a 15 min walk. Matanga Hill has special significance in Hindu mythology, this was the place where <a href="http://en.wikipedia.org/wiki/Hanuman">Hanuman</a> and <a href="http://en.wikipedia.org/wiki/Sugriva">Sugreeva</a> took shelter after being chased by <a href="http://en.wikipedia.org/wiki/Vali_(Ramayana)">Vali</a>, who was ultimately killed by <a href="http://en.wikipedia.org/wiki/Rama">Rama</a>.</p>
+
+<p>As we started climbing the hill, a Naga Yogi waiting at the bottom of the hill asked us to register with the police station before going up the hill. We told him the station was closed, so he guided us up the hill. Along the way he told us that he had converted to a Naga Yogi after a stint at a multinational bank and now lived in a cave up the hill (wow), performing his sadhu duties in the temple town (which blew us away). The climb turned out to be pretty trecherous, with steep cliffs and a very narrow path leading uphill. He guided us to the rooftop of the Veerbhadra Temple present at the top of Matanga Hill, where the sunrise can be experienced best, and set off on his own after inviting us to his cave for tea once we we were done seeing the sunrise.</p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/matanga_sunrise.JPG" width="600" height="600" title="'Sunrise from Matanga Hill'" /></p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/matanga_view.JPG" width="600" height="600" title="'View of Achutarya Temple from Matanga Hill'" /></p>
+
+<p>After seeing the sunrise and having some great black tea in our guide’s cave, we started our descent, which took around 40 mins, mainly because of the jagged structure of the rocks. A fantastic breakfast of idli and tea awaited us at the bottom. Breakfast food carts are spread thorughout Hampi and serve cheap, tasty and filling food.</p>
+
+<p>We then proceeded to our cycle tour, which would take us through the outer parts of Hampi; first stopping at the <a href="http://hampi.in/kadalekalu-ganesha">Kadalekalu Ganesha</a> (Kadalekalu because the statue’s belly resembles a Bengal Gram) temple, which houses a massive statue of Ganpati, the Hindu god of wisdom. The statue is now in ruins, after being destroyed by the Deccan Muslim rulers, who thought there was a hidden treasure inside the stomach of the statue, because of its size.</p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/ganpati_kk.JPG" width="500" height="400" title="'Kadalekalu Ganesha statue'" /></p>
+
+<p>Then we proceeded to the statue of Narsimha and Laxmi. This was a huge monolith of a statue once upon a time, but it was destroyed by the invading army. A lot of it has been restored but it appears nowhere near its former glory. Right next to this is the partially submerged Shivalinga, which happens to be the 2nd largest in the country.</p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/narsimha.JPG" width="500" height="400" title="'The partially restored statue of Narsimha and Laxmi'" /></p>
+
+<p>We then cycled towards the underground Shiva temple, which was pretty mind-blowing. The temple’s roof is on ground level and the rest of the structure underground, the inner mantapas are kept full of water. Then cycling towards the Lotus Palace we came across the Mohammedan Watch Tower, which was a structure made for the Muslim troops in King Krishnadevaraya’s army. This structure sports typical Persian architecture, the only structure of its kind in Hampi.</p>
+
+<p>The Lotus Palace is where the two Queens of King Krishnadevaraya stayed. The main palace has a state-of-the-art water cooling system, with pipes of water circulating around the entire palace to keep the occupants cool during the summer. </p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/lotus_mahal.JPG" width="600" height="600" title="'The Lotus Mahal!!'" /></p>
+
+<p>Behind this was a massive stable for the royal elephants, which housed all 11 of them. The Lotus Mahal (palace) consisted of two palaces, called Water Palace and the Queen’s Palace, both of which are now in ruins.</p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/elephant_house.JPG" width="600" height="600" title="'Elephant Stable'" /></p>
+
+<p>We cycled to the King’s enclosure, which had a whole lot of podiums and open spaces for conducting festivities. Dusshera was celebrated with great pomp here. There was an especially large podium for the King to be seated on so that he could watch all the proceedings from a vantage point.</p>
+
+<p><img class="left" src="/images/hampi-bengaluru-allepy/enclosure.JPG" width="360" height="350" title="'The King's Enclosure and his podium'" /></p>
+
+<p><img class="right" src="/images/hampi-bengaluru-allepy/bath.JPG" width="360" height="350" title="'The Queens Bath'" /></p>
+
+<p>The Queen’s bath was just a few minutes cycle ride from here and that is where we went next. This was a huge tank for the Queen to take a bath in, made in Indo-Arabic architecture. </p>
+
+<p>The cycle ride back to the center of Hampi (and our hotel) was long but extremely plesant. The route was lush green with many streams and small waterfalls.</p>
+
+<p><img class="center" src="/images/hampi-bengaluru-allepy/cycle_ride.JPG" width="500" height="500" title="'The cycle ride back to Hampi'" /></p>
+
+<p>Upon returning we had some late lunch at a South Indian restaurant (Venkateshwara Restaurant), and left for Hospet to catch our bus to Bangalore, which left from there at night.</p>
+
+<p>The bus stop at Hospet is pretty horrible and since we were forced to book our tickets through some petty shop in Hampi, the bus came 3 hours late and the driver stopped at the particular bus stop only because we were calling him repeatedly and telling him and that we’re waiting. Go for government transport whenever possible!</p>
+
+<p>Stay tuned for day 3!</p>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby/">[code]Generalized Linear Models: Introduction and Implementation in Ruby.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-09-21T19:05:21+05:30'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>7:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2 id="overview">Overview</h2>
+
+<p>Most of us are well acquainted with linear regression and its use in analysig the relationship of one dataset with another. Linear regression basically shows the (possibly) linear relationship between one or more independent variables and a single dependent variable. But what if this relationship is not linear and the dependent and independent variables are associated with one another through some special function? This is where Generalized Linear Models (or GLMs) come in. This article will explain some core <a href="http://en.wikipedia.org/wiki/Generalized_linear_model">GLM</a> concepts and their implementation in Ruby using the <a href="https://github.com/sciruby/statsample-glm">statsample-glm</a> gem.</p>
+
+<h2 id="generalized-linear-models-basics">Generalized Linear Models Basics</h2>
+
+<p>The basic linear regression equation relating the dependent varible <em>y</em> with the independent variable <em>x</em> looks something like 
+<script type="math/tex">
+\begin{align}
+    y = \beta_{0} + x_{1}*\beta_{1} + x_{2}*\beta_{2}...
+\end{align}
+</script>
+This is the equation of a straight line, with <script type="math/tex"> \beta_{0} </script> denoting the intercept of the line with the Y axis and <script type="math/tex"> \beta_{1} </script> denoting the slope of the line. GLMs take this a step further. They try to establish a relationship between <em>x</em> and <em>y</em> through <em>another function</em> <strong>g(x)</strong>, which is called the <em>link function</em>. This function depends on the probability distribution displayed by the independent variables and their corresponding y values. In its simplest form, it can be denoted as <em>y = g(x)</em>.</p>
+
+<p>GLM can be used to model numerous relations, depending on the distribution of the dependent conditional on the independent variables. We will first explore the various kinds of GLMs and their defining parameters and then understand the different methods employed in finding the co-efficients. The most common GLMs are:</p>
+
+<ul>
+  <li>Logistic (or logit) regression.</li>
+  <li>Normal regression.</li>
+  <li>Poisson regression.</li>
+  <li>Probit regression.</li>
+</ul>
+
+<p>Let’s see all of the above one by one.</p>
+
+<h4 id="logisitic-regression">Logisitic Regression</h4>
+<p>Logistic, or Logit can be said to be one of the most fundamental of the GLMs. It is mainly used in cases where the independent variables show a binomial distribution (conditional on the dependent). In case of the binomial distribution, the number of successes are modelled on a fixed number of tries. The Bernoulli distribution is a special case of binomial where the outcome is either 0 or 1 (which is the case in the example at the bottom of this post). By using logit link function, one can determine the maximum probability of the occurence of each independent random variable. The values so obtained can be used to plot a sigmoid graph of <em>x</em> vs <em>y</em>, using which one can predict the probability of occurence of any random varible not already in the dataset. The defining parameter of the logistic is the probability <em>y</em>.</p>
+
+<p>The logit link function looks something like 
+<script type="math/tex">
+\begin{align}
+    y = \frac{e^{(\beta_{0} + x*\beta_{1})}}{1 + e^{(\beta_{0} + x*\beta_{1})}}
+\end{align}
+</script>
+, where y is the probability for the given value of x.</p>
+
+<p>Of special interest is the meaning of the values of the coefficients. In case on linear regression, <script type="math/tex"> \beta_{0} </script> merely denotes the intercept while <script type="math/tex"> \beta_{1} </script> is the slope of the line. However, here, because of the nature of the link function, the coefficient <script type="math/tex"> \beta_{1} </script> of the independent variable is interpreted as “for every 1 increase in <em>x</em> the odds of <em>y</em> increase by <script type="math/tex"> e^{\beta_{1}} </script> times”.</p>
+
+<p>One thing that puzzled me when I started off with regression was the purpose of having several variables <script type="math/tex"> (x_{1}, x_{2}...) </script> in the same regression model at times. The purpose of multiple independent variables against a single dependent is so that we can compare the odds of <script type="math/tex"> x_{1} </script> against <script type="math/tex"> x_{2} </script>.  So basically, if you have multiple variables, it is to compare the effect on the dependent of one variable, when the others are constant. To compare the effect of one variable without considering the others, one could use an  independent regression for each one.</p>
+
+<p>The logistic graph generally looks like this:</p>
+
+<p><img class="center" src="/images/glm/logistic.gif" title="&#34;Generic Graph of Logistic Regression.&#34;" alt="&#34;Generic Graph of Logistic Regression.&#34;" /></p>
+
+<h4 id="normal-regression">Normal Regression</h4>
+
+<p>Normal regression is used when the DEPENDENT variable exhibits a normal probability distribution, CONDITIONAL ON THE independent variables. The independents are assumed to be normal even in a simple linear or multiple regression, and the coefficients of a normal are more easily calculated using simple linear regression methods. But since this is another very important and commonly found data set, we will look into it.</p>
+
+<p>Normally distributed data is symmetric about the center and its mean is equal to its median. Commonly found normal distributions are heights of people and errors in measurement. The defining parameters of a normal distribution are the mean <script type="math/tex"> \mu </script> and variance <script type="math/tex"> \sigma^2 </script>. The link function is simply <script type="math/tex"> y = x*\beta_{1} </script> if no constant is present. The coefficient of the independent variable is interpreted in exactly the same manner as it is for linear regression.</p>
+
+<p>A normal regression graph generally looks like this:</p>
+
+<p><img class="center" src="/images/glm/normal.png" title="&#34;Generic Graph of Normal Regression&#34;" alt="&#34;Generic Graph of Normal Regression&#34;" /></p>
+
+<h4 id="poisson-regression">Poisson Regression</h4>
+
+<p>A dataset often posseses a Poisson distribution when the data is measured by taking a very large number of trials, each with a small probability of success. For example, the number of earthquakes taking place in a region per year. It is mainly used in case of count data and contingency tables. Binomial distributions often converge into Poisson when the number of cases(n) is large and probability of success(p) small.</p>
+
+<p>The poisson is completely defined by the rate parameter <script type="math/tex"> \lambda </script>. The link function is <script type="math/tex"> ln(y) = x*\beta_{1} </script>, which can be written as <script type="math/tex"> y = e^{x*\beta_{1}} </script>. Because the link function is logarithmic, it is also referred to as log-linear regression.</p>
+
+<p>The meaning of the co-efficient in the case of poisson is “for increase 1 of <em>x</em>, <em>y</em> changes <script type="math/tex"> y = e^\beta_{1} </script> times.”.</p>
+
+<p>A poisson graph looks something like this:</p>
+
+<p><img class="center" src="/images/glm/poisson.png" title="&#34;Graph of Poisson Regression&#34;" alt="&#34;Graph of Poisson Regression&#34;" /></p>
+
+<h4 id="probit-regression">Probit Regression</h4>
+
+<p>Probit is used for modeling binary outcome varialbles. Probit is similar to  logit, the choice between the two largely being a matter of personal preference.</p>
+
+<p>In the probit model, the inverse standard normal distribution of the probability is modeled as a linear combination of the predictors (in simple terms, something like <script type="math/tex"> y = \Phi(\beta_{0} + x_{1}*\beta_{1}...) </script> , where <script type="math/tex"> \Phi </script> is the CDF of the standard normal). Therefore, the link function can be written as <script type="math/tex"> z = \Phi^{-1}(p) </script> where <script type="math/tex"> \Phi(z) </script> is the standard normal cumulative density function (here <em>p</em> is probability of the occurence of a random variable <em>x</em> and <em>z</em> is the z-score of the y value).</p>
+
+<p>The fitted mean values of the probit are calculated by setting the upper limit of the normal CDF integral as <script type="math/tex"> x*\beta_{1} </script>, and lower limit as <script type="math/tex"> -\infty </script>. This is so because evaluating any normally distributed random number over its CDF will yield the probability of its occurence, which is what we expect from the fitted values of a probit.</p>
+
+<p>The coefficient of <em>x</em> is interpreted as “one unit change in <em>x</em> leads to a change <script type="math/tex"> \beta_{1} </script> in the z-score of <em>y</em>”.</p>
+
+<p>Looking at the graph of probit, one can see the similarities between logit and probit:</p>
+
+<p><img class="center" src="/images/glm/probit.png" /></p>
+
+<h2 id="finding-the-coefficients-of-a-glm">Finding the coefficients of a GLM</h2>
+
+<p>There are two major methods of finding the coefficients of a GLM:</p>
+
+<ul>
+  <li>Maximum Likelihood Estimation (MLE).</li>
+  <li>Iteratively Reweighed Least Squares (IRLS).</li>
+</ul>
+
+<h4 id="maximum-likelihood-estimation">Maximum Likelihood Estimation</h4>
+
+<p>The most obvious way of finding the coefficients of the given regression analysis is by maximizing the likelihood function of the distribution that the independent variables belong to. This becomes much easier when we take the natural logarithm of the likelihood function. Hence, the name ‘Maximum Likelihood Estimation’. The Newton-Raphson method is used to this effect for maximizing the beta values (coefficients) of the log likelihood function.</p>
+
+<p>The first derivative of the log likelihood wrt to <script type="math/tex"> \beta </script> is calculated for all the <script type="math/tex"> x_{i} </script> terms (this is the jacobian matrix), and so is the second derivative (this is the hessian matrix). The coefficient is estimated by first choosing an initial estimate for <script type="math/tex"> x_{old} </script>, and then iteratively correcting this initial estimate by trying to bring the equation</p>
+
+<script type="math/tex; mode=display"> 
+\begin{align}
+x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1) 
+\end{align}
+</script>
+
+<p>to equality (with a pre-set tolerance level). A good implementation of MLE can be found <a href="http://petertessin.com/MaxLik.pdf">here</a>.</p>
+
+<h4 id="iteratively-reweighed-least-squares">Iteratively Reweighed Least Squares</h4>
+
+<p>Another useful but somewhat slower method of estimating the regression coefficients of a dataset is Iteratively Reweighed Least Squares. It is slower mainly because of the number of co-efficients involved and the somewhat extra memory that is taken up by the various matrices used by this method. The upside of IRLS is that it is very easy to implement as is easily extensible to any kind of GLM.</p>
+
+<p>The IRLS method also ultimately boils to the equation of the Newton Raphson (1), but the key difference between the two is that in MLE we try to maximize the likelihood but in IRLS we try to minimize the errors. Therefore, the manner in which the hessian and jacobian matrices are calculated is quite different. The IRLS equation is written as:</p>
+
+<script type="math/tex; mode=display">
+\begin{align}
+    b_{new} = b_{old} - inverse(X'*W*X)*(X'*(y - \mu))
+\end{align}
+</script>
+
+<p>Here, the hessian matrix is <script type="math/tex"> -(X'*W*X) </script> and the jacobian is <script type="math/tex"> (X'*(y - \mu)) </script>. Let’s see the significance of each term in each of these matrices:</p>
+
+<ul>
+  <li><em>X</em> - The matrix of independent variables  <script type="math/tex"> x_{1}, x_{2},... </script> alongwith the constant vector.</li>
+  <li><em>X’</em> - Transpose of X.</li>
+  <li><em>W</em> - The weight matrix. This is the most important entity in the equation and understanding it completely is paramount to gaining an understanding of the IRLS as whole.
+    <ul>
+      <li>The <em>weight</em> matrix is present to reduce favorism of the best fit curve towards larger values of x. Hence, the weight matrix acts as a mediator of sorts between the very small and very large values of x (if any). It is a diagonal matrix with each non-zero value representing the weight for each vector <script type="math/tex"> x_{i} </script> in the sample data.</li>
+      <li>Calculation of the weight matrix is dependent on the probability distribution shown by the independent random variables. The weight expression can be calculated by taking a look at the equation of the hessian matrix. So in the case of logistic regression, the weight matrix is a diagonal matrix with the ith entry as <script type="math/tex"> p(x_{i}, \beta_{old})*(1 - p(x_{i}, \beta_{old})) </script>.</li>
+      <li>The W matrix is (the inverse?) of the variance/covariance matrix. On logistic and Poisson regression, the variance on each case depend on the mean, so that is the meaning of <script type="math/tex"> p(x_{i}, \beta_{old})*(1 - p(x_{i}, \beta_{old})) </script>.</li>
+    </ul>
+  </li>
+  <li><script type="math/tex"> (y - \mu) </script> - This is a matrix whose ith value the is difference between the actual corresponding value on the y-axis minus <script type="math/tex"> \mu = x*b_{old} </script>. The value of this term is crucial in determining the error with which the coefficients have been calculated. Frequently an error of 10e-4 is acceptable.</li>
+</ul>
+
+<h2 id="generalized-linear-models-in-ruby">Generalized Linear Models in Ruby</h2>
+
+<p>Calculating the co-efficients and a host of other properties of a GLM is extremely simple and intuitive in Ruby. Let us see some examples of GLM by using the <code>statsample</code> and <code>statsample-glm</code> gems:</p>
+
+<p>First install <code>statsample-glm</code> by running <code>gem install statsample-glm</code>, statsample will be downloaded alongwith it if it is not installed directly. Then download the CSV files from <a href="https://github.com/SciRuby/statsample-glm/blob/master/spec/data/logistic_mle.csv">here</a>.</p>
+
+<p>Statsample-glm supports a variety of GLM methods, giving the choice of both, IRLS and MLE algorithms to the user for almost every distribution, and all this through a simple and intutive API. The primary calling function for all distribtions and algorithms is <code>Statsample::GLM.compute(data_set, dependent, method, options)</code>. We specify the data set, dependent variable, type of regression and finally an options hash in which one can specify a variety of customization options for the computation.</p>
+
+<p>To compute the co-efficients of a logistic regression, try this code:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="c1"># Code for computing coefficients and related attributes of a logistic regression.</span>
+</span><span class="line">
+</span><span class="line"><span class="n">data_set</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">CSV</span><span class="o">.</span><span class="n">read</span> <span class="s2">&quot;logistic_mle.csv&quot;</span>
+</span><span class="line"><span class="n">glm</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">GLM</span><span class="o">.</span><span class="n">compute</span> <span class="n">data_set</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:logistic</span><span class="p">,</span> <span class="p">{</span><span class="ss">constant</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">algorithm</span><span class="p">:</span> <span class="ss">:mle</span><span class="p">}</span>
+</span><span class="line"><span class="c1"># Options hash specifying addition of an extra constants vector all of whose values is &#39;1&#39; and also specifying that the MLE algorithm is to be used.</span>
+</span><span class="line">
+</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">coefficients</span>
+</span><span class="line">  <span class="c1">#=&gt; [0.3270, 0.8147, -0.4031,-5.3658]</span>
+</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">standard_error</span>
+</span><span class="line">  <span class="c1">#=&gt; [0.4390, 0.4270, 0.3819,1.9045]</span>
+</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">log_likelihood</span>
+</span><span class="line">  <span class="c1">#=&gt; -38.8669</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Similar to the above code, you can try implementing poisson, normal or probit regression models and use the data files from the link above as sample data. Just go through the tests in the source code on GitHub or read the documentation for further details and feel free to drop me a mail in case you have any doubts/suggestions for improvements.</p>
+
+<p>Cheers!</p>
+
+<hr />
+
+<h6 id="further-reading">Further Reading</h6>
+<ul>
+  <li><a href="https://cise.ufl.edu/class/cis6930sp10esl/downloads/LogisticRegression.pdf">A good explanation of IRLS</a>.</li>
+  <li><a href="http://www.stat.cmu.edu/~cshalizi/402/lectures/14-logistic-regression/lecture-14.pdf">Logistic Regression and Newtons Method</a>.</li>
+  <li><a href="https://files.nyu.edu/mrg217/public/mle_introduction1.pdf">A good resource on the how and why behind the calculation of standard errors</a>.</li>
+  <li><a href="http://www.columbia.edu/~so33/SusDev/Lecture_9.pdf">Logit and Probit</a>.</li>
+  <li><a href="http://www.nesug.org/Proceedings/nesug10/sa/sa04.pdf">A very good explanation of the Poisson regression</a>.</li>
+</ul>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners/">[code]Managing Large Open Source Projects: For Beginners.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-08-27T16:59:16+05:30'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I had just started writing some meaningful code in college and gaining an interest in scientific computation, and really wanted to apply my knowledge somewhere and create a real impact. That is when I read about the ruby <a href="https://github.com/sciruby/nmatrix">NMatrix</a> gem and thought maybe I’d contribute some code, both for experience in dealing with non-trivial software and the personal satifaction derived from the feeling of my work being used by people around the world.</p>
+
+<p>I cloned and installed the source code like any other programmer would, and just as I first open the Issue tracker to find a project to work on, I was hit by an avalanche of information ranging from bugs, documentation appeals, and new feature requests. And this was nothing compared to my first reaction upon going through the source code. Having never worked with more than a few files of source in college, I was dwarfed by the scores of source files and hundreds of method definitions that hung above me like a mountain. I quickly discovered that software is no small thing and that to make real, non-trivial, production grade software requires a certain discipline, focus and patience.</p>
+
+<p>I had never dealt with something like this before, and set out to discover books/courses that would enlighten me on the topic. Most of the blog posts that I came across told me to keep looking through the code and that eventually I would become good at it. While this is true, none spoke of any specific methods to use to get out of this dilemma. It was then that I came across the course <a href="https://www.coursera.org/course/learning">Learning How To Learn</a>, and after enrolling and seeing it through, I must say I have gained quite an insight into managing large software and even my day to day activities, the course having encompassed a large variety of practtical scenarios.</p>
+
+<p>I have written this blog post for the final assignment of the course, which asks me to share the insights I have gained with people who might be in the same dilemma that I was in. I hope you find it helpful.</p>
+
+<p>When first faced with something that you are not trained to handle, you tend to get overwhelhmed and try to avoid it, even dislike it. But this takes you nowhere close to the goal that you might want to accomplish. You just stagnate in the exact same spot that you initially were in and you never really move ahead.</p>
+
+<p>To move ahead, it is important to focus your energies and force yourself to work on a particular problem for a length of time. But how does one do this? And for what length of time? After taking the course, I learned that the mind, at any time, is basically in two modes of thinking, the focused mode and the diffused mode.</p>
+
+<p>Your mind is in the focused mode when you are intently focusing on, say implementing a tree travelsal algorithm that your professor might have told you to implement. Focused mode is required in situations where you know <em>exactly</em> what you’re looking for and want to devise a method of getting there.</p>
+
+<p>The focused mode, however, is not much use when first faced with a large software project. Focusing on just one aspect of the system the first time will leave you more confused than before and more often than not, any changes that you make will create more problems that you’d want to care about.</p>
+
+<p>Scenarios like these are where the diffused mode comes to the rescue. In the diffused mode, the mind is capable of thinking about many things at a time, maybe not making sense of them all, but creating connections between them nonetheless. It is a phase of light concentration that your mind goes through, with the problem you want to solve lightly running in the background. The diffused mode is what helps in making sense of a large project.</p>
+
+<p>You must first learn to relax, sit back and take stock of the entire project and at the same time keep in mind the new functionality that you want to implement or the bug that you want to quash. Try to simply read the names of the files and folders and try to connect them with your problem. Most Open Source projects use very strict conventions and upon lightly thinking for a while you will stumble upon a particular file or folder that will be relevant to what you are looking for.</p>
+
+<p>The diffused mode will only help you in getting a larger picture of things. Once you have a tentative idea of where you might find the problem area, then it is time to switch to the focused mode and dive into ONLY that particular file/function that you think is the right one. Do not think of anything else while searching in the place your diffused mode has taken you to.</p>
+
+<p>You first think in the diffused mode, and then the focused mode. Keep repeating this procedure until you solve the problem, and you will find that eventually, you can intuitively figure out where a particular line of code might reside.</p>
+
+<p>Thinking in the focused mode requires practice, and you will soon realize that you tend to feel distracted after some focused thinking. This is where certain techniques for focused mode thinking come into play. One of the best and easiest to practice is the ‘Pomodoro’ technique, which advocates being focused for 25 min. and then taking a short break for 5 min., then keep repeating this cycle until you think you’ve had enough. </p>
+
+<p>While focusing it is extremely important to focus ONLY on the problem at hand and nowhere else. You should typically sit in a quiet environment and away from distractions if you want pomodoro to work for you. While taking a break, do some light activity, like taking a walk around your work area or watching a small TED talk. Pomodoro has worked wonders for me and I highly recommend using it. You can use one of the scores of mobile apps available for setting a pomodoro timer.</p>
+
+<p>One of the most dangerous things to be absolutely careful about is procrastination. It is very easy to get carried away by some fancy code that you come across for the first time while tracing method calls  and completely forget about the problem that you are trying to tackle. Procrastination happens when you allow yourself to get carried away. It leads you to think that you’ve done a lot of work, when in reality you have done nothing.</p>
+
+<p>If faced by a somewhat difficult problem, write it down on a Post-It note and stick it in a place that is always within your field of view, like in my case, my desk or the palm rest of my laptop. Keep looking at what’s written on this note and periodically ask yourself, “Am I closer to solving the problem than I was before?”, “Will the particular line of code that I am reading right now be of any use in solving this problem?”. If your answers to these questions are negative, you need to realign yourself and remind yourself to get back to work.</p>
+
+<p>Over and above the techniques mentioned above, also remember to break your problem down into small, manageable chunks, and go after one chunk at a time. Also, be sure to mentally go over these chunks once you’re done with your current session so that things will be more clear next time.If you’re having problems in visualizing an algorithm or the flow of a program, take a piece of paper and write down whatever you understand, and you will find that the rest will become clear once you ponder over what you have written. Theres only so much that your memory can store.</p>
+
+<p>Over and above, have fun programming. Its a great thing to do, really.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/2">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/">Interfacing and Benchmarking High Performance Linear Algebra Libraries With Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/24/data-analysis-in-ruby-part-2/">Data Analysis in RUby: Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/">Solving Systems of Linear Equations in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/">One Dimensional Interpolation: Introduction and Implementation in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/">Data Analysis in RUby: Basic Data Manipulation and Plotting</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/v0dro">@v0dro</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'v0dro',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Sameer Deshmukh -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'v0dro';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

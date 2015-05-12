@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Data Analysis in RUby: Part 2 - Travel &lt;code&gt; Music</title>
+  <meta name="author" content="Sameer Deshmukh">
+
+  
+  <meta name="description" content="I’ve just released daru version 0.0.5, which brings in a lot of new features and consolidates existing ones. NMatrix is now well integrated into Daru &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Travel &lt;code&gt; Music" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-55005305-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Travel &lt;code&gt; Music</a></h1>
+  
+    <h2>A place where I share my experiences with Travel, Programming and Music</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:v0dro.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/archives">Archive</a></li>
+  <li><a href="/travel">Travel</a></li>
+  <li><a href="/code">Code</a></li>
+  <li><a href="/music">Music</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Data Analysis in RUby: Part 2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-02-24T00:19:08+05:30'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:19 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I’ve just released daru version 0.0.5, which brings in a lot of new features and consolidates existing ones. <a href="https://github.com/SciRuby/nmatrix">NMatrix</a> is now well integrated into Daru and all of the operations that can be performed using Arrays as the underlying implementation can be performed using NMatrix as well (except some operations involving missing data).</p>
+
+<p>The new features include extensive support for missing data, hierarchial sorting of data frames and vectors by preserving indexing, ability to group, split and aggregate data with group by, and quickly summarizing data by generating excel-style pivot tables. This release also includes new aritmetic and statistical functions on Data Frames and Vectors. Both DataFrame and Vector are now mostly compatible with <a href="https://github.com/clbustos/statsample">statsample</a>, allowing for a much larger scope of statistical analysis by leveraging the methods already provided in statsample.</p>
+
+<p>The interface for interacting with nyaplot for plotting has also been revamped, allowing much greater control on the way graphs are handled by giving direct access to the graph object. A new class for hierarchial indexing of data (called MultiIndex) has also been added, which is immensely useful when grouping/splitting/aggregating data.</p>
+
+<p>Lets look at all these features one by one:</p>
+
+<h2 id="data-types">Data Types</h2>
+
+<p>You can now either use Ruby Arrays or NMatrix as the underlying implementation. Since NMatrix is fast and makes use of C storage, it is recommended to use nmatrix when dealing with large sets of data. Daru will store any data as Ruby Array unless explicitly specified.</p>
+
+<p>Thus to specify the data type of a Vector use the option <code>:dtype</code> and either supply it with <code>:array</code> or <code>:nmatrix</code>, and if using the NMatrix dtype, you can also specify the C data type that NMatrix will use internall by using the option <code>:nm_dtype</code> and supplying it with one of the NMatrix data types (it currently supports ints, floats, rationals and complex numbers. Check the docs for further details).</p>
+
+<p>As an example, consider creating a Vector which uses NMatrix underneath, and stores data using the <code>:float64</code> NMatrix data type, which stands for double precision floating point numbers.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="o">.</span><span class="mi">44</span><span class="p">,</span><span class="mi">55</span><span class="o">.</span><span class="mi">54</span><span class="p">,</span><span class="mi">33</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="o">.</span><span class="mi">6</span><span class="o">]</span><span class="p">,</span><span class="ss">dtype</span><span class="p">:</span> <span class="ss">:nmatrix</span><span class="p">,</span> <span class="ss">nm_dtype</span><span class="p">:</span> <span class="ss">:float64</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#        nil</span>
+</span><span class="line"><span class="c1">#    0  1.44</span>
+</span><span class="line"><span class="c1">#    1 55.54</span>
+</span><span class="line"><span class="c1">#    2  33.2</span>
+</span><span class="line"><span class="c1">#    3   5.6</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">dtype</span> <span class="c1">#=&gt; :nmatrix</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">type</span>  <span class="c1">#=&gt; :float64</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Another distinction between types of data that daru offers is <code>:numeric</code> and <code>:object</code>. This is a generic feature for distinguishing numerical data from other types of data (like Strings or DateTime objects) that might be contained inside Vectors or DataFrames. These distinctions are important because statistical and arithmetic operations can only be applied on structures with type numeric.</p>
+
+<p>To query the data structure for its type, use the <code>#type</code> method. If the underlying implemetation is an NMatrix, it will return the NMatrix data type, otherwise for Ruby Arrays, it will be either <code>:numeric</code> or <code>:object</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">,</span> <span class="ss">dtype</span><span class="p">:</span> <span class="ss">:array</span><span class="p">)</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">type</span> <span class="c1">#=&gt; :numeric</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Thus Daru exposes three methods for querying the type of data: 
+* <code>#type</code> - Get the generic type of data to know whether numeric computation can be performed on the object. Get the C data type used by nmatrix in case of dtype NMatrix.
+* <code>#dtype</code> - Get the underlying data representation (either :array or :nmatrix).</p>
+
+<h2 id="working-with-missing-data">Working with Missing Data</h2>
+
+<p>Any data scientist knows how common missing data is in real-life data sets, and to address that need, daru provides a host of functions for this purpose.
+This functionality is still in its infancy but should be up to speed soon.</p>
+
+<p>The <code>#is_nil?</code> function will return a Vector object with <code>true</code> if a value is <code>nil</code> and <code>false</code> otherwise.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="kp">nil</span><span class="p">,</span><span class="kp">nil</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="p">,</span> <span class="ss">:c</span><span class="p">,</span> <span class="ss">:d</span><span class="p">,</span> <span class="ss">:e</span><span class="p">,</span> <span class="ss">:f</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">is_nil?</span>
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::Vector:93025420 @name = nil @size = 6 &gt;</span>
+</span><span class="line"><span class="c1">#        nil</span>
+</span><span class="line"><span class="c1">#    a   nil</span>
+</span><span class="line"><span class="c1">#    b   nil</span>
+</span><span class="line"><span class="c1">#    c   nil</span>
+</span><span class="line"><span class="c1">#    d  true</span>
+</span><span class="line"><span class="c1">#    e  true</span>
+</span><span class="line"><span class="c1">#    f   nil</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>#nil_positions</code> function returns an Array that contains the indexes of all the nils in the Vector.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">nil_positions</span> <span class="c1">#=&gt; [:d, :e]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>#replace_nils</code> functions replaces nils with a supplied value.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">v</span><span class="o">.</span><span class="n">replace_nils</span> <span class="mi">69</span>
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::Vector:92796730 @name = nil @size = 6 &gt;</span>
+</span><span class="line"><span class="c1">#    nil</span>
+</span><span class="line"><span class="c1">#  a   1</span>
+</span><span class="line"><span class="c1">#  b   2</span>
+</span><span class="line"><span class="c1">#  c   3</span>
+</span><span class="line"><span class="c1">#  d  69</span>
+</span><span class="line"><span class="c1">#  e  69</span>
+</span><span class="line"><span class="c1">#  f   4</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The statistics functions implemented on Vectors ensure that missing data is not considered during computation and are thus safe to call on missing data.</p>
+
+<h2 id="hierarchical-sorting-of-dataframe">Hierarchical sorting of DataFrame</h2>
+
+<p>It is now possible to use the <code>#sort</code> function on Daru::DataFrame such that sorting happens hierarchically according to the order of the specified vector names.</p>
+
+<p>In case you want to sort according to a certain attribute of the data in a particular vector, for example sort a Vector of strings by length, then you can supply a code block to the <code>:by</code> option of the sort method.</p>
+
+<p>Supply the <code>:ascending</code> option with an Array containing ‘true’ or ‘false’ depending on whether you want the corresponding vector sorted in ascending or descending order.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;ff&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;fwwq&#39;</span><span class="p">,</span>  <span class="s1">&#39;efe&#39;</span><span class="p">,</span>  <span class="s1">&#39;a&#39;</span><span class="p">,</span>  <span class="s1">&#39;efef&#39;</span><span class="p">,</span>  <span class="s1">&#39;zzzz&#39;</span><span class="p">,</span>  <span class="s1">&#39;efgg&#39;</span><span class="p">,</span>  <span class="s1">&#39;q&#39;</span><span class="p">,</span>  <span class="s1">&#39;ggf&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;one&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">d</span><span class="p">:</span> <span class="o">[-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">e</span><span class="p">:</span> <span class="o">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">14</span><span class="o">]</span>
+</span><span class="line">  <span class="p">})</span>
+</span><span class="line">
+</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:d</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">by</span><span class="p">:</span> <span class="p">{</span>
+</span><span class="line">    <span class="ss">a</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">length</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">length</span> <span class="p">},</span>
+</span><span class="line">    <span class="ss">b</span><span class="p">:</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">abs</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">abs</span> <span class="p">}</span>
+</span><span class="line">  <span class="p">},</span>
+</span><span class="line">  <span class="ss">ascending</span><span class="p">:</span> <span class="o">[</span><span class="kp">false</span><span class="p">,</span> <span class="kp">true</span><span class="o">]</span>
+</span><span class="line"><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/sorted_df.png" title="'Hierarchically sorted DataFrame'" /></p>
+
+<p>Vector objects also have a similar sorting method implemented. Check the docs for more details. Indexing is preserved while sorting of both DataFrame and Vector.</p>
+
+<h2 id="dsl-for-plotting-with-nyaplothttpsgithubcomdomitrynyaplot">DSL for plotting with <a href="https://github.com/domitry/nyaplot">Nyaplot</a></h2>
+
+<p>Previously plotting with daru required a lot of arguments to be supplied by the user. The interface did not take advatage of Ruby’s blocks, nor did it expose many functionalities of nyaplot. All that changes with this new version, that brings in a new DSL for easy plotting (recommended usage with <a href="https://github.com/minad/iruby">iruby notebook</a>).</p>
+
+<p>Thus to plot a line graph with data present in a DataFrame:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">44</span><span class="o">]</span><span class="p">})</span>
+</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">plot</span> <span class="ss">legends</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="o">]</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:line</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="p">,</span><span class="n">d</span><span class="o">|</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">yrange</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="o">]</span>
+</span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">legend</span> <span class="kp">true</span>
+</span><span class="line">  <span class="n">d</span><span class="o">.</span><span class="n">color</span> <span class="s2">&quot;green&quot;</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru2/line_graph.png" title="'Line Graph From DataFrame'" /></p>
+
+<p>As you can see, the <code>#plot</code> function exposes the <code>Nyaplot::Plot</code> and <code>Nyaplot::Diagram</code> objects to user after populating them with the relevant data. So the new interface lets experienced users utilize the full power of nyaplot but keeps basic plotting very simple to use for new users or for quick and dirty visualization needs. Unfortunately for now, until a viable solution to interfacing with nyaplot is found, you will need to use the nyaplot API directly.</p>
+
+<h2 id="statistics-and-arithmetic-on-dataframes">Statistics and arithmetic on DataFrames.</h2>
+
+<p>Daru includes a host of methods for simple statistical analysis on numeric data. You can call <code>mean</code>, <code>std</code>, <code>sum</code>, <code>product</code>, etc. directly on the DataFrame. The corresponding computation is performed on numeric Vectors within the DataFrame, and missing data if any is excluded from the calculation by default.</p>
+
+<p>So for this DataFrame:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;foo&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;foo&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="p">,</span>  <span class="s1">&#39;bar&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;one&#39;</span>  <span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;one&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="p">,</span>  <span class="s1">&#39;two&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="p">,</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;small&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">d</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">e</span><span class="p">:</span> <span class="o">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">14</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">f</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">70</span><span class="o">]</span>
+</span><span class="line"><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To calculate the mean of numeric vectors:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">mean</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/df_mean.png" title="'Calculate Mean of Numeric Vectors'" /></p>
+
+<p>Apart from that you can use the <code>#describe</code> method to calculate many statistical features of numeric Vectors in one shot and see a summary of statistics for numerical vectors in the DataFrame that is returned. For example,</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">describe</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/df_describe.png" title="'Describe Multiple Statistics in One Shot'" /></p>
+
+<p>The covariance and correlation coeffiecients between the numeric vectors can also be found with <code>#cov</code> and <code>#corr</code></p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">cov</span>
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1"># #&lt;Daru::DataFrame:91700830 @name = f5ae5d7e-9fcb-46c8-90ac-a6420c9dc27f @size # = 3&gt;</span>
+</span><span class="line"><span class="c1">#                     d          e          f </span>
+</span><span class="line"><span class="c1">#          d          4          8         40 </span>
+</span><span class="line"><span class="c1">#          e          8         16         80 </span>
+</span><span class="line"><span class="c1">#          f         40         80        400 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h2 id="hierarchial-indexing">Hierarchial indexing</h2>
+
+<p>A new way of hierarchially indexing data has been introduced in version 0.0.5. This is done with the new <code>Daru::MultiIndex</code> class. Hierarchial indexing allows grouping sets of similar data by index and lets you select sub sets of data by specifying an index name in the upper hierarchy.</p>
+
+<p>A MultiIndex can be created by passing a bunch of tuples into the Daru::MultiIndex class. A DataFrame or Vector can be created by passing it a MultiIndex object into the <code>index</code> option. A MultiIndex can be used for determining the order of Vectors in a DataFrame too.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">tuples</span> <span class="o">=</span> <span class="o">[</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="ss">:c</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span>
+</span><span class="line"><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">multi_index</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">MultiIndex</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">tuples</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">vector_arry1</span> <span class="o">=</span> <span class="o">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="o">]</span>
+</span><span class="line"><span class="n">vector_arry2</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line"><span class="n">order_mi</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">MultiIndex</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:a</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:baz</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:two</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">    <span class="o">[</span><span class="ss">:b</span><span class="p">,</span><span class="ss">:one</span><span class="p">,</span><span class="ss">:foo</span><span class="o">]]</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">df_mi</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span>
+</span><span class="line">    <span class="n">vector_arry1</span><span class="p">,</span>
+</span><span class="line">    <span class="n">vector_arry2</span><span class="p">,</span>
+</span><span class="line">    <span class="n">vector_arry1</span><span class="p">,</span>
+</span><span class="line">    <span class="n">vector_arry2</span><span class="o">]</span><span class="p">,</span> <span class="ss">order</span><span class="p">:</span> <span class="n">order_mi</span><span class="p">,</span> <span class="ss">index</span><span class="p">:</span> <span class="n">multi_index</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/multi_index_table.png" title="'DataFrame with hierarchical indexing'" /></p>
+
+<p>Selecting a top level index from the hierarchy will select all the rows under that name, and return a new DataFrame with just that much data and indexes.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df_mi</span><span class="o">.</span><span class="n">row</span><span class="o">[</span><span class="ss">:a</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/multi_index_partial.png" title="'Partial Selection Of Multi Indexed DataFrame'" /></p>
+
+<p>Alternatively passing the entire tuple will return just that row as a <code>Daru::Vector</code>, indexed according to the column index.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df_mi</span><span class="o">.</span><span class="n">row</span><span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:one</span><span class="p">,</span><span class="ss">:bar</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru2/multi_index_exact.png" title="'Selecting A Single Row From A Multi Indexed DataFrame'" /></p>
+
+<p>Hierachical indexing is especially useful when aggregating or splitting data, or generating data summaries as we’ll see in the following examples.</p>
+
+<h2 id="splitting-and-aggregation-of-data">Splitting and aggregation of data</h2>
+
+<p>When dealing with large sets of scattered data, it is often useful to ‘see’ the data grouped according to similar values in a Vector instead of it being scattered all over the place.</p>
+
+<p>The <code>#group_by</code> function does exactly that. For those familiar SQL, <code>#group_by</code> works exactly like the GROUP BY clause, but is much easier since its all Ruby.</p>
+
+<p>The <code>#group_by</code> function will accept one or more Vector names and will scan those vectors for common elements that can be grouped together. In case multiple names are specified it will check for common attributes accross rows.</p>
+
+<p>So for example consider this DataFrame:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="sx">%w{foo bar foo bar   foo bar foo foo}</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="sx">%w{one one two three two two one three}</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span>   <span class="o">[</span><span class="mi">1</span>  <span class="p">,</span><span class="mi">2</span>  <span class="p">,</span><span class="mi">3</span>  <span class="p">,</span><span class="mi">1</span>    <span class="p">,</span><span class="mi">3</span>  <span class="p">,</span><span class="mi">6</span>  <span class="p">,</span><span class="mi">3</span>  <span class="p">,</span><span class="mi">8</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">d</span><span class="p">:</span>   <span class="o">[</span><span class="mi">11</span> <span class="p">,</span><span class="mi">22</span> <span class="p">,</span><span class="mi">33</span> <span class="p">,</span><span class="mi">44</span>   <span class="p">,</span><span class="mi">55</span> <span class="p">,</span><span class="mi">66</span> <span class="p">,</span><span class="mi">77</span> <span class="p">,</span><span class="mi">88</span><span class="o">]</span>
+</span><span class="line"><span class="p">})</span>
+</span><span class="line"><span class="c1">#&lt;Daru::DataFrame:88462950 @name = 0dbc2869-9a82-4044-b72d-a4ef963401fc @size = 8&gt;</span>
+</span><span class="line"><span class="c1">#            a          b          c          d </span>
+</span><span class="line"><span class="c1"># 0        foo        one          1         11 </span>
+</span><span class="line"><span class="c1"># 1        bar        one          2         22 </span>
+</span><span class="line"><span class="c1"># 2        foo        two          3         33 </span>
+</span><span class="line"><span class="c1"># 3        bar      three          1         44 </span>
+</span><span class="line"><span class="c1"># 4        foo        two          3         55 </span>
+</span><span class="line"><span class="c1"># 5        bar        two          6         66 </span>
+</span><span class="line"><span class="c1"># 6        foo        one          3         77 </span>
+</span><span class="line"><span class="c1"># 7        foo      three          8         88 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To group this DataFrame by the columns <code>:a</code> and <code>:b</code>, pass them as arguments to the <code>#group_by</code> function, which returns a <code>Daru::Core::GroupBy</code> object.</p>
+
+<p>Calling <code>#groups</code> on the returned <code>GroupBy</code> object returns a <code>Hash</code> with the grouped rows.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">groups</span>
+</span><span class="line"><span class="c1"># =&gt; {</span>
+</span><span class="line"><span class="c1">#  [&quot;bar&quot;, &quot;one&quot;]=&gt;[1],</span>
+</span><span class="line"><span class="c1">#  [&quot;bar&quot;, &quot;three&quot;]=&gt;[3],</span>
+</span><span class="line"><span class="c1">#  [&quot;bar&quot;, &quot;two&quot;]=&gt;[5],</span>
+</span><span class="line"><span class="c1">#  [&quot;foo&quot;, &quot;one&quot;]=&gt;[0, 6],</span>
+</span><span class="line"><span class="c1">#  [&quot;foo&quot;, &quot;three&quot;]=&gt;[7],</span>
+</span><span class="line"><span class="c1">#  [&quot;foo&quot;, &quot;two&quot;]=&gt;[2, 4]}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To see the first group of each group from this collection, call <code>#first</code> on the <code>grouped</code> variable. Calling <code>#last</code> will return the last member of each group.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">first</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">#=&gt;           a          b          c          d </span>
+</span><span class="line"><span class="c1">#  1        bar        one          2         22 </span>
+</span><span class="line"><span class="c1">#  3        bar      three          1         44 </span>
+</span><span class="line"><span class="c1">#  5        bar        two          6         66 </span>
+</span><span class="line"><span class="c1">#  0        foo        one          1         11 </span>
+</span><span class="line"><span class="c1">#  7        foo      three          8         88 </span>
+</span><span class="line"><span class="c1">#  2        foo        two          3         33 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>On a similar note <code>#head(n)</code> will return the first <code>n</code> groups and <code>#tail(n)</code> the last <code>n</code> groups.</p>
+
+<p>The <code>#get_group</code> function will select only the rows that a particular group belongs to and return a DataFrame with those rows. The original indexing is ofcourse preserved.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;one&quot;</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1"># #&lt;Daru::DataFrame:90777050 @name = cdd0afa8-252d-4d07-ad0f-76c7581a492a @size # = 2&gt;</span>
+</span><span class="line"><span class="c1">#                     a          b          c          d </span>
+</span><span class="line"><span class="c1">#          0        foo        one          1         11 </span>
+</span><span class="line"><span class="c1">#          6        foo        one          3         77 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>Daru::Core::GroupBy</code> object contains a bunch of methods for creating summaries of the grouped data. These currently include <code>#mean</code>, <code>#std</code>, <code>#product</code>, <code>#sum</code>, etc. and many more to be added in the future. Calling any of the aggregation methods will create a new DataFrame which will have the index as the group and the aggregated data of the non-group vectors as the corresponding value. Of course this aggregation will apply only to <code>:numeric</code> type Vectors and missing data will not be considered while aggregation.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">grouped</span><span class="o">.</span><span class="n">mean</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="/images/daru2/group_by_mean.png" title="'Aggregating by Mean After Grouping'" /></p>
+
+<p>A hierarchichally indexed DataFrame is returned. Check the <code>GroupBy</code> docs for more aggregation methods.</p>
+
+<h2 id="generating-excel-style-pivot-tables">Generating Excel-style Pivot Tables</h2>
+
+<p>You can generate an excel-style pivot table with the <code>#pivot_table</code> function. The levels of the pivot table are stored in MultiIndex objects.</p>
+
+<p>To demonstrate with an example, consider <a href="https://github.com/v0dro/daru/blob/master/spec/fixtures/sales-funnel.csv">this CSV file on sales data</a>.</p>
+
+<p><img class="center" src="/images/daru2/pivot_table_data.png" title="'Data For Pivot Table Demo'" /></p>
+
+<p>To look at the data from the point of view of the manager and rep:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">sales</span><span class="o">.</span><span class="n">pivot_table</span> <span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:manager</span><span class="p">,</span> <span class="ss">:rep</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/pivot_table_index.png" title="'Data Pivoted on Index Only.'" /></p>
+
+<p>You can see that the pivot table has summarized the data and grouped it according to the manager and representative.</p>
+
+<p>To see the sales broken down by the products:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">sales</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="ss">index</span><span class="p">:</span> <span class="o">[</span><span class="ss">:manager</span><span class="p">,</span><span class="ss">:rep</span><span class="o">]</span><span class="p">,</span> <span class="ss">values</span><span class="p">:</span> <span class="ss">:price</span><span class="p">,</span> <span class="ss">vectors</span><span class="p">:</span> <span class="o">[</span><span class="ss">:product</span><span class="o">]</span><span class="p">,</span> <span class="ss">agg</span><span class="p">:</span> <span class="ss">:sum</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="/images/daru2/pivoted_data.png" title="'Data Pivoted to Reflect Sales'" /></p>
+
+<h2 id="compatibility-with-statsample">Compatibility with statsample</h2>
+
+<p>Daru is now mostly compatible with <a href="https://github.com/clbustos/statsample">statsample</a> and you can now mostly perform most of the functions by just passing it a Daru::DataFrame or Daru::Vector to perform most of the useful statistical functions provided by statsample.</p>
+
+<p>Heres an example to demonstrate:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+<span class="line-number">30</span>
+<span class="line-number">31</span>
+<span class="line-number">32</span>
+<span class="line-number">33</span>
+<span class="line-number">34</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">66</span><span class="p">,</span><span class="mi">77</span><span class="o">]</span><span class="p">})</span>
+</span><span class="line">
+</span><span class="line"><span class="no">Statsample</span><span class="o">::</span><span class="no">Analysis</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="no">Statsample</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="n">T</span><span class="p">)</span> <span class="k">do</span>
+</span><span class="line">  <span class="n">t_2</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">Test</span><span class="o">.</span><span class="n">t_two_samples_independent</span><span class="p">(</span><span class="n">df</span><span class="o">[</span><span class="ss">:a</span><span class="o">]</span><span class="p">,</span> <span class="n">df</span><span class="o">[</span><span class="ss">:b</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">  <span class="n">summary</span> <span class="n">t_2</span>
+</span><span class="line"><span class="k">end</span>
+</span><span class="line">
+</span><span class="line"><span class="no">Statsample</span><span class="o">::</span><span class="no">Analysis</span><span class="o">.</span><span class="n">run_batch</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Analysis 2015-02-25 13:34:32 +0530</span>
+</span><span class="line"><span class="c1"># = Statsample::Test::T</span>
+</span><span class="line"><span class="c1">#   == Two Sample T Test</span>
+</span><span class="line"><span class="c1">#     Mean and standard deviation</span>
+</span><span class="line"><span class="c1"># +----------+---------+---------+---+</span>
+</span><span class="line"><span class="c1"># | Variable |  mean   |   sd    | n |</span>
+</span><span class="line"><span class="c1"># +----------+---------+---------+---+</span>
+</span><span class="line"><span class="c1"># | a        | 4.0000  | 2.1602  | 7 |</span>
+</span><span class="line"><span class="c1"># | b        | 44.0000 | 23.7627 | 7 |</span>
+</span><span class="line"><span class="c1"># +----------+---------+---------+---+</span>
+</span><span class="line"><span class="c1"># </span>
+</span><span class="line"><span class="c1">#     Levene test for equality of variances : F(1, 12) = 13.6192 , p = 0.0031</span>
+</span><span class="line"><span class="c1">#     T statistics</span>
+</span><span class="line"><span class="c1"># +--------------------+---------+--------+----------------+</span>
+</span><span class="line"><span class="c1"># |        Type        |    t    |   df   | p (both tails) |</span>
+</span><span class="line"><span class="c1"># +--------------------+---------+--------+----------------+</span>
+</span><span class="line"><span class="c1"># | Equal variance     | -4.4353 | 12     | 0.0008         |</span>
+</span><span class="line"><span class="c1"># | Non equal variance | -4.4353 | 6.0992 | 0.0042         |</span>
+</span><span class="line"><span class="c1"># +--------------------+---------+--------+----------------+</span>
+</span><span class="line"><span class="c1"># </span>
+</span><span class="line"><span class="c1">#     Effect size</span>
+</span><span class="line"><span class="c1"># +-------+----------+</span>
+</span><span class="line"><span class="c1"># | x1-x2 | -40.0000 |</span>
+</span><span class="line"><span class="c1"># | d     | -12.0007 |</span>
+</span><span class="line"><span class="c1"># +-------+----------+</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<h5 id="references">References</h5>
+
+<ul>
+  <li>Pivot Tables example taken from <a href="http://pbpython.com/pandas-pivot-table-explained.html">here</a>. </li>
+</ul>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sameer Deshmukh</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-02-24T00:19:08+05:30'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>12:19 am</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2/" data-via="v0dro" data-counturl="http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/" title="Previous Post: Solving systems of linear equations in Ruby">&laquo; Solving systems of linear equations in Ruby</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/" title="Next Post: Interfacing and benchmarking high performance linear algebra libraries with Ruby">Interfacing and benchmarking high performance linear algebra libraries with Ruby &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/">Interfacing and Benchmarking High Performance Linear Algebra Libraries With Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/24/data-analysis-in-ruby-part-2/">Data Analysis in RUby: Part 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/">Solving Systems of Linear Equations in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/">One Dimensional Interpolation: Introduction and Implementation in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/">Data Analysis in RUby: Basic Data Manipulation and Plotting</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/v0dro">@v0dro</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'v0dro',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Sameer Deshmukh -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'v0dro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2/';
+        var disqus_url = 'http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
