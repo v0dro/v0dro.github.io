@@ -1488,7 +1488,7 @@ Thus by equation (4), each of them can be calculated with the following sets of 
 <p>Notice the syntax for referencing a particular vector. Use ‘row’ for referencing any row.</p>
 
 <div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">map!</span> <span class="p">{</span> <span class="o">|</span><span class="n">ts</span><span class="o">|</span> <span class="n">ts</span> <span class="o">+=</span> <span class="s2">&quot;+5:30&quot;</span><span class="p">}</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">recode!</span> <span class="p">{</span> <span class="o">|</span><span class="n">ts</span><span class="o">|</span> <span class="n">ts</span> <span class="o">+=</span> <span class="s2">&quot;+5:30&quot;</span><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 <p><img class="center" src="/images/daru1/dmap_vector.png" title="'Destructively map a given vector.'" /></p>
 
@@ -1498,7 +1498,7 @@ Thus by equation (4), each of them can be calculated with the following sets of 
 <span class="line-number">4</span>
 <span class="line-number">5</span>
 </pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;date&#39;</span>
-</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">map_rows</span> <span class="k">do</span> <span class="o">|</span><span class="n">row</span><span class="o">|</span>
+</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">recode</span><span class="p">(</span><span class="ss">:row</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">row</span><span class="o">|</span>
 </span><span class="line">  <span class="n">row</span><span class="o">[</span><span class="ss">:timestamp</span><span class="o">]</span> <span class="o">=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">row</span><span class="o">[</span><span class="ss">:timestamp</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-%dT%H:%M:%SZ%z&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_time</span>
 </span><span class="line">  <span class="n">row</span>
 </span><span class="line"><span class="k">end</span>
@@ -1555,6 +1555,8 @@ Thus by equation (4), each of them can be calculated with the following sets of 
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><img class="center" src="/images/daru1/plot_top_ten.png" title="'Top ten artists plotted.'" /></p>
+
+<p>More examples can be found in <a href="https://github.com/v0dro/daru#notebooks">the notebooks section of the daru README</a>.</p>
 
 <h2 id="further-reading">Further Reading</h2>
 
