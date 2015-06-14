@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2015-06-14T15:48:16+05:30</updated>
+  <updated>2015-06-14T15:53:54+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -377,7 +377,7 @@ This functionality is still in its infancy but should be up to speed soon.</p>
 <span class="line-number">5</span>
 <span class="line-number">6</span>
 </pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span><span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">44</span><span class="o">]</span><span class="p">})</span>
-</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">plot</span> <span class="ss">legends</span><span class="p">:</span> <span class="o">[</span><span class="ss">:a</span><span class="p">,</span> <span class="ss">:b</span><span class="o">]</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:line</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="p">,</span><span class="n">d</span><span class="o">|</span>
+</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">plot</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:line</span><span class="p">,</span> <span class="ss">x</span><span class="p">:</span> <span class="ss">:a</span><span class="p">,</span> <span class="ss">y</span><span class="p">:</span> <span class="ss">:b</span> <span class="k">do</span> <span class="o">|</span><span class="nb">p</span><span class="p">,</span><span class="n">d</span><span class="o">|</span>
 </span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">yrange</span> <span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="o">]</span>
 </span><span class="line">  <span class="nb">p</span><span class="o">.</span><span class="n">legend</span> <span class="kp">true</span>
 </span><span class="line">  <span class="n">d</span><span class="o">.</span><span class="n">color</span> <span class="s2">&quot;green&quot;</span>
@@ -386,6 +386,8 @@ This functionality is still in its infancy but should be up to speed soon.</p>
 <p><img class="center" src="http://v0dro.github.io/images/daru2/line_graph.png" title="'Line Graph From DataFrame'" /></p>
 
 <p>As you can see, the <code>#plot</code> function exposes the <code>Nyaplot::Plot</code> and <code>Nyaplot::Diagram</code> objects to user after populating them with the relevant data. So the new interface lets experienced users utilize the full power of nyaplot but keeps basic plotting very simple to use for new users or for quick and dirty visualization needs. Unfortunately for now, until a viable solution to interfacing with nyaplot is found, you will need to use the nyaplot API directly.</p>
+
+<p>Refer to <a href="http://nbviewer.ipython.org/github/SciRuby/sciruby-notebooks/blob/master/Visualization/Visualizing%20data%20with%20daru%20DataFrame.ipynb">this notebook</a> for advanced plotting tutorials.</p>
 
 <h2 id="statistics-and-arithmetic-on-dataframes">Statistics and arithmetic on DataFrames.</h2>
 
@@ -679,7 +681,9 @@ This functionality is still in its infancy but should be up to speed soon.</p>
 
 <h2 id="compatibility-with-statsample">Compatibility with statsample</h2>
 
-<p>Daru is now mostly compatible with <a href="https://github.com/clbustos/statsample">statsample</a> and you can now mostly perform most of the functions by just passing it a Daru::DataFrame or Daru::Vector to perform most of the useful statistical functions provided by statsample.</p>
+<p>Daru is now completely compatible with <a href="https://github.com/clbustos/statsample">statsample</a> and you can now perform all of the functions by just passing it a Daru::DataFrame or Daru::Vector to perform statistical analysis.</p>
+
+<p>Find more examples of using daru for statistics <a href="https://github.com/SciRuby/sciruby-notebooks/tree/master/Statistics">in these notebooks</a>.</p>
 
 <p>Heres an example to demonstrate:</p>
 
