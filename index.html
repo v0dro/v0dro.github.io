@@ -1999,7 +1999,7 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
 
 <h2 id="generalized-linear-models-in-ruby">Generalized Linear Models in Ruby</h2>
 
-<p>Calculating the co-efficients and a host of other properties of a GLM is extremely simple and intuitive in Ruby. Let us see some examples of GLM by using the <code>statsample</code> and <code>statsample-glm</code> gems:</p>
+<p>Calculating the co-efficients and a host of other properties of a GLM is extremely simple and intuitive in Ruby. Let us see some examples of GLM by using the <code>daru</code> and <code>statsample-glm</code> gems:</p>
 
 <p>First install <code>statsample-glm</code> by running <code>gem install statsample-glm</code>, statsample will be downloaded alongwith it if it is not installed directly. Then download the CSV files from <a href="https://github.com/SciRuby/statsample-glm/blob/master/spec/data/logistic_mle.csv">here</a>.</p>
 
@@ -2019,11 +2019,21 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
 <span class="line-number">10</span>
 <span class="line-number">11</span>
 <span class="line-number">12</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="c1"># Code for computing coefficients and related attributes of a logistic regression.</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;statsample-glm&#39;</span>
+</span><span class="line"><span class="c1"># Code for computing coefficients and related attributes of a logistic regression.</span>
 </span><span class="line">
-</span><span class="line"><span class="n">data_set</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">CSV</span><span class="o">.</span><span class="n">read</span> <span class="s2">&quot;logistic_mle.csv&quot;</span>
+</span><span class="line"><span class="n">data_set</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">from_csv</span> <span class="s2">&quot;logistic_mle.csv&quot;</span>
 </span><span class="line"><span class="n">glm</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">GLM</span><span class="o">.</span><span class="n">compute</span> <span class="n">data_set</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:logistic</span><span class="p">,</span> <span class="p">{</span><span class="ss">constant</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">algorithm</span><span class="p">:</span> <span class="ss">:mle</span><span class="p">}</span>
-</span><span class="line"><span class="c1"># Options hash specifying addition of an extra constants vector all of whose values is &#39;1&#39; and also specifying that the MLE algorithm is to be used.</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Options hash specifying addition of an extra constants </span>
+</span><span class="line"><span class="c1"># vector all of whose values is &#39;1&#39; and also specifying </span>
+</span><span class="line"><span class="c1"># that the MLE algorithm is to be used.</span>
 </span><span class="line">
 </span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">coefficients</span>
 </span><span class="line">  <span class="c1">#=&gt; [0.3270, 0.8147, -0.4031,-5.3658]</span>
