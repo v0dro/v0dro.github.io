@@ -9,7 +9,7 @@
   <meta name="author" content="Sameer Deshmukh">
 
   
-  <meta name="description" content="Statsample is the most comprehensive statistical computation suite in Ruby as of now. Previously, it so happened that statsample would depend on rb- &hellip;">
+  <meta name="description" content="Introduction Daru’s (Data Analysis in RUby) latest release (0.2.0) brings in a host of new features, most important among them being time series &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -102,6 +102,303 @@ MathJax.Hub.Config({
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2015/07/27/date-offsets-in-daru/">Date Offsets in Daru</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-27T13:21:42+05:30'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:21 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2 id="introduction">Introduction</h2>
+
+<p>Daru’s (Data Analysis in RUby) latest release (0.2.0) brings in a host of new features, most important among them being time series manipulation functionality. In this post, we will go over the date offsets that daru offers, which can be used for creating date indexes of specific intervals. The offsets offer a host of options for easy creation of different intervals and even work with standalone DateTime objects to increase or decrease time.</p>
+
+<h2 id="offset-classes-and-behaviour">Offset classes and behaviour</h2>
+
+<p>The date offsets are contained in the <code>Daru::Offsets</code> sub-module. A number of classes are offered, each of which implements business logic for advancing or retracting date times by a specific interval.</p>
+
+<p>To demonstrate with a quick example:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">Hour</span><span class="o">.</span><span class="n">new</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-04-05T05:00:00+00:00 ((2456023j,18000s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>As you can see in the above example, an hour was added to the time specified by DateTime and returned. All the offset classes work in a similar manner. Following offset classes are available to users:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Offset Class</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Daru::DateOffset</td>
+      <td style="text-align: center">Generic offset class</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Second</td>
+      <td style="text-align: center">One Second</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Minute</td>
+      <td style="text-align: center">One Minute</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Hour</td>
+      <td style="text-align: center">One Hour</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Day</td>
+      <td style="text-align: center">One Day</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Week</td>
+      <td style="text-align: center">One Week. Can be anchored on any week of the day.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Month</td>
+      <td style="text-align: center">One Month.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MonthBegin</td>
+      <td style="text-align: center">Calendar Month Begin.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MonthEnd</td>
+      <td style="text-align: center">Calendar Month End.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Year</td>
+      <td style="text-align: center">One Year.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">YearBegin</td>
+      <td style="text-align: center">Calendar Year Begin.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">YearEnd</td>
+      <td style="text-align: center">Calendar Year End.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The generic Daru::DateOffset class is used for creating a generic offset by passing the number of intervals you want as the value for a key that describes the type of interval. For example to create an offset of 3 days, you pass the option <code>days: 3</code> into the Daru::Offset constructor.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateOffset</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">days</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-04-08T02:00:00+00:00 ((2456026j,7200s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>On a similar note, the DateOffset class constructor can accept the options <code>:secs</code>, <code>:mins</code>,<code>:hours</code>, <code>:days</code>, <code>:weeks</code>, <code>:months</code> or <code>:years</code>. Optionally, specifying the <code>:n</code> option will tell DateOffset to apply a particular offset more than once. To elaborate:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateOffset</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">months</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">n</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-01-02T00:00:00+00:00 ((2455929j,0s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The specialized offset classes like MonthBegin, YearEnd, etc. all reside inside the <code>Daru::Offsets</code> namespace and can be used by simply calling <code>.new</code> on them. All accept an optional Integer argument that works like the <code>:n</code> option for Daru::DateOffset, i.e it applies the offset multiple times.</p>
+
+<p>To elaborate, consider the YearEnd offset. This offsets the date to the nearest year end after itself:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">YearEnd</span><span class="o">.</span><span class="n">new</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-12-31T05:02:01+00:00 ((2456293j,18121s,0n),+0s,2299161j)&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Passing an Integer into an Offsets object will apply the offset that many times:</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">MonthBegin</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2015-06-01T00:00:00+00:00 ((2457175j,0s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Of special note is the <code>Week</code> offset. This offset can be ‘anchored’ to any week of the day that you specify. When this is done, the DateTime that is being offset will be offset to that day of the week.</p>
+
+<p>For example, to anchor the Week offset to a Wednesday, pass ‘3’ as a value to the <code>:weekday</code> option:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">Week</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">weekday</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="n">date</span>   <span class="o">=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+</span><span class="line"><span class="n">date</span><span class="o">.</span><span class="n">wday</span> <span class="c1">#=&gt; 5</span>
+</span><span class="line">
+</span><span class="line"><span class="n">o</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">date</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-01-11T00:00:00+00:00 ((2455938j,0s,0n),+0s,2299161j)&gt;</span>
+</span><span class="line"><span class="n">o</span><span class="o">.</span><span class="n">wday</span> <span class="c1">#=&gt; 3</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Likewise, the Week offset can be anchored on any day of the week, by simplying specifying the <code>:weekday</code> option. Indexing for days of the week starts from 0 for Sunday and goes on 6 for Saturday.</p>
+
+<h2 id="offset-string-aliases">Offset string aliases</h2>
+
+<p>The most obvious use of date offsets is for creating <code>DateTimeIndex</code> objects with a fixed time interval between each date index. To make creation of indexes easy, each of the offset classes have been linked to certain <em>string alaises</em>, which can directly passed to the DateTimeIndex class.</p>
+
+<p>For example, to create a DateTimeIndex of 100 periods with a frequency of 1 hour between each period:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateTimeIndex</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+</span><span class="line">  <span class="ss">:start</span> <span class="o">=&gt;</span> <span class="s1">&#39;2015-4-4&#39;</span><span class="p">,</span> <span class="ss">:periods</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span> <span class="ss">:freq</span> <span class="o">=&gt;</span> <span class="s1">&#39;H&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTimeIndex:86417320 offset=H periods=100 data=[2015-04-04T00:00:00+00:00...2015-04-08T03:00:00+00:00]&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Likewise all of the above listed offsets can be aliased using strings, which can be used for specifying the offset in a DateTimeIndex index. The string aliases of each offset class are as follows:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Alias String</strong></th>
+      <th style="text-align: center"><strong>Offset Class / Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">‘S’</td>
+      <td style="text-align: center">Second</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘M’</td>
+      <td style="text-align: center">Minute</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘H’</td>
+      <td style="text-align: center">Hour</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘D’</td>
+      <td style="text-align: center">Days</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W’</td>
+      <td style="text-align: center">Default Week. Anchored on SUN.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-SUN’</td>
+      <td style="text-align: center">Week anchored on sunday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-MON’</td>
+      <td style="text-align: center">Week anchored on monday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-TUE’</td>
+      <td style="text-align: center">Week anchored on tuesday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-WED’</td>
+      <td style="text-align: center">Week anchored on wednesday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-THU’</td>
+      <td style="text-align: center">Week anchored on thursday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-FRI’</td>
+      <td style="text-align: center">Week anchored on friday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-SAT’</td>
+      <td style="text-align: center">Week anchored on saturday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘MONTH’</td>
+      <td style="text-align: center">Month</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘MB’</td>
+      <td style="text-align: center">MonthBegin</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘ME’</td>
+      <td style="text-align: center">MonthEnd</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘YEAR’</td>
+      <td style="text-align: center">Year</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘YB’</td>
+      <td style="text-align: center">YearBegin</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘YE’</td>
+      <td style="text-align: center">YearEnd</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>See this notebook on daru’s time series functions in order to get a good overview of daru’s time series manipulation functionality.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/">Making Statsample Work With Rb-gsl and Gsl-nmatrix</a></h1>
     
     
@@ -118,7 +415,9 @@ MathJax.Hub.Config({
   </header>
 
 
-  <div class="entry-content"><p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
+  <div class="entry-content"><p><strong>Note: It so happens that the latest release of rb-gsl does not depend on narray anymore. Hence rb-gsl can be directly used with statsample. However, if you want to use nmatrix with GSL, use gsl-nmatrix.</strong></p>
+
+<p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
 
 <p>Previously, it so happened that statsample would depend on <a href="https://github.com/blackwinter/rb-gsl">rb-gsl</a> to speed up a lot of computations. This is great, but the biggest drawback of this approach is that rb-gsl depends on <a href="https://github.com/masa16/narray">narray</a>, which is incompatible with <a href="https://github.com/SciRuby/nmatrix">nmatrix</a> - the numerical storage and linear algebra library from the SciRuby foundation - due to namespace collisions. </p>
 
@@ -1852,224 +2151,6 @@ Thus by equation (4), each of them can be calculated with the following sets of 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby/">[code]Generalized Linear Models: Introduction and Implementation in Ruby.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-21T19:05:21+05:30'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>7:05 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2 id="overview">Overview</h2>
-
-<p>Most of us are well acquainted with linear regression and its use in analysig the relationship of one dataset with another. Linear regression basically shows the (possibly) linear relationship between one or more independent variables and a single dependent variable. But what if this relationship is not linear and the dependent and independent variables are associated with one another through some special function? This is where Generalized Linear Models (or GLMs) come in. This article will explain some core <a href="http://en.wikipedia.org/wiki/Generalized_linear_model">GLM</a> concepts and their implementation in Ruby using the <a href="https://github.com/sciruby/statsample-glm">statsample-glm</a> gem.</p>
-
-<h2 id="generalized-linear-models-basics">Generalized Linear Models Basics</h2>
-
-<p>The basic linear regression equation relating the dependent varible <em>y</em> with the independent variable <em>x</em> looks something like 
-<script type="math/tex">
-\begin{align}
-    y = \beta_{0} + x_{1}*\beta_{1} + x_{2}*\beta_{2}...
-\end{align}
-</script>
-This is the equation of a straight line, with <script type="math/tex"> \beta_{0} </script> denoting the intercept of the line with the Y axis and <script type="math/tex"> \beta_{1} </script> denoting the slope of the line. GLMs take this a step further. They try to establish a relationship between <em>x</em> and <em>y</em> through <em>another function</em> <strong>g(x)</strong>, which is called the <em>link function</em>. This function depends on the probability distribution displayed by the independent variables and their corresponding y values. In its simplest form, it can be denoted as <em>y = g(x)</em>.</p>
-
-<p>GLM can be used to model numerous relations, depending on the distribution of the dependent conditional on the independent variables. We will first explore the various kinds of GLMs and their defining parameters and then understand the different methods employed in finding the co-efficients. The most common GLMs are:</p>
-
-<ul>
-  <li>Logistic (or logit) regression.</li>
-  <li>Normal regression.</li>
-  <li>Poisson regression.</li>
-  <li>Probit regression.</li>
-</ul>
-
-<p>Let’s see all of the above one by one.</p>
-
-<h4 id="logisitic-regression">Logisitic Regression</h4>
-<p>Logistic, or Logit can be said to be one of the most fundamental of the GLMs. It is mainly used in cases where the independent variables show a binomial distribution (conditional on the dependent). In case of the binomial distribution, the number of successes are modelled on a fixed number of tries. The Bernoulli distribution is a special case of binomial where the outcome is either 0 or 1 (which is the case in the example at the bottom of this post). By using logit link function, one can determine the maximum probability of the occurence of each independent random variable. The values so obtained can be used to plot a sigmoid graph of <em>x</em> vs <em>y</em>, using which one can predict the probability of occurence of any random varible not already in the dataset. The defining parameter of the logistic is the probability <em>y</em>.</p>
-
-<p>The logit link function looks something like 
-<script type="math/tex">
-\begin{align}
-    y = \frac{e^{(\beta_{0} + x*\beta_{1})}}{1 + e^{(\beta_{0} + x*\beta_{1})}}
-\end{align}
-</script>
-, where y is the probability for the given value of x.</p>
-
-<p>Of special interest is the meaning of the values of the coefficients. In case on linear regression, <script type="math/tex"> \beta_{0} </script> merely denotes the intercept while <script type="math/tex"> \beta_{1} </script> is the slope of the line. However, here, because of the nature of the link function, the coefficient <script type="math/tex"> \beta_{1} </script> of the independent variable is interpreted as “for every 1 increase in <em>x</em> the odds of <em>y</em> increase by <script type="math/tex"> e^{\beta_{1}} </script> times”.</p>
-
-<p>One thing that puzzled me when I started off with regression was the purpose of having several variables <script type="math/tex"> (x_{1}, x_{2}...) </script> in the same regression model at times. The purpose of multiple independent variables against a single dependent is so that we can compare the odds of <script type="math/tex"> x_{1} </script> against <script type="math/tex"> x_{2} </script>.  So basically, if you have multiple variables, it is to compare the effect on the dependent of one variable, when the others are constant. To compare the effect of one variable without considering the others, one could use an  independent regression for each one.</p>
-
-<p>The logistic graph generally looks like this:</p>
-
-<p><img class="center" src="/images/glm/logistic.gif" title="&#34;Generic Graph of Logistic Regression.&#34;" alt="&#34;Generic Graph of Logistic Regression.&#34;" /></p>
-
-<h4 id="normal-regression">Normal Regression</h4>
-
-<p>Normal regression is used when the DEPENDENT variable exhibits a normal probability distribution, CONDITIONAL ON THE independent variables. The independents are assumed to be normal even in a simple linear or multiple regression, and the coefficients of a normal are more easily calculated using simple linear regression methods. But since this is another very important and commonly found data set, we will look into it.</p>
-
-<p>Normally distributed data is symmetric about the center and its mean is equal to its median. Commonly found normal distributions are heights of people and errors in measurement. The defining parameters of a normal distribution are the mean <script type="math/tex"> \mu </script> and variance <script type="math/tex"> \sigma^2 </script>. The link function is simply <script type="math/tex"> y = x*\beta_{1} </script> if no constant is present. The coefficient of the independent variable is interpreted in exactly the same manner as it is for linear regression.</p>
-
-<p>A normal regression graph generally looks like this:</p>
-
-<p><img class="center" src="/images/glm/normal.png" title="&#34;Generic Graph of Normal Regression&#34;" alt="&#34;Generic Graph of Normal Regression&#34;" /></p>
-
-<h4 id="poisson-regression">Poisson Regression</h4>
-
-<p>A dataset often posseses a Poisson distribution when the data is measured by taking a very large number of trials, each with a small probability of success. For example, the number of earthquakes taking place in a region per year. It is mainly used in case of count data and contingency tables. Binomial distributions often converge into Poisson when the number of cases(n) is large and probability of success(p) small.</p>
-
-<p>The poisson is completely defined by the rate parameter <script type="math/tex"> \lambda </script>. The link function is <script type="math/tex"> ln(y) = x*\beta_{1} </script>, which can be written as <script type="math/tex"> y = e^{x*\beta_{1}} </script>. Because the link function is logarithmic, it is also referred to as log-linear regression.</p>
-
-<p>The meaning of the co-efficient in the case of poisson is “for increase 1 of <em>x</em>, <em>y</em> changes <script type="math/tex"> y = e^\beta_{1} </script> times.”.</p>
-
-<p>A poisson graph looks something like this:</p>
-
-<p><img class="center" src="/images/glm/poisson.png" title="&#34;Graph of Poisson Regression&#34;" alt="&#34;Graph of Poisson Regression&#34;" /></p>
-
-<h4 id="probit-regression">Probit Regression</h4>
-
-<p>Probit is used for modeling binary outcome varialbles. Probit is similar to  logit, the choice between the two largely being a matter of personal preference.</p>
-
-<p>In the probit model, the inverse standard normal distribution of the probability is modeled as a linear combination of the predictors (in simple terms, something like <script type="math/tex"> y = \Phi(\beta_{0} + x_{1}*\beta_{1}...) </script> , where <script type="math/tex"> \Phi </script> is the CDF of the standard normal). Therefore, the link function can be written as <script type="math/tex"> z = \Phi^{-1}(p) </script> where <script type="math/tex"> \Phi(z) </script> is the standard normal cumulative density function (here <em>p</em> is probability of the occurence of a random variable <em>x</em> and <em>z</em> is the z-score of the y value).</p>
-
-<p>The fitted mean values of the probit are calculated by setting the upper limit of the normal CDF integral as <script type="math/tex"> x*\beta_{1} </script>, and lower limit as <script type="math/tex"> -\infty </script>. This is so because evaluating any normally distributed random number over its CDF will yield the probability of its occurence, which is what we expect from the fitted values of a probit.</p>
-
-<p>The coefficient of <em>x</em> is interpreted as “one unit change in <em>x</em> leads to a change <script type="math/tex"> \beta_{1} </script> in the z-score of <em>y</em>”.</p>
-
-<p>Looking at the graph of probit, one can see the similarities between logit and probit:</p>
-
-<p><img class="center" src="/images/glm/probit.png" /></p>
-
-<h2 id="finding-the-coefficients-of-a-glm">Finding the coefficients of a GLM</h2>
-
-<p>There are two major methods of finding the coefficients of a GLM:</p>
-
-<ul>
-  <li>Maximum Likelihood Estimation (MLE).</li>
-  <li>Iteratively Reweighed Least Squares (IRLS).</li>
-</ul>
-
-<h4 id="maximum-likelihood-estimation">Maximum Likelihood Estimation</h4>
-
-<p>The most obvious way of finding the coefficients of the given regression analysis is by maximizing the likelihood function of the distribution that the independent variables belong to. This becomes much easier when we take the natural logarithm of the likelihood function. Hence, the name ‘Maximum Likelihood Estimation’. The Newton-Raphson method is used to this effect for maximizing the beta values (coefficients) of the log likelihood function.</p>
-
-<p>The first derivative of the log likelihood wrt to <script type="math/tex"> \beta </script> is calculated for all the <script type="math/tex"> x_{i} </script> terms (this is the jacobian matrix), and so is the second derivative (this is the hessian matrix). The coefficient is estimated by first choosing an initial estimate for <script type="math/tex"> x_{old} </script>, and then iteratively correcting this initial estimate by trying to bring the equation</p>
-
-<script type="math/tex; mode=display"> 
-\begin{align}
-x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1) 
-\end{align}
-</script>
-
-<p>to equality (with a pre-set tolerance level). A good implementation of MLE can be found <a href="http://petertessin.com/MaxLik.pdf">here</a>.</p>
-
-<h4 id="iteratively-reweighed-least-squares">Iteratively Reweighed Least Squares</h4>
-
-<p>Another useful but somewhat slower method of estimating the regression coefficients of a dataset is Iteratively Reweighed Least Squares. It is slower mainly because of the number of co-efficients involved and the somewhat extra memory that is taken up by the various matrices used by this method. The upside of IRLS is that it is very easy to implement as is easily extensible to any kind of GLM.</p>
-
-<p>The IRLS method also ultimately boils to the equation of the Newton Raphson (1), but the key difference between the two is that in MLE we try to maximize the likelihood but in IRLS we try to minimize the errors. Therefore, the manner in which the hessian and jacobian matrices are calculated is quite different. The IRLS equation is written as:</p>
-
-<script type="math/tex; mode=display">
-\begin{align}
-    b_{new} = b_{old} - inverse(X'*W*X)*(X'*(y - \mu))
-\end{align}
-</script>
-
-<p>Here, the hessian matrix is <script type="math/tex"> -(X'*W*X) </script> and the jacobian is <script type="math/tex"> (X'*(y - \mu)) </script>. Let’s see the significance of each term in each of these matrices:</p>
-
-<ul>
-  <li><em>X</em> - The matrix of independent variables  <script type="math/tex"> x_{1}, x_{2},... </script> alongwith the constant vector.</li>
-  <li><em>X’</em> - Transpose of X.</li>
-  <li><em>W</em> - The weight matrix. This is the most important entity in the equation and understanding it completely is paramount to gaining an understanding of the IRLS as whole.
-    <ul>
-      <li>The <em>weight</em> matrix is present to reduce favorism of the best fit curve towards larger values of x. Hence, the weight matrix acts as a mediator of sorts between the very small and very large values of x (if any). It is a diagonal matrix with each non-zero value representing the weight for each vector <script type="math/tex"> x_{i} </script> in the sample data.</li>
-      <li>Calculation of the weight matrix is dependent on the probability distribution shown by the independent random variables. The weight expression can be calculated by taking a look at the equation of the hessian matrix. So in the case of logistic regression, the weight matrix is a diagonal matrix with the ith entry as <script type="math/tex"> p(x_{i}, \beta_{old})*(1 - p(x_{i}, \beta_{old})) </script>.</li>
-      <li>The W matrix is (the inverse?) of the variance/covariance matrix. On logistic and Poisson regression, the variance on each case depend on the mean, so that is the meaning of <script type="math/tex"> p(x_{i}, \beta_{old})*(1 - p(x_{i}, \beta_{old})) </script>.</li>
-    </ul>
-  </li>
-  <li><script type="math/tex"> (y - \mu) </script> - This is a matrix whose ith value the is difference between the actual corresponding value on the y-axis minus <script type="math/tex"> \mu = x*b_{old} </script>. The value of this term is crucial in determining the error with which the coefficients have been calculated. Frequently an error of 10e-4 is acceptable.</li>
-</ul>
-
-<h2 id="generalized-linear-models-in-ruby">Generalized Linear Models in Ruby</h2>
-
-<p>Calculating the co-efficients and a host of other properties of a GLM is extremely simple and intuitive in Ruby. Let us see some examples of GLM by using the <code>daru</code> and <code>statsample-glm</code> gems:</p>
-
-<p>First install <code>statsample-glm</code> by running <code>gem install statsample-glm</code>, statsample will be downloaded alongwith it if it is not installed directly. Then download the CSV files from <a href="https://github.com/SciRuby/statsample-glm/blob/master/spec/data/logistic_mle.csv">here</a>.</p>
-
-<p>Statsample-glm supports a variety of GLM methods, giving the choice of both, IRLS and MLE algorithms to the user for almost every distribution, and all this through a simple and intutive API. The primary calling function for all distribtions and algorithms is <code>Statsample::GLM.compute(data_set, dependent, method, options)</code>. We specify the data set, dependent variable, type of regression and finally an options hash in which one can specify a variety of customization options for the computation.</p>
-
-<p>To compute the co-efficients of a logistic regression, try this code:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
-</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;statsample-glm&#39;</span>
-</span><span class="line"><span class="c1"># Code for computing coefficients and related attributes of a logistic regression.</span>
-</span><span class="line">
-</span><span class="line"><span class="n">data_set</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">from_csv</span> <span class="s2">&quot;logistic_mle.csv&quot;</span>
-</span><span class="line"><span class="n">glm</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">GLM</span><span class="o">.</span><span class="n">compute</span> <span class="n">data_set</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:logistic</span><span class="p">,</span> <span class="p">{</span><span class="ss">constant</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">algorithm</span><span class="p">:</span> <span class="ss">:mle</span><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="c1"># Options hash specifying addition of an extra constants </span>
-</span><span class="line"><span class="c1"># vector all of whose values is &#39;1&#39; and also specifying </span>
-</span><span class="line"><span class="c1"># that the MLE algorithm is to be used.</span>
-</span><span class="line">
-</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">coefficients</span>
-</span><span class="line">  <span class="c1">#=&gt; [0.3270, 0.8147, -0.4031,-5.3658]</span>
-</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">standard_error</span>
-</span><span class="line">  <span class="c1">#=&gt; [0.4390, 0.4270, 0.3819,1.9045]</span>
-</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">log_likelihood</span>
-</span><span class="line">  <span class="c1">#=&gt; -38.8669</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Similar to the above code, you can try implementing poisson, normal or probit regression models and use the data files from the link above as sample data. Just go through the tests in the source code on GitHub or read the documentation for further details and feel free to drop me a mail in case you have any doubts/suggestions for improvements.</p>
-
-<p>Cheers!</p>
-
-<hr />
-
-<h6 id="further-reading">Further Reading</h6>
-<ul>
-  <li><a href="https://cise.ufl.edu/class/cis6930sp10esl/downloads/LogisticRegression.pdf">A good explanation of IRLS</a>.</li>
-  <li><a href="http://www.stat.cmu.edu/~cshalizi/402/lectures/14-logistic-regression/lecture-14.pdf">Logistic Regression and Newtons Method</a>.</li>
-  <li><a href="https://files.nyu.edu/mrg217/public/mle_introduction1.pdf">A good resource on the how and why behind the calculation of standard errors</a>.</li>
-  <li><a href="http://www.columbia.edu/~so33/SusDev/Lecture_9.pdf">Logit and Probit</a>.</li>
-  <li><a href="http://www.nesug.org/Proceedings/nesug10/sa/sa04.pdf">A very good explanation of the Poisson regression</a>.</li>
-</ul>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -2085,6 +2166,10 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/07/27/date-offsets-in-daru/">Date Offsets in Daru</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/">Making Statsample Work With Rb-gsl and Gsl-nmatrix</a>
       </li>
     
@@ -2098,10 +2183,6 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
     
       <li class="post">
         <a href="/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/">Solving Systems of Linear Equations in Ruby</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/">One Dimensional Interpolation: Introduction and Implementation in Ruby</a>
       </li>
     
   </ul>

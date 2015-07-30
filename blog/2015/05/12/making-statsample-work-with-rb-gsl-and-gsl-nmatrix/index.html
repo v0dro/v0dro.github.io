@@ -9,7 +9,7 @@
   <meta name="author" content="Sameer Deshmukh">
 
   
-  <meta name="description" content="Statsample is the most comprehensive statistical computation suite in Ruby as of now. Previously, it so happened that statsample would depend on rb- &hellip;">
+  <meta name="description" content="Note: It so happens that the latest release of rb-gsl does not depend on narray anymore. Hence rb-gsl can be directly used with statsample. However, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -115,7 +115,9 @@ MathJax.Hub.Config({
   </header>
 
 
-<div class="entry-content"><p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
+<div class="entry-content"><p><strong>Note: It so happens that the latest release of rb-gsl does not depend on narray anymore. Hence rb-gsl can be directly used with statsample. However, if you want to use nmatrix with GSL, use gsl-nmatrix.</strong></p>
+
+<p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
 
 <p>Previously, it so happened that statsample would depend on <a href="https://github.com/blackwinter/rb-gsl">rb-gsl</a> to speed up a lot of computations. This is great, but the biggest drawback of this approach is that rb-gsl depends on <a href="https://github.com/masa16/narray">narray</a>, which is incompatible with <a href="https://github.com/SciRuby/nmatrix">nmatrix</a> - the numerical storage and linear algebra library from the SciRuby foundation - due to namespace collisions. </p>
 
@@ -170,6 +172,8 @@ MathJax.Hub.Config({
         <a class="basic-alignment left" href="/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/" title="Previous Post: Interfacing and benchmarking high performance linear algebra libraries with Ruby">&laquo; Interfacing and benchmarking high performance linear algebra libraries with Ruby</a>
       
       
+        <a class="basic-alignment right" href="/blog/2015/07/27/date-offsets-in-daru/" title="Next Post: Date Offsets in Daru">Date Offsets in Daru &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -189,6 +193,10 @@ MathJax.Hub.Config({
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/07/27/date-offsets-in-daru/">Date Offsets in Daru</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/">Making Statsample Work With Rb-gsl and Gsl-nmatrix</a>
       </li>
     
@@ -202,10 +210,6 @@ MathJax.Hub.Config({
     
       <li class="post">
         <a href="/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/">Solving Systems of Linear Equations in Ruby</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/">One Dimensional Interpolation: Introduction and Implementation in Ruby</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2015-06-14T15:53:54+05:30</updated>
+  <updated>2015-07-28T10:24:58+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -14,11 +14,290 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Date Offsets in Daru]]></title>
+    <link href="http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/"/>
+    <updated>2015-07-27T13:21:42+05:30</updated>
+    <id>http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru</id>
+    <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>Daru’s (Data Analysis in RUby) latest release (0.2.0) brings in a host of new features, most important among them being time series manipulation functionality. In this post, we will go over the date offsets that daru offers, which can be used for creating date indexes of specific intervals. The offsets offer a host of options for easy creation of different intervals and even work with standalone DateTime objects to increase or decrease time.</p>
+
+<h2 id="offset-classes-and-behaviour">Offset classes and behaviour</h2>
+
+<p>The date offsets are contained in the <code>Daru::Offsets</code> sub-module. A number of classes are offered, each of which implements business logic for advancing or retracting date times by a specific interval.</p>
+
+<p>To demonstrate with a quick example:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">Hour</span><span class="o">.</span><span class="n">new</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-04-05T05:00:00+00:00 ((2456023j,18000s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>As you can see in the above example, an hour was added to the time specified by DateTime and returned. All the offset classes work in a similar manner. Following offset classes are available to users:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Offset Class</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Daru::DateOffset</td>
+      <td style="text-align: center">Generic offset class</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Second</td>
+      <td style="text-align: center">One Second</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Minute</td>
+      <td style="text-align: center">One Minute</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Hour</td>
+      <td style="text-align: center">One Hour</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Day</td>
+      <td style="text-align: center">One Day</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Week</td>
+      <td style="text-align: center">One Week. Can be anchored on any week of the day.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Month</td>
+      <td style="text-align: center">One Month.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MonthBegin</td>
+      <td style="text-align: center">Calendar Month Begin.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MonthEnd</td>
+      <td style="text-align: center">Calendar Month End.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Year</td>
+      <td style="text-align: center">One Year.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">YearBegin</td>
+      <td style="text-align: center">Calendar Year Begin.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">YearEnd</td>
+      <td style="text-align: center">Calendar Year End.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The generic Daru::DateOffset class is used for creating a generic offset by passing the number of intervals you want as the value for a key that describes the type of interval. For example to create an offset of 3 days, you pass the option <code>days: 3</code> into the Daru::Offset constructor.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateOffset</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">days</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-04-08T02:00:00+00:00 ((2456026j,7200s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>On a similar note, the DateOffset class constructor can accept the options <code>:secs</code>, <code>:mins</code>,<code>:hours</code>, <code>:days</code>, <code>:weeks</code>, <code>:months</code> or <code>:years</code>. Optionally, specifying the <code>:n</code> option will tell DateOffset to apply a particular offset more than once. To elaborate:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateOffset</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">months</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">n</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-01-02T00:00:00+00:00 ((2455929j,0s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The specialized offset classes like MonthBegin, YearEnd, etc. all reside inside the <code>Daru::Offsets</code> namespace and can be used by simply calling <code>.new</code> on them. All accept an optional Integer argument that works like the <code>:n</code> option for Daru::DateOffset, i.e it applies the offset multiple times.</p>
+
+<p>To elaborate, consider the YearEnd offset. This offsets the date to the nearest year end after itself:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">YearEnd</span><span class="o">.</span><span class="n">new</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-12-31T05:02:01+00:00 ((2456293j,18121s,0n),+0s,2299161j)&gt;</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Passing an Integer into an Offsets object will apply the offset that many times:</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">MonthBegin</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="n">offset</span> <span class="o">+</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2015-06-01T00:00:00+00:00 ((2457175j,0s,0n),+0s,2299161j)&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Of special note is the <code>Week</code> offset. This offset can be ‘anchored’ to any week of the day that you specify. When this is done, the DateTime that is being offset will be offset to that day of the week.</p>
+
+<p>For example, to anchor the Week offset to a Wednesday, pass ‘3’ as a value to the <code>:weekday</code> option:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Offsets</span><span class="o">::</span><span class="no">Week</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">weekday</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="n">date</span>   <span class="o">=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+</span><span class="line"><span class="n">date</span><span class="o">.</span><span class="n">wday</span> <span class="c1">#=&gt; 5</span>
+</span><span class="line">
+</span><span class="line"><span class="n">o</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">date</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTime: 2012-01-11T00:00:00+00:00 ((2455938j,0s,0n),+0s,2299161j)&gt;</span>
+</span><span class="line"><span class="n">o</span><span class="o">.</span><span class="n">wday</span> <span class="c1">#=&gt; 3</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Likewise, the Week offset can be anchored on any day of the week, by simplying specifying the <code>:weekday</code> option. Indexing for days of the week starts from 0 for Sunday and goes on 6 for Saturday.</p>
+
+<h2 id="offset-string-aliases">Offset string aliases</h2>
+
+<p>The most obvious use of date offsets is for creating <code>DateTimeIndex</code> objects with a fixed time interval between each date index. To make creation of indexes easy, each of the offset classes have been linked to certain <em>string alaises</em>, which can directly passed to the DateTimeIndex class.</p>
+
+<p>For example, to create a DateTimeIndex of 100 periods with a frequency of 1 hour between each period:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">offset</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateTimeIndex</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+</span><span class="line">  <span class="ss">:start</span> <span class="o">=&gt;</span> <span class="s1">&#39;2015-4-4&#39;</span><span class="p">,</span> <span class="ss">:periods</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span> <span class="ss">:freq</span> <span class="o">=&gt;</span> <span class="s1">&#39;H&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; #&lt;DateTimeIndex:86417320 offset=H periods=100 data=[2015-04-04T00:00:00+00:00...2015-04-08T03:00:00+00:00]&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Likewise all of the above listed offsets can be aliased using strings, which can be used for specifying the offset in a DateTimeIndex index. The string aliases of each offset class are as follows:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Alias String</strong></th>
+      <th style="text-align: center"><strong>Offset Class / Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">‘S’</td>
+      <td style="text-align: center">Second</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘M’</td>
+      <td style="text-align: center">Minute</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘H’</td>
+      <td style="text-align: center">Hour</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘D’</td>
+      <td style="text-align: center">Days</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W’</td>
+      <td style="text-align: center">Default Week. Anchored on SUN.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-SUN’</td>
+      <td style="text-align: center">Week anchored on sunday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-MON’</td>
+      <td style="text-align: center">Week anchored on monday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-TUE’</td>
+      <td style="text-align: center">Week anchored on tuesday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-WED’</td>
+      <td style="text-align: center">Week anchored on wednesday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-THU’</td>
+      <td style="text-align: center">Week anchored on thursday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-FRI’</td>
+      <td style="text-align: center">Week anchored on friday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘W-SAT’</td>
+      <td style="text-align: center">Week anchored on saturday</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘MONTH’</td>
+      <td style="text-align: center">Month</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘MB’</td>
+      <td style="text-align: center">MonthBegin</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘ME’</td>
+      <td style="text-align: center">MonthEnd</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘YEAR’</td>
+      <td style="text-align: center">Year</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘YB’</td>
+      <td style="text-align: center">YearBegin</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">‘YE’</td>
+      <td style="text-align: center">YearEnd</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>See this notebook on daru’s time series functions in order to get a good overview of daru’s time series manipulation functionality.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Making Statsample Work With Rb-gsl and Gsl-nmatrix]]></title>
     <link href="http://v0dro.github.io/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/"/>
     <updated>2015-05-12T18:23:46+05:30</updated>
     <id>http://v0dro.github.io/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
+    <content type="html"><![CDATA[<p><strong>Note: It so happens that the latest release of rb-gsl does not depend on narray anymore. Hence rb-gsl can be directly used with statsample. However, if you want to use nmatrix with GSL, use gsl-nmatrix.</strong></p>
+
+<p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
 
 <p>Previously, it so happened that statsample would depend on <a href="https://github.com/blackwinter/rb-gsl">rb-gsl</a> to speed up a lot of computations. This is great, but the biggest drawback of this approach is that rb-gsl depends on <a href="https://github.com/masa16/narray">narray</a>, which is incompatible with <a href="https://github.com/SciRuby/nmatrix">nmatrix</a> - the numerical storage and linear algebra library from the SciRuby foundation - due to namespace collisions. </p>
 
