@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://v0dro.github.io/blog/2015/08/03/finding-and-combining-data-in-daru/</loc>
+    <lastmod>2015-08-03T00:22:19+05:30</lastmod>
+  </url>
+  <url>
+    <loc>http://v0dro.github.io/blog/2015/07/31/analysis-of-time-series-in-daru/</loc>
+    <lastmod>2015-07-31T18:26:23+05:30</lastmod>
+  </url>
+  <url>
     <loc>http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/</loc>
     <lastmod>2015-07-27T13:21:42+05:30</lastmod>
   </url>

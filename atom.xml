@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2015-07-28T10:24:58+05:30</updated>
+  <updated>2015-08-04T01:09:23+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -12,6 +12,447 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Finding and Combining Data in Daru]]></title>
+    <link href="http://v0dro.github.io/blog/2015/08/03/finding-and-combining-data-in-daru/"/>
+    <updated>2015-08-03T00:22:19+05:30</updated>
+    <id>http://v0dro.github.io/blog/2015/08/03/finding-and-combining-data-in-daru</id>
+    <content type="html"><![CDATA[<h2 id="arel-like-query-syntax">Arel-like query syntax</h2>
+
+<p><a href="https://github.com/rails/arel">Arel</a> is a very popular ruby gem that is one of the major components of the most popular ruby framework, <a href="https://github.com/rails/rails">Rails</a>. It is an ORM-helper of sorts that exposes a beatiful and intuitive syntax for creating SQL strings by chaining Ruby methods.</p>
+
+<p>Daru successfully adopts this syntax and the result is a very intuitive and readable syntax for obtaining any sort of data from a DataFrame or Vector.</p>
+
+<p>As a quick demonstration, lets create a DataFrame which looks like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="o">]*</span><span class="mi">100</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="s1">&#39;f&#39;</span><span class="o">]*</span><span class="mi">100</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span> <span class="o">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">66</span><span class="o">]*</span><span class="mi">100</span>
+</span><span class="line"><span class="p">},</span> <span class="ss">index</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">600</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">shuffle</span><span class="p">)</span>
+</span><span class="line"><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::DataFrame:80543480 @name = 3fc642f2-bd9a-4f6f-b4a8-0779253720f5 @size = 5&gt;</span>
+</span><span class="line"><span class="c1">#                    a          b          c </span>
+</span><span class="line"><span class="c1">#       109          1          a         11 </span>
+</span><span class="line"><span class="c1">#       381          2          b         22 </span>
+</span><span class="line"><span class="c1">#       598          3          c         33 </span>
+</span><span class="line"><span class="c1">#       390          4          d         44 </span>
+</span><span class="line"><span class="c1">#       344          5          e         55</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>To select all rows where <code>df[:a]</code> equals 2 or <code>df[:c]</code> equals 55, just write this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">selected</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="o">[</span><span class="ss">:a</span><span class="o">].</span><span class="n">eq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">|</span> <span class="n">df</span><span class="o">[</span><span class="ss">:c</span><span class="o">].</span><span class="n">eq</span><span class="p">(</span><span class="mi">55</span><span class="p">))</span>
+</span><span class="line"><span class="n">selected</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::DataFrame:79941980 @name = 74175f76-9dce-4b5d-b85b-bdfbb650953e @size = 5&gt;</span>
+</span><span class="line"><span class="c1">#                    a          b          c </span>
+</span><span class="line"><span class="c1">#       381          2          b         22 </span>
+</span><span class="line"><span class="c1">#       344          5          e         55 </span>
+</span><span class="line"><span class="c1">#       135          2          b         22 </span>
+</span><span class="line"><span class="c1">#       524          5          e         55 </span>
+</span><span class="line"><span class="c1">#       266          2          b         22 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>As is easily seen above, the Daru::Vector class has special comparators defined on it, which allow it to check each value of the Vector and return an object that can be evaluated by the <code>DataFrame#where</code> method.</p>
+
+<p><strong>Notice that to club the two comparators above, we have used the union OR (<code>|</code>) operator.</strong></p>
+
+<p>Daru::Vector has a bunch of comparator methods defined on it, which can be used with <code>#where</code> for obtaining the desired results. All of these return an object of type <code>Daru::Core::Query::BoolArray</code>, which is read by <code>#where</code>. <code>BoolArray</code> uses the methods <code>|</code> (also aliased as <code>#or</code>) and <code>&amp;</code> (also aliased as <code>#and</code>) for piecewise logical operations on other <code>BoolArray</code> objects.</p>
+
+<p>BoolArray consists of an internal Array that contains <code>true</code> for every entry in the Vector that returns <code>true</code> for an operation between the comparable operand and a Vector entry.</p>
+
+<p>For example,</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">vector</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">vector</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt;(Daru::Core::Query::BoolArray:82379030 bool_arry=[false, false, true, false, false, false, false, false, false, true])</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The <code>#&amp;</code> (or <code>#and</code>) and <code>#|</code> (or  <code>#or</code>) methods on BoolArray apply a logical <code>and</code> and a logical <code>or</code> respectively between each element of the BoolArray and return another BoolArray that contains the results. For example:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">vector</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">vector</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">or</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">mt</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+</span><span class="line"><span class="c1">#=&gt; (Daru::Core::Query::BoolArray:82294620 bool_arry=[false, false, false, true, false, false, false, false, false, true, true, true, false, false, true, false, true]) </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>The following comparators can be used with a <code>Daru::Vector</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Comparator Method</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code>eq</code></td>
+      <td style="text-align: left">Uses <code>==</code> and returns <code>true</code> for each <strong>equal</strong> entry</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>not_eq</code></td>
+      <td style="text-align: left">Uses <code>!=</code> and returns <code>true</code> for each <strong>unequal</strong> entry</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>lt</code></td>
+      <td style="text-align: left">Uses <code>&lt;</code> and returns <code>true</code> for each entry <strong>less than</strong> the supplied object</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>lteq</code></td>
+      <td style="text-align: left">Uses <code>&lt;=</code> and returns <code>true</code> for each entry <strong>less than or equal to</strong> the supplied object</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>mt</code></td>
+      <td style="text-align: left">Uses <code>&gt;</code> and returns <code>true</code> for each entry <strong>more than</strong> the supplied object</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>mteq</code></td>
+      <td style="text-align: left">Uses <code>&gt;=</code> and returns <code>true</code> for each entry <strong>more than or equal to</strong> the supplied object</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>in</code></td>
+      <td style="text-align: left">Uses <code>==</code> for each element in the collection (Array, Daru::Vector, etc.) passed and returns <code>true</code> for a match</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>A major advantage of using the <code>#where</code> clause over <code>DataFrame#filter</code> or <code>Vector#keep_if</code>, apart from better readability and usability, is that it is much faster. <a href="https://github.com/v0dro/daru/blob/master/benchmarks/where_vs_filter.rb">These benchmarks</a> prove my point.</p>
+
+<p>I’ll conclude this chapter with a little more complex example of using the arel-like query syntax with a <code>Daru::Vector</code> object:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">vec</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">336</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">35</span><span class="p">,</span><span class="mi">346</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">345</span><span class="p">,</span><span class="mi">2525</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">66</span><span class="p">,</span><span class="mi">2</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="n">vec</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">vec</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">vec</span><span class="o">.</span><span class="n">mt</span><span class="p">(</span><span class="mi">300</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">vec</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">2000</span><span class="p">))</span>
+</span><span class="line"><span class="c1"># =&gt; </span>
+</span><span class="line"><span class="c1"># #&lt;Daru::Vector:70585830 @name = nil @size = 5 &gt;</span>
+</span><span class="line"><span class="c1">#     nil</span>
+</span><span class="line"><span class="c1">#   0   1</span>
+</span><span class="line"><span class="c1">#   3   4</span>
+</span><span class="line"><span class="c1">#   7 336</span>
+</span><span class="line"><span class="c1">#  14 346</span>
+</span><span class="line"><span class="c1">#  21 345</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>For more examples on using the arel-like query syntax, see <a href="">this notebook</a>.
+## Joins</p>
+
+<p>Daru::DataFrame offers the <code>#join</code> method for performing SQL style joins between two DataFrames. Currently #join supports inner, left outer, right outer and full outer joins between DataFrames.</p>
+
+<p>In order to demonstrate joins, lets consider a single example of an inner on two DataFrames:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">left</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">:id</span>   <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;Pirate&#39;</span><span class="p">,</span> <span class="s1">&#39;Monkey&#39;</span><span class="p">,</span> <span class="s1">&#39;Ninja&#39;</span><span class="p">,</span> <span class="s1">&#39;Spaghetti&#39;</span><span class="o">]</span>
+</span><span class="line"><span class="p">})</span>
+</span><span class="line"><span class="n">right</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;Rutabaga&#39;</span><span class="p">,</span> <span class="s1">&#39;Pirate&#39;</span><span class="p">,</span> <span class="s1">&#39;Darth Vader&#39;</span><span class="p">,</span> <span class="s1">&#39;Ninja&#39;</span><span class="o">]</span>
+</span><span class="line"><span class="p">})</span>
+</span><span class="line"><span class="n">left</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="ss">on</span><span class="p">:</span> <span class="o">[</span><span class="ss">:name</span><span class="o">]</span><span class="p">,</span> <span class="ss">how</span><span class="p">:</span> <span class="ss">:inner</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="c1">#=&gt; </span>
+</span><span class="line"><span class="c1">##&lt;Daru::DataFrame:73134350 @name = 7cc250a9-108c-4ea3-99ab-dcb828ff2b88 @size = 2&gt;</span>
+</span><span class="line"><span class="c1">#                 id_1       name       id_2 </span>
+</span><span class="line"><span class="c1">#         0          1     Pirate          2 </span>
+</span><span class="line"><span class="c1">#         1          3      Ninja          4 </span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>For more examples please refer <a href="">this notebook</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Analysis of Time Series in Daru]]></title>
+    <link href="http://v0dro.github.io/blog/2015/07/31/analysis-of-time-series-in-daru/"/>
+    <updated>2015-07-31T18:26:23+05:30</updated>
+    <id>http://v0dro.github.io/blog/2015/07/31/analysis-of-time-series-in-daru</id>
+    <content type="html"><![CDATA[<p>The newest release of daru brings alongwith it added support for time series data analysis, manipulation and visualization.</p>
+
+<p>A time series is any data is indexed (or labelled) by time. This includes the stock market index, prices of crude oil or precious metals, or even geo-locations over a period of time.</p>
+
+<p>The primary manner in which daru implements a time series is by indexing data objects (i.e Daru::Vector or Daru::DataFrame) on a new index called the DateTimeIndex. A DateTimeIndex consists of dates, which can queried individually or sliced.</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>A very basic time series can be created with something like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;distribution&#39;</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">rng</span> <span class="o">=</span> <span class="no">Distribution</span><span class="o">::</span><span class="no">Normal</span><span class="o">.</span><span class="n">rng</span>
+</span><span class="line">
+</span><span class="line"><span class="n">index</span>  <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateTimeIndex</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="ss">:start</span> <span class="o">=&gt;</span> <span class="s1">&#39;2012-4-2&#39;</span><span class="p">,</span> <span class="ss">:periods</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="ss">:freq</span> <span class="o">=&gt;</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">vector</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1000</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span><span class="n">rng</span><span class="o">.</span><span class="n">call</span><span class="p">},</span> <span class="ss">index</span><span class="p">:</span> <span class="n">index</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="http://v0dro.github.io/images/daru_time_series/simple_vector.png" title="'A Simple Vector indexed on DateTimeIndex'" /></p>
+
+<p>In the above code, the <code>DateTimeIndex.date_range</code> function is creating a <code>DateTimeIndex</code> starting from a particular date and spanning for 1000 periods, with a frequency of 1 day between period. For a complete coverage of DateTimeIndex see <a href="">this</a> notebook. For an introduction to the date offsets used by daru see <a href="http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/">this blog post</a>.</p>
+
+<p>The index is passed into the Vector like a normal <code>Daru::Index</code> object.</p>
+
+<h2 id="statistics-functions-and-plotting-for-time-series">Statistics functions and plotting for time series</h2>
+
+<p>Many functions are avaiable in daru for computing useful statistics and analysis. A brief of summary of statistics methods available on time series is as follows:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Method Name</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code>rolling_mean</code></td>
+      <td style="text-align: center">Calculate Moving Average</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_median</code></td>
+      <td style="text-align: center">Calculate Moving Median</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_std</code></td>
+      <td style="text-align: center">Calculate Moving Standard Deviation</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_variance</code></td>
+      <td style="text-align: center">Calculate Moving Variance</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_max</code></td>
+      <td style="text-align: center">Calculate Moving Maximum value</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_min</code></td>
+      <td style="text-align: center">Calcuclate moving minimum value</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_count</code></td>
+      <td style="text-align: center">Calculate moving non-missing values</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>rolling_sum</code></td>
+      <td style="text-align: center">Calculate moving sum</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>ema</code></td>
+      <td style="text-align: center">Calculate exponential moving average</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>macd</code></td>
+      <td style="text-align: center">Moving Average Convergence-Divergence</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>acf</code></td>
+      <td style="text-align: center">Calculate Autocorrelation Co-efficients of the Series</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code>acvf</code></td>
+      <td style="text-align: center">Provide the auto-covariance value</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To demonstrate, the rolling mean of a Daru::Vector can be computed as follows:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;distribution&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">rng</span>    <span class="o">=</span> <span class="no">Distribution</span><span class="o">::</span><span class="no">Normal</span><span class="o">.</span><span class="n">rng</span>
+</span><span class="line"><span class="n">vector</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Vector</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+</span><span class="line">  <span class="mi">1000</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">rng</span><span class="o">.</span><span class="n">call</span> <span class="p">},</span>
+</span><span class="line">  <span class="ss">index</span><span class="p">:</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateTimeIndex</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+</span><span class="line">    <span class="ss">:start</span> <span class="o">=&gt;</span> <span class="s1">&#39;2012-4-2&#39;</span><span class="p">,</span> <span class="ss">:periods</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="ss">:freq</span> <span class="o">=&gt;</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="p">)</span>
+</span><span class="line"><span class="c1"># Compute the cumulative sum</span>
+</span><span class="line"><span class="n">vector</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">cumsum</span>
+</span><span class="line"><span class="n">rolling</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">rolling_mean</span> <span class="mi">60</span>
+</span><span class="line">
+</span><span class="line"><span class="n">rolling</span><span class="o">.</span><span class="n">tail</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="http://v0dro.github.io/images/daru_time_series/rolling_mean.png" title="'Rolling Mean Tail'" /></p>
+
+<p>This time series can be very easily plotted with its rolling mean by using the <a href="https://github.com/dilcom/gnuplotrb">GnuplotRB</a> gem:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;gnuplotrb&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="no">GnuplotRB</span><span class="o">::</span><span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+</span><span class="line">  <span class="o">[</span><span class="n">vector</span> <span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Vector&#39;</span><span class="o">]</span><span class="p">,</span>
+</span><span class="line">  <span class="o">[</span><span class="n">rolling</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Rolling Mean&#39;</span><span class="o">]</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p><img class="center" src="http://v0dro.github.io/images/daru_time_series/cumsum_rolling_line_graph.png" title="'Line Graph of Rolling mean and cumsum'" /></p>
+
+<p>These methods are also available on DataFrame, which results in calling them on each of numeric vectors:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;distribution&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">rng</span>    <span class="o">=</span> <span class="no">Distribution</span><span class="o">::</span><span class="no">Normal</span><span class="o">.</span><span class="n">rng</span>
+</span><span class="line"><span class="n">index</span>  <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DateTimeIndex</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="ss">:start</span> <span class="o">=&gt;</span> <span class="s1">&#39;2012-4-2&#39;</span><span class="p">,</span> <span class="ss">:periods</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">,</span> <span class="ss">:freq</span> <span class="o">=&gt;</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
+</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+</span><span class="line">  <span class="ss">a</span><span class="p">:</span> <span class="mi">1000</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">rng</span><span class="o">.</span><span class="n">call</span> <span class="p">},</span>
+</span><span class="line">  <span class="ss">b</span><span class="p">:</span> <span class="mi">1000</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">rng</span><span class="o">.</span><span class="n">call</span> <span class="p">},</span>
+</span><span class="line">  <span class="ss">c</span><span class="p">:</span> <span class="mi">1000</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="n">rng</span><span class="o">.</span><span class="n">call</span> <span class="p">}</span>
+</span><span class="line"><span class="p">},</span> <span class="ss">index</span><span class="p">:</span> <span class="n">index</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="http://v0dro.github.io/images/daru_time_series/dataframe.png" title="'DateTime indexed DataFrame'" /></p>
+
+<p>In a manner similar to that done with Vectors above, we can easily plot each Vector of the DataFrame with GNU plot:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;gnuplotrb&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Calculate cumulative sum of each Vector</span>
+</span><span class="line"><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">cumsum</span>
+</span><span class="line">
+</span><span class="line"><span class="c1"># Compute rolling sum of each Vector with a loopback length of 60.</span>
+</span><span class="line"><span class="n">r_sum</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rolling_sum</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line"><span class="n">plots</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class="line"><span class="n">r_sum</span><span class="o">.</span><span class="n">each_vector_with_index</span> <span class="k">do</span> <span class="o">|</span><span class="n">vec</span><span class="p">,</span><span class="n">n</span><span class="o">|</span>
+</span><span class="line">  <span class="n">plots</span> <span class="o">&lt;&lt;</span> <span class="no">GnuplotRB</span><span class="o">::</span><span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="n">vec</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="ss">title</span><span class="p">:</span> <span class="n">n</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="k">end</span>
+</span><span class="line"><span class="no">GnuplotRB</span><span class="o">::</span><span class="no">Multiplot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">plots</span><span class="p">,</span> <span class="ss">layout</span><span class="p">:</span> <span class="o">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span><span class="p">,</span> <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Rolling sums&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p><img class="center" src="http://v0dro.github.io/images/daru_time_series/dataframe_plot.png" title="'Plotting the DataFrame'" /></p>
+
+<h2 id="usage-with-statsample-timeseries">Usage with statsample-timeseries</h2>
+
+<p>Daru now integrates with <a href="https://github.com/SciRuby/statsample-timeseries">statsample-timeseries</a>, a <a href="https://github.com/sciruby/statsample">statsample</a> extension that provides many useful statistical analysis tools commonly applied to time series.</p>
+
+<p>Some examples with working examples of daru and statsample-timseries are coming soon. Stay tuned!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Date Offsets in Daru]]></title>
