@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2015-08-04T01:09:23+05:30</updated>
+  <updated>2015-08-17T01:20:27+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -12,6 +12,150 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Summary of Work This Summer for GSOC 2015]]></title>
+    <link href="http://v0dro.github.io/blog/2015/08/16/summary-of-work-this-summer-for-gsoc-2015/"/>
+    <updated>2015-08-16T13:38:51+05:30</updated>
+    <id>http://v0dro.github.io/blog/2015/08/16/summary-of-work-this-summer-for-gsoc-2015</id>
+    <content type="html"><![CDATA[<p>Over this summer as a part of <a href="www.google-melange.com">Google Summer of Code 2015</a>, <a href="www.github.com/v0dro/daru/">daru</a> received a lot of upgrades and new features which have made a pretty robust tool for data analysis in pure ruby. Of course, a lot of work still remains for bringing daru at par with the other data analysis solutions on offer today, but I feel the work done this summer has put daru on that path.</p>
+
+<p>The new features led to the inclusion of daru in many of SciRuby’s gems, which use daru’s data storage, access and indexing features for storing and carrying around data. <a href="https://github.com/SciRuby/statsample">Statsample</a>, <a href="https://github.com/SciRuby/statsample-glm">statsample-glm</a>, <a href="https://github.com/SciRuby/statsample-timeseries">statsample-timeseries</a>, <a href="https://github.com/SciRuby/statsample-bivariate-extension">statsample-bivariate-extensions</a> are all now compatible with daru and use Vector and DataFrame as their primary data structures. Daru’s <a href="http://nbviewer.ipython.org/github/SciRuby/sciruby-notebooks/blob/master/Visualization/Visualizing%20data%20with%20daru%20DataFrame.ipynb">plotting functionality</a>, that interfaced with <a href="https://github.com/domitry/nyaplot">nyaplot</a> for creating interactive plots directly from the data was also significantly overhauled.</p>
+
+<p>Also, new gems developed by other GSOC students, notably <a href="https://github.com/dilcom/gnuplotrb">Ivan’s GnuplotRB gem</a> and <a href="https://github.com/agisga/mixed_models">Alexej’s mixed_models gem</a> both accept data from daru data structures. Do see their repo pages for seeing interesting ways of using daru.</p>
+
+<p>The work on daru is also proving to be quite useful for other people, which led a talk/presentation at <a href="http://www.deccanrubyconf.org/">DeccanRubyConf 2015</a>, which is one of the three major ruby conferences in India. You can see the slides and notebooks presented at the talk <a href="https://github.com/v0dro/talks/tree/master/DeccanRubyConf15">here</a>. Given the current interest in data analysis and the need for a viable solution in ruby, I plan to take daru much further. Keep watching the repo for interesting updates :)</p>
+
+<p>In the rest of this post I’ll elaborate on all the work done this summer.</p>
+
+<h2 id="pre-mid-term-submissions">Pre-mid term submissions</h2>
+
+<p>Daru as a gem before GSOC was not exactly user friendly. There were many cases, particularly the iterators, that required some thinking before anybody used them. This is against the design philosophy of daru, or even ruby general, where surprising programmers with ubiqtuos constructs is usually frowned down upon by the community. So the first thing that I did mainly concerned overhauling the daru’s many iterators for both <code>Vector</code> and <code>DataFrame</code>.</p>
+
+<p>For example, the <code>#map</code> iterator from <code>Enumerable</code> returns an <code>Array</code> no matter object you call it on. This was not the case before, where <code>#map</code> would a <code>Daru::Vector</code> or <code>Daru::DataFrame</code>. This behaviour was changed, and now <code>#map</code> returns an <code>Array</code>. If you want a <code>Vector</code> or a <code>DataFrame</code> of the modified values, you should call <code>#recode</code> on <code>Vector</code> or <code>DataFrame</code>.</p>
+
+<p>Each of these iterators also accepts an optional argument, <code>:row</code> or <code>:vector</code>, which will define the axis over which iteration is supposed to be carried out. So now there are the <code>#each</code>, <code>#map</code>, <code>#map!</code>, <code>#recode</code>, <code>#recode!</code>, <code>#collect</code>, <code>#collect_matrix</code>, <code>#all?</code>, <code>#any?</code>, <code>#keep_vector_if</code> and <code>#keep_row_if</code>. To iterate over elements along with their respective indexes (or labels), you can likewise use <code>#each_row_with_index</code>, <code>#each_vector_with_index</code>, <code>#map_rows_with_index</code>, <code>#map_vector_with_index</code>, <code>#collect_rows_with_index</code>, <code>#collect_vector_with_index</code> or <code>#each_index</code>. I urge you to go over the docs of each of these methods to utilize the full power of daru.</p>
+
+<p>Apart from this there was also quite a bit of refactoring involved for many methods (courtesy <a href="https://github.com/agisga">Alexej</a>). This has made daru much faster than previous versions.</p>
+
+<p>The next (major) thing to do was making daru compatible with statsample. This was very essential since statsample is very important tool for statistics in ruby and it was using its own <code>Vector</code> and <code>Dataset</code> classes, which weren’t very robust as computation tools and very difficult to use when it came to cleaning or munging data. So I replaced statsample’s Vector and Dataset clases with Daru::Vector and Daru::DataFrame. It involved a significant amount of work on both statsample and daru. Statsample because many constructs had to changed to make them compatible with daru, and daru because there was a lot of essential functionality in these classes that had to be ported to daru.</p>
+
+<p>Porting code from statsample to daru improved daru significantly. There were a whole of statistics methods in statsample that were imported into daru and you can now use all them from daru. Statsample also works well with <a href="https://github.com/clbustos/rubyvis">rubyvis</a>, a great tool for visualization. <a href="https://github.com/SciRuby/statsample#visualizations">You can now do that with daru as well</a>.</p>
+
+<p>Many new methods for reading and writing data to and from files were also added to daru. You can now read and write data to and from CSV, Excel, plain text files or even SQL databases.</p>
+
+<p>In effect, daru is now completely compatible with statsample (and all the other statsample extensions). You can use daru data structures for storing data and pass them to statsample for performing computations. The biggest advantage of this approach is that the analysed data can be passed around to other scientific ruby libraries (some of which listed above) that use daru as well. Since daru offers in-built functions to better ‘see’ your data, better visualization is possible.</p>
+
+<p>See these <a href="https://github.com/v0dro/daru#blog-posts">blogs</a> and <a href="https://github.com/v0dro/daru#notebooks">notebooks</a> for a complete overview of daru’s new features.</p>
+
+<p>Also see the <a href="https://github.com/SciRuby/statsample#notebooks">notebooks in the statsample README</a> for using daru with statsample.</p>
+
+<h2 id="post-mid-term-submissions">Post-mid term submissions</h2>
+
+<p>Most of time post the mid term submissions was spent in implementing the time series functions for daru.</p>
+
+<p>I implemented a new index, the DateTimeIndex, which can used for indexing data on time stamps. It enables users to query data based on time stamps. Time stamps can either be specified with precise ruby DateTime objects or can be specified as strings, which will lead to retrival of all the data falling under that time. For example specifying ‘2012’ returns all data that falls in the year 2012. See detailed usage of <code>DateTimeIndex</code> in conjunction with other daru constructs <a href="https://github.com/v0dro/daru/blob/master/README.md">in the daru README</a>.</p>
+
+<p>An essential utility in implementing <code>DateTimeIndex</code> was <code>DateOffset</code>, which is a new set of classes that offsets dates based on certain rules or business logic. It can advance or lag a ruby <code>DateTime</code> to the nearest day or any day of the week or the end or beginning of the month etc. <code>DateOffset</code> is an essential part of <code>DateTimeIndex</code> and can also be used as a standalone utility for advancing/lagging <code>DateTime</code> objects. <a href="http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/">This blog post</a> elaborates more on the nuances of <code>DateOffset</code> and its usage.</p>
+
+<p>The last thing done during the post mid term was complete compatibility with <a href="https://github.com/SciRuby/statsample-timeseries">statsample-timeseries</a>, which was created by <a href="https://github.com/AnkurGel">Ankur Goel</a> during GSOC 2013. It offers many uesful functions for analysis of time series data. It now works with daru containers. See some use cases <a href="https://github.com/SciRuby/statsample-timeseries/blob/master/README.rdoc">here</a>.</p>
+
+<p>Thats all, as far as I can remember.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Elaboration on Certain Internals of Daru]]></title>
+    <link href="http://v0dro.github.io/blog/2015/08/16/elaboration-on-certain-internals-of-daru/"/>
+    <updated>2015-08-16T13:36:34+05:30</updated>
+    <id>http://v0dro.github.io/blog/2015/08/16/elaboration-on-certain-internals-of-daru</id>
+    <content type="html"><![CDATA[<p>In this blog post I will elaborate on how a few of the features in <a href="https://github.com/v0dro/daru">daru</a> were implemeted. Notably I will stress on what spurred a need for that particular design of the code.</p>
+
+<p>This post is primarily intended to serve as documentation for me and future contributors. If readers have any inputs on improving this post, I’d be happy to accept new contributions :)</p>
+
+<h2 id="index-factory-architecture">Index factory architecture</h2>
+
+<p>Daru currently supports three types of indexes, Index, MultiIndex and DateTimeIndex.</p>
+
+<p>It became very tedious to write if statements in the Vector or DataFrame codebase whenever a new data structure was to be created, since there were 3 possible indexes that could be attached with every data set. This mainly depended on what kind of data was present in the index, i.e. tuples would create a MultiIndex, DateTime objects or date-like strings would create a DateTimeIndex, and everything else would create a Daru::Index.</p>
+
+<p>This looked something like the perfect use case for the <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">factory pattern</a>, the only hurdle being that the factory pattern in the pure sense of the term would be a superclass, something called <code>Daru::IndexFactory</code> that created an Index, DateTimeIndex or MultiIndex index using some methods and logic. The problem is that I did not want to call a separate class for creating Indexes. This would break existing code and possibly cause problems in libraries that were already using daru (viz. <a href="https://github.com/SciRuby/statsample">statsample</a>), not to mention confusing users about which class they’re actually supposed to be using.</p>
+
+<p>The solution came after I read <a href="http://blog.sidu.in/2007/12/rubys-new-as-factory.html">this blog post</a>, which demonstrates that the <code>.new</code> method for any class can be overridden. Thus, instead of calling <code>initialize</code> for creating the instance of a class, it calls the overridden <code>new</code>, which can then call initialize for instantiating an instance of that class. It so happens that you can make <code>new</code> return any object you want, unlike initialize which must an instance of the class it is declared in. Thus, for the factory pattern implementation of Daru::Index, we over-ride the <code>.new</code> method of the Daru::Index and write logic such that it manufactures the appropriate kind of index based on the data that is passed to <code>Daru::Index.new(data)</code>. The pseudo code for doing this looks something like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">Daru</span><span class="o">::</span><span class="no">Index</span>
+</span><span class="line">  <span class="c1"># some stuff...</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">new</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class="line">    <span class="n">source</span> <span class="o">=</span> <span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class="line">
+</span><span class="line">    <span class="k">if</span> <span class="n">source_looks_like_a_multi_index</span>
+</span><span class="line">      <span class="n">create_multi_index_and_return</span>
+</span><span class="line">    <span class="k">elsif</span> <span class="n">source_looks_like_date_time_index</span>
+</span><span class="line">      <span class="n">create_date_time_index_and_return</span>
+</span><span class="line">    <span class="k">else</span> <span class="c1"># Create the Daru::Index by calling initialize</span>
+</span><span class="line">      <span class="n">i</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">allocate</span>
+</span><span class="line">      <span class="n">i</span><span class="o">.</span><span class="n">send</span> <span class="ss">:initialize</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span>
+</span><span class="line">      <span class="n">i</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line">
+</span><span class="line">  <span class="c1"># more stuff...</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+<p>Also, since over-riding <code>.new</code> tampers with the subclasses of the class as well, <a href="https://github.com/v0dro/daru/blob/master/lib/daru/index.rb#L14">an <code>inherited</code> hook that replaces the over-ridden <code>.new</code></a> of the inherited class with the original one was added to <code>Daru::Index</code>.</p>
+
+<h2 id="working-of-the-where-clause">Working of the where clause</h2>
+
+<p>The where clause in daru lets users query data with a Array containing boolean variables. So whenever you call <code>where</code> on Daru::Vector or DataFrame, and pass in an Array containing true or false values, all the rows corresponding with <code>true</code> will be returned as a Vector or DataFrame respectively.</p>
+
+<p>Since the where clause works in cojunction with the comparator methods of Daru::Vector (which return a Boolean Array), it was essential for these boolean arrays to be combined together such that piecewise AND and OR operations could be performed between multiple boolean arrays. Hence, the <code>Daru::Core::Query::BoolArray</code> class was created, which is specialized for handling boolean arrays and performing piecewise boolean operations.</p>
+
+<p>The BoolArray defines the <code>#&amp;</code> method for piecewise AND operations and it defines the <code>#|</code> method for piecewise OR operations. They work as follows:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">a</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Core</span><span class="o">::</span><span class="no">Query</span><span class="o">::</span><span class="no">BoolArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="kp">true</span><span class="p">,</span><span class="kp">false</span><span class="p">,</span><span class="kp">false</span><span class="p">,</span><span class="kp">true</span><span class="p">,</span><span class="kp">false</span><span class="p">,</span><span class="kp">true</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; (Daru::Core::Query::BoolArray:84314110 bool_arry=[true, false, false, true, false, true])</span>
+</span><span class="line"><span class="n">b</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">Core</span><span class="o">::</span><span class="no">Query</span><span class="o">::</span><span class="no">BoolArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="kp">false</span><span class="p">,</span><span class="kp">true</span><span class="p">,</span><span class="kp">false</span><span class="p">,</span><span class="kp">true</span><span class="p">,</span><span class="kp">false</span><span class="p">,</span><span class="kp">true</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line"><span class="c1">#=&gt; (Daru::Core::Query::BoolArray:84143650 bool_arry=[false, true, false, true, false, true])</span>
+</span><span class="line"><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span>
+</span><span class="line"><span class="c1">#=&gt; (Daru::Core::Query::BoolArray:83917880 bool_arry=[false, false, false, true, false, true])</span>
+</span><span class="line"><span class="n">a</span> <span class="o">|</span> <span class="n">b</span>
+</span><span class="line"><span class="c1">#=&gt; (Daru::Core::Query::BoolArray:83871560 bool_arry=[true, true, false, true, false, true])</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Finding and Combining Data in Daru]]></title>
