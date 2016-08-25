@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2016-08-25T17:49:47+05:30</updated>
+  <updated>2016-08-25T20:11:03+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -145,10 +145,11 @@ that you might need to write repeatedly. In the above lexer, the macro <code>DIG
 
 <p>The <code>prepare_parser</code> is the same one that was defined in the <code>inner</code> section of the <code>parser.racc</code> above. The <code>do_parse</code> method called on the parser will signal the parser to start doing it’s job.</p>
 
-<p>In a separate file called <code>text.txt</code> put the following text:
-&lt;div class='bogus-wrapper'&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class="highlight"&gt;&lt;table&gt;&lt;tr&gt;&lt;td class="gutter"&gt;&lt;pre class="line-numbers"&gt;<span class="line-number">1</span>
-&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;<code class="ruby"><span class="line"><span class="mi">2</span><span class="o">+</span><span class="mi">2</span>
-</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;</p>
+<p>In a separate file called <code>text.txt</code> put the following text:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="mi">2</span><span class="o">+</span><span class="mi">2</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Oedipus Lex does not have a command line tool like rexical for generating a lexer from the logic specified, but rather has a bunch of rake tasks defined for doing this job.
 So now create a <code>Rakefile</code> in the same folder and put this code inside it:</p>
