@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2016-08-16T23:53:11+05:30</updated>
+  <updated>2016-08-25T12:17:25+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -14,11 +14,175 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Setting Up a Lexical Analyser and Parser in Ruby]]></title>
+    <link href="http://v0dro.github.io/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby/"/>
+    <updated>2016-08-21T12:36:05+05:30</updated>
+    <id>http://v0dro.github.io/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby</id>
+    <content type="html"><![CDATA[<p>I wrote this post as I was setting up the lexer and parser for Rubex, a new superset of Ruby that I’m developing.</p>
+
+<p>Let’s demonstrate the basic working of a lexical analyser and parser in action with a demonstration of a very simple addition program. Before you start, please make sure <a href="https://github.com/ruby/rake">rake</a>, <a href="https://github.com/seattlerb/oedipus_lex">oedipus_lex</a> and <a href="https://github.com/tenderlove/racc">racc</a> are installed on your computer.</p>
+
+<h3 id="configuring-the-lexical-analyser">Configuring the lexical analyser</h3>
+
+<p>The most fundamental need of any parser is that it needs string tokens to work with, which we will provide by way of lexical analysis by using the <a href="https://github.com/seattlerb/oedipus_lex">oedipus_lex</a> gem (the logical successor of <a href="https://github.com/tenderlove/rexical">rexical</a>). Go ahead and create a file <code>lexer.rex</code> with the following code:
+&lt;div class='bogus-wrapper'&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class="highlight"&gt;&lt;table&gt;&lt;tr&gt;&lt;td class="gutter"&gt;&lt;pre class="line-numbers"&gt;<span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;<code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">AddLexer</span>
+</span><span class="line"><span class="n">macro</span>
+</span><span class="line">  <span class="no">DIGIT</span>         <span class="sr">/\d+/</span>
+</span><span class="line"><span class="n">rule</span>
+</span><span class="line">  <span class="sr">/</span><span class="si">#{</span><span class="no">DIGIT</span><span class="si">}</span><span class="sr">/</span>    <span class="p">{</span> <span class="o">[</span><span class="ss">:DIGIT</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">to_i</span><span class="o">]</span> <span class="p">}</span>
+</span><span class="line">  <span class="sr">/.|\n/</span>        <span class="p">{</span> <span class="o">[</span><span class="n">text</span><span class="p">,</span> <span class="n">text</span><span class="o">]</span> <span class="p">}</span>
+</span><span class="line"><span class="n">inner</span>
+</span><span class="line">  <span class="k">def</span> <span class="nf">do_parse</span><span class="p">;</span> <span class="k">end</span> <span class="c1"># this is a stub.</span>
+</span><span class="line"><span class="k">end</span> <span class="c1"># AddLexer</span>
+</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;
+In the above code, we have defined the lexical analyser using Oedipus Lex’s syntax inside the <code>AddLexer</code> class. Let’s go over each element of the lexer one by one:</p>
+
+<p><strong>macro</strong></p>
+
+<p>The macro keyword lets you define macros for certain regular expressions
+that you might need to write repeatedly. In the above lexer, the macro <code>DIGIT</code> is a regular expression (<code>\d+</code>) for detecting one or more integers. We place the regular expression inside forward slashes (<code>/../</code>) because oedipus_lex requires it that way. The lexer can handle any valid Ruby regular expression. See the Ruby docs for details on Ruby regexps.</p>
+
+<p><strong>rule</strong></p>
+
+<p>The section under the <code>rule</code> keyword defines your rules for the lexical analysis. Now it so happens that we’ve defined a macro for detecting digits, and in order to use that macro in the rules, it must be inside a Ruby string interpolation (<code>#{..}</code>). The line to the right of the <code>/#{DIGIT}/</code> states the action that must be taken if such a regular expression is encountered. Thus the lexer will return a Ruby Array that contains the first element as <code>:DIGIT</code>. The second element uses the <code>text</code> variable. This is a reserved variable in lex that holds the text that the lexer has matched. Similar the second rule will match any character (<code>.</code>) or a newline (<code>/n</code>) and return an <code>Array</code> with <code>[text, text]</code> inside it.</p>
+
+<p><strong>inner</strong></p>
+
+<p>Under the <code>inner</code> keyword you can specify any code that you want to occur inside your lexer class. This can be any logic that you want your lexer to execute. The Ruby code under the <code>inner</code> section is copied as-is into the final lexer class. In the above example, we’ve written an empty method called <code>do_parse</code> inside this section. This method is mandatory if you want your lexer to sucessfully execute. We’ll be coupling the lexer with <code>racc</code> shortly, so unless you want to write your own parsing logic, you should leave this method empty.</p>
+
+<h3 id="configuring-the-parser">Configuring the parser</h3>
+
+<p>In order for our addition program to be successful, it needs to know what to do with the tokens that are generated by the lexer. For this purpose, we need <a href="">racc</a>, an LALR(1) parser generator for Ruby. It is similar to yacc or bison and let’s you specify grammars easily.</p>
+
+<p>Go ahead and create a file called <code>parser.racc</code> in the same folder as the previous <code>lexer.rex</code> and <code>Rakefile</code>, and put the following code inside it:
+&lt;div class='bogus-wrapper'&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class="highlight"&gt;&lt;table&gt;&lt;tr&gt;&lt;td class="gutter"&gt;&lt;pre class="line-numbers"&gt;<span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;<code class="ruby"><span class="line"><span class="k">class</span> <span class="nc">AddParser</span>
+</span><span class="line"><span class="n">rule</span>
+</span><span class="line">  <span class="ss">target</span><span class="p">:</span> <span class="n">exp</span> <span class="p">{</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">}</span>
+</span><span class="line">
+</span><span class="line">  <span class="ss">exp</span><span class="p">:</span> <span class="n">exp</span> <span class="s1">&#39;+&#39;</span> <span class="n">exp</span> <span class="p">{</span> <span class="n">result</span> <span class="o">+=</span> <span class="n">val</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span><span class="p">;</span> <span class="nb">puts</span> <span class="n">result</span> <span class="p">}</span>
+</span><span class="line">     <span class="o">|</span> <span class="no">DIGIT</span>
+</span><span class="line"><span class="k">end</span>
+</span><span class="line">
+</span><span class="line"><span class="o">----</span> <span class="n">header</span>
+</span><span class="line"><span class="n">require_relative</span> <span class="s1">&#39;lexer.rex.rb&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="o">----</span> <span class="n">inner</span>
+</span><span class="line"><span class="k">def</span> <span class="nf">next_token</span>
+</span><span class="line">  <span class="vi">@lexer</span><span class="o">.</span><span class="n">next_token</span>
+</span><span class="line"><span class="k">end</span>
+</span><span class="line">
+</span><span class="line"><span class="k">def</span> <span class="nf">prepare_parser</span> <span class="n">file_name</span>
+</span><span class="line">  <span class="vi">@lexer</span> <span class="o">=</span> <span class="no">AddLexer</span><span class="o">.</span><span class="n">new</span>
+</span><span class="line">  <span class="vi">@lexer</span><span class="o">.</span><span class="n">parse_file</span> <span class="n">file_name</span>
+</span><span class="line"><span class="k">end</span>
+</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;</p>
+
+<p>As you can see, we’ve put the logic for the parser inside the <code>AddParser</code> class. Notice that in oedipus_lex, only the parsing logic exists inside the class and everything else (i.e under <code>header</code> and <code>inner</code>) exists <em>outside</em> the class. Let’s go over each part of the parser one by one:</p>
+
+<p><strong>class AddParser</strong></p>
+
+<p>This is the core class that contains the parsing logic for the addition parser. Similar to <code>oedipus_lex</code>, it contains a <code>rule</code> section that specifies the grammar. The parser expects tokens in the form of <code>[:TOKEN_NAME, matched_text]</code>. The <code>:TOKEN_NAME</code> must be a symbol. This token name is matched to literal characters in the grammar (<code>DIGIT</code> in the above case). <code>token</code> and <code>expr</code> are varibles. Have a look at <a href="https://en.wikipedia.org/wiki/LALR_parser">this introduction to LALR(1) grammars</a> for further information.</p>
+
+<p><strong>header</strong></p>
+
+<p>The <code>header</code> keyword tells racc what code should be put at the top of the parser that it generates. You usually put your <code>require</code> statements here. In this case, we load the lexer class so that the parser can use it for accessing the tokens generated by the lexer. Notice that <code>header</code> has 4 hyphens (<code>-</code>) and a space before it. This is mandatory if your program is to not malfunction.</p>
+
+<p><strong>inner</strong></p>
+
+<p>The <code>inner</code> keyword tells racc what should be put <em>inside</em> the generated parser class. As you can see there are two methods in the above example - <code>next_token</code> and <code>prepare_parser</code>. The <code>next_token</code> method is mandatory for the parser to function and you must include it in your code. It should contain logic that will return the next token for the parser to consider. Moving on the <code>prepare_parser</code> method, it takes a file name that is to be parsed as an argument (how we pass that argument in will be seen later), and initialzes the lexer. It then calls the <code>parse_file</code> method, which is present in the lexer class by default.</p>
+
+<p>The <code>next_token</code> method in turn uses the <code>@lexer</code> object’s <code>next_token</code> method to get a token generated by the lexer so that it can be used by the parser.</p>
+
+<h3 id="putting-it-all-together">Putting it all together</h3>
+
+<p>Our lexical analyser and parser are now coupled to work with each other, and we now use them in a Ruby program to parse a file. Create a new file called <code>adder.rb</code> and put the following code in it:
+&lt;div class='bogus-wrapper'&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class="highlight"&gt;&lt;table&gt;&lt;tr&gt;&lt;td class="gutter"&gt;&lt;pre class="line-numbers"&gt;<span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;<code class="ruby"><span class="line"><span class="n">require_relative</span> <span class="s1">&#39;parser.racc.rb&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">file_name</span> <span class="o">=</span> <span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class="line"><span class="n">parser</span> <span class="o">=</span> <span class="no">AddParser</span><span class="o">.</span><span class="n">new</span>
+</span><span class="line"><span class="n">parser</span><span class="o">.</span><span class="n">prepare_parser</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+</span><span class="line"><span class="n">parser</span><span class="o">.</span><span class="n">do_parse</span>
+</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;
+The <code>prepare_parser</code> is the same one that was defined in the <code>inner</code> section of the <code>parser.racc</code> above. The <code>do_parse</code> method called on the parser will signal the parser to start doing it’s job.</p>
+
+<p>In a separate file called <code>text.txt</code> put the following text:
+&lt;div class='bogus-wrapper'&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class="highlight"&gt;&lt;table&gt;&lt;tr&gt;&lt;td class="gutter"&gt;&lt;pre class="line-numbers"&gt;<span class="line-number">1</span>
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;<code class="ruby"><span class="line"><span class="mi">2</span><span class="o">+</span><span class="mi">2</span>
+</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;</p>
+
+<p>Oedipus Lex does not have a command line tool like rexical for generating a lexer from the logic specified, but rather has a bunch of rake tasks defined for doing this job.
+So now create a <code>Rakefile</code> in the same folder and put this code inside it:
+&lt;div class='bogus-wrapper'&gt;<notextile><figure class="code">&lt;figcaption&gt;<span></span>&lt;/figcaption&gt;&lt;div class="highlight"&gt;&lt;table&gt;&lt;tr&gt;&lt;td class="gutter"&gt;&lt;pre class="line-numbers"&gt;<span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+&lt;/pre&gt;&lt;/td&gt;&lt;td class='code'&gt;&lt;pre&gt;<code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;oedipus_lex&#39;</span>
+</span><span class="line">
+</span><span class="line"><span class="no">Rake</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">rake_require</span> <span class="s2">&quot;oedipus_lex&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">desc</span> <span class="s2">&quot;Generate Lexer&quot;</span>
+</span><span class="line"><span class="n">task</span> <span class="ss">:lexer</span>  <span class="o">=&gt;</span> <span class="s2">&quot;lexer.rex.rb&quot;</span>
+</span><span class="line">
+</span><span class="line"><span class="n">desc</span> <span class="s2">&quot;Generate Parser&quot;</span>
+</span><span class="line"><span class="n">task</span> <span class="ss">:parser</span> <span class="o">=&gt;</span> <span class="ss">:lexer</span> <span class="k">do</span>
+</span><span class="line">  <span class="sb">`racc parser.racc -o parser.racc.rb`</span>
+</span><span class="line"><span class="k">end</span>
+</span></code>&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</figure></notextile>&lt;/div&gt;</p>
+
+<p>Running <code>rake parser</code> will generate a two new files - <code>lexer.rex.rb</code> and <code>parser.racc.rb</code> - which will house the classes and logic for the lexer and parser, respectively. You can use your newly written lexer + parser with a <code>ruby adder.rb text.txt</code> command. It should output <code>4</code> as the answer.</p>
+
+<p>You can find all the code in this blogpost <a href="https://github.com/v0dro/scratch/tree/master/lexer_parser">here</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Random Thoughts on Music Theory.]]></title>
     <link href="http://v0dro.github.io/blog/2016/08/16/random-thoughts-on-music-theory/"/>
     <updated>2016-08-16T19:07:01+05:30</updated>
     <id>http://v0dro.github.io/blog/2016/08/16/random-thoughts-on-music-theory</id>
-    <content type="html"><![CDATA[<p>Title explains a lot.</p>
+    <content type="html"><![CDATA[<p>Title explains what this is about.</p>
 
 <h3 id="august-2016">16 August 2016</h3>
 
@@ -65,6 +229,39 @@
 <p><strong>University of Kyoto</strong></p>
 
 <p><a href="http://www.kuis.kyoto-u.ac.jp/kuis/">Page of dept. of information science</a>.</p>
+
+<h3 id="august-2016-2">17 August 2016</h3>
+
+<p>Continuing my research on Tokyo Inst. of Technology. The PDF I pointed to yesterday brought out an interesting observation - IGP(A) students and IGP(C) students seem to have different course work.</p>
+
+<h3 id="august-2016-3">18 August 2016</h3>
+
+<p>It seems the IGP C program at Tokyo Tech. is best for me. I will research that further today. Most probably I’ll need to do a 6 month research assistantship first. <a href="http://www.cs.titech.ac.jp/labs-e.html">Here’s a list</a> of the research groups of the Computer Sci. deptartment at Tokyo Tech.</p>
+
+<h3 id="august-2016-4">20 August 2016</h3>
+
+<p><strong>Tokyo Inst. of Technology</strong></p>
+
+<p>Found a list of faculties under the IGP(C) program <a href="http://www.titech.ac.jp/english/graduate_school/international/graduate_program_c/pdf/listoffaculties_1609c.pdf">here</a>.</p>
+
+<h3 id="august-2016-5">23 August 2016</h3>
+
+<p>Had a look at Kyushu Inst. of Technology today. The <a href="http://www.kyutech.ac.jp/english/admissions/guidelines/iizuka_master.html">program for international students</a> looks good.</p>
+
+<p>Also check out scholarship opportunities at Tokyo Inst. of Technology. Links - <a href="http://www.titech.ac.jp/english/graduate_school/international/scholarships/">1</a>, <a href="http://www.titech.ac.jp/english/graduate_school/international/scholarships/before_enrollment.html">2</a>, <a href="http://www.mastersportal.eu/universities/scholarships/13128/tokyo-institute-of-technology.html">3</a>. There are a bunch of scholarships that can be applied to before you enrol in university. Have a look <a href="http://www.titech.ac.jp/english/graduate_school/international/scholarships/before_enrollment.html">here</a>.</p>
+
+<p>There’s also the <a href="http://www.titech.ac.jp/english/graduate_school/international/scholarships/mext_scholarship.html">MEXT scholarship</a>from the Japanese government.</p>
+
+<h3 id="august-2016-6">24 August 2016</h3>
+
+<p>Found an interesting <a href="http://www.ic.u-tokyo.ac.jp/ic/guidance/guide05_e.html">FAQ on the UoT website</a>.</p>
+
+<p>Also having a look at <a href="http://www.jasso.go.jp/en/study_j/scholarships/brochure.html">JASSO scholarships</a>. Found some great scholarships <a href="http://www.jasso.go.jp/en/study_j/scholarships/__icsFiles/afieldfile/2016/03/29/scholarshipse_private.pdf">here</a>.</p>
+
+<h3 id="august-2016-7">25 August 2016</h3>
+
+<p>Found some scholarships. Also, I can also enrol as a <a href="http://www.titech.ac.jp/english/graduate_school/international/research_students/privately_funded.html">privately funded research student</a> at Tokyo Tech.</p>
+
 ]]></content>
   </entry>
   
@@ -2811,49 +3008,6 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
   <li><a href="http://www.columbia.edu/~so33/SusDev/Lecture_9.pdf">Logit and Probit</a>.</li>
   <li><a href="http://www.nesug.org/Proceedings/nesug10/sa/sa04.pdf">A very good explanation of the Poisson regression</a>.</li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[code]Managing Large Open Source Projects: For Beginners.]]></title>
-    <link href="http://v0dro.github.io/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners/"/>
-    <updated>2014-08-27T16:59:16+05:30</updated>
-    <id>http://v0dro.github.io/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners</id>
-    <content type="html"><![CDATA[<p>I had just started writing some meaningful code in college and gaining an interest in scientific computation, and really wanted to apply my knowledge somewhere and create a real impact. That is when I read about the ruby <a href="https://github.com/sciruby/nmatrix">NMatrix</a> gem and thought maybe I’d contribute some code, both for experience in dealing with non-trivial software and the personal satifaction derived from the feeling of my work being used by people around the world.</p>
-
-<p>I cloned and installed the source code like any other programmer would, and just as I first open the Issue tracker to find a project to work on, I was hit by an avalanche of information ranging from bugs, documentation appeals, and new feature requests. And this was nothing compared to my first reaction upon going through the source code. Having never worked with more than a few files of source in college, I was dwarfed by the scores of source files and hundreds of method definitions that hung above me like a mountain. I quickly discovered that software is no small thing and that to make real, non-trivial, production grade software requires a certain discipline, focus and patience.</p>
-
-<p>I had never dealt with something like this before, and set out to discover books/courses that would enlighten me on the topic. Most of the blog posts that I came across told me to keep looking through the code and that eventually I would become good at it. While this is true, none spoke of any specific methods to use to get out of this dilemma. It was then that I came across the course <a href="https://www.coursera.org/course/learning">Learning How To Learn</a>, and after enrolling and seeing it through, I must say I have gained quite an insight into managing large software and even my day to day activities, the course having encompassed a large variety of practtical scenarios.</p>
-
-<p>I have written this blog post for the final assignment of the course, which asks me to share the insights I have gained with people who might be in the same dilemma that I was in. I hope you find it helpful.</p>
-
-<p>When first faced with something that you are not trained to handle, you tend to get overwhelhmed and try to avoid it, even dislike it. But this takes you nowhere close to the goal that you might want to accomplish. You just stagnate in the exact same spot that you initially were in and you never really move ahead.</p>
-
-<p>To move ahead, it is important to focus your energies and force yourself to work on a particular problem for a length of time. But how does one do this? And for what length of time? After taking the course, I learned that the mind, at any time, is basically in two modes of thinking, the focused mode and the diffused mode.</p>
-
-<p>Your mind is in the focused mode when you are intently focusing on, say implementing a tree travelsal algorithm that your professor might have told you to implement. Focused mode is required in situations where you know <em>exactly</em> what you’re looking for and want to devise a method of getting there.</p>
-
-<p>The focused mode, however, is not much use when first faced with a large software project. Focusing on just one aspect of the system the first time will leave you more confused than before and more often than not, any changes that you make will create more problems that you’d want to care about.</p>
-
-<p>Scenarios like these are where the diffused mode comes to the rescue. In the diffused mode, the mind is capable of thinking about many things at a time, maybe not making sense of them all, but creating connections between them nonetheless. It is a phase of light concentration that your mind goes through, with the problem you want to solve lightly running in the background. The diffused mode is what helps in making sense of a large project.</p>
-
-<p>You must first learn to relax, sit back and take stock of the entire project and at the same time keep in mind the new functionality that you want to implement or the bug that you want to quash. Try to simply read the names of the files and folders and try to connect them with your problem. Most Open Source projects use very strict conventions and upon lightly thinking for a while you will stumble upon a particular file or folder that will be relevant to what you are looking for.</p>
-
-<p>The diffused mode will only help you in getting a larger picture of things. Once you have a tentative idea of where you might find the problem area, then it is time to switch to the focused mode and dive into ONLY that particular file/function that you think is the right one. Do not think of anything else while searching in the place your diffused mode has taken you to.</p>
-
-<p>You first think in the diffused mode, and then the focused mode. Keep repeating this procedure until you solve the problem, and you will find that eventually, you can intuitively figure out where a particular line of code might reside.</p>
-
-<p>Thinking in the focused mode requires practice, and you will soon realize that you tend to feel distracted after some focused thinking. This is where certain techniques for focused mode thinking come into play. One of the best and easiest to practice is the ‘Pomodoro’ technique, which advocates being focused for 25 min. and then taking a short break for 5 min., then keep repeating this cycle until you think you’ve had enough. </p>
-
-<p>While focusing it is extremely important to focus ONLY on the problem at hand and nowhere else. You should typically sit in a quiet environment and away from distractions if you want pomodoro to work for you. While taking a break, do some light activity, like taking a walk around your work area or watching a small TED talk. Pomodoro has worked wonders for me and I highly recommend using it. You can use one of the scores of mobile apps available for setting a pomodoro timer.</p>
-
-<p>One of the most dangerous things to be absolutely careful about is procrastination. It is very easy to get carried away by some fancy code that you come across for the first time while tracing method calls  and completely forget about the problem that you are trying to tackle. Procrastination happens when you allow yourself to get carried away. It leads you to think that you’ve done a lot of work, when in reality you have done nothing.</p>
-
-<p>If faced by a somewhat difficult problem, write it down on a Post-It note and stick it in a place that is always within your field of view, like in my case, my desk or the palm rest of my laptop. Keep looking at what’s written on this note and periodically ask yourself, “Am I closer to solving the problem than I was before?”, “Will the particular line of code that I am reading right now be of any use in solving this problem?”. If your answers to these questions are negative, you need to realign yourself and remind yourself to get back to work.</p>
-
-<p>Over and above the techniques mentioned above, also remember to break your problem down into small, manageable chunks, and go after one chunk at a time. Also, be sure to mentally go over these chunks once you’re done with your current session so that things will be more clear next time.If you’re having problems in visualizing an algorithm or the flow of a program, take a piece of paper and write down whatever you understand, and you will find that the rest will become clear once you ponder over what you have written. Theres only so much that your memory can store.</p>
-
-<p>Over and above, have fun programming. Its a great thing to do, really.</p>
 ]]></content>
   </entry>
   

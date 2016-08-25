@@ -9,7 +9,7 @@
   <meta name="author" content="Sameer Deshmukh">
 
   
-  <meta name="description" content="For my GSOC project, I’m trying to build an extension to NMatrix which will interface with a high performance C library for fast linear algebra &hellip;">
+  <meta name="description" content="Note: It so happens that the latest release of rb-gsl does not depend on narray anymore. Hence rb-gsl can be directly used with statsample. However, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,6 +96,56 @@ MathJax.Hub.Config({
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/">Making Statsample Work With Rb-gsl and Gsl-nmatrix</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-05-12T18:23:46+05:30'><span class='date'><span class='date-month'>May</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>6:23 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><strong>Note: It so happens that the latest release of rb-gsl does not depend on narray anymore. Hence rb-gsl can be directly used with statsample. However, if you want to use nmatrix with GSL, use gsl-nmatrix.</strong></p>
+
+<p><a href="https://github.com/SciRuby/statsample">Statsample</a> is the most comprehensive statistical computation suite in Ruby as of now.</p>
+
+<p>Previously, it so happened that statsample would depend on <a href="https://github.com/blackwinter/rb-gsl">rb-gsl</a> to speed up a lot of computations. This is great, but the biggest drawback of this approach is that rb-gsl depends on <a href="https://github.com/masa16/narray">narray</a>, which is incompatible with <a href="https://github.com/SciRuby/nmatrix">nmatrix</a> - the numerical storage and linear algebra library from the SciRuby foundation - due to namespace collisions. </p>
+
+<p>NMatrix is used by many current and upcoming ruby scientific gems, most notably <a href="https://github.com/v0dro/daru">daru</a>, <a href="https://github.com/domitry/mikon">mikon</a>, <a href="https://github.com/thisMagpie/fftw">nmatrix-fftw</a>, etc. and the a big hurdle that these gems were facing was that they could not leverage the advanced functionality of rb-gsl or statsample because nmatrix cannot co-exist with narray. On a further note, daru’s <a href="https://github.com/v0dro/daru/blob/master/lib/daru/dataframe.rb">DataFrame</a> and <a href="https://github.com/v0dro/daru/blob/master/lib/daru/vector.rb">Vector</a> data structures are to replace statsample’s <a href="https://github.com/SciRuby/statsample/blob/master/lib/statsample/dataset.rb">Dataset</a> and <a href="https://github.com/SciRuby/statsample/blob/master/lib/statsample/vector.rb">Vector</a>, so that a dedicated library can be used for data storage and munging and statsample can be made to focus on statistical analysis.</p>
+
+<p>The most promising solution to this problem was that rb-gsl must be made to depend on nmatrix instead of narray. This problem was solved by the <a href="https://github.com/v0dro/gsl-nmatrix">gsl-nmatrix</a> gem, which is a port of rb-gsl, but uses nmatrix instead of narray. Gsl-nmatrix also allows conversion of GSL objects to NMatrix and vice versa. Also, latest changes to statsample make it completely independent of GSL, and hence all the methods in statsample are now possible with or without GSL.</p>
+
+<p>To make your installation of statsample work with gsl-nmatrix, follow these instructions:</p>
+
+<ul>
+  <li><a href="https://github.com/SciRuby/nmatrix/wiki/Installation">Install nmatrix</a> and clone, build and install the latest gsl-nmatrix from https://github.com/v0dro/gsl-nmatrix</li>
+  <li>Clone the latest statsample from https://github.com/SciRuby/statsample</li>
+  <li>Open the Gemfile of statsample and add the line <code>gem 'gsl-nmatrix', '~&gt;1.17'</code></li>
+  <li>Build statsample using <code>rake gem</code> and install the resulting <code>.gem</code> file with <code>gem install</code>.</li>
+</ul>
+
+<p>You should be good able to use statsample with gsl-nmatrix on your system now. To use with rb-gsl, just install rb-gsl from rubygems (<code>gem install rb-gsl</code>) and put <code>gem 'rb-gsl', '~&gt;1.16.0.4'</code> in the Gemfile instead of gsl-nmatrix. This will activate the rb-gsl gem and you can use rb-gsl with statsample.</p>
+
+<p>However please take note that narray and nmatrix cannot co-exist on the same gem list. Therefore, you should have either rb-gsl or gsl-nmatrix installed at a particular time otherwise things will malfunction.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2022,69 +2072,6 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners/">[code]Managing Large Open Source Projects: For Beginners.</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-08-27T16:59:16+05:30'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>4:59 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I had just started writing some meaningful code in college and gaining an interest in scientific computation, and really wanted to apply my knowledge somewhere and create a real impact. That is when I read about the ruby <a href="https://github.com/sciruby/nmatrix">NMatrix</a> gem and thought maybe I’d contribute some code, both for experience in dealing with non-trivial software and the personal satifaction derived from the feeling of my work being used by people around the world.</p>
-
-<p>I cloned and installed the source code like any other programmer would, and just as I first open the Issue tracker to find a project to work on, I was hit by an avalanche of information ranging from bugs, documentation appeals, and new feature requests. And this was nothing compared to my first reaction upon going through the source code. Having never worked with more than a few files of source in college, I was dwarfed by the scores of source files and hundreds of method definitions that hung above me like a mountain. I quickly discovered that software is no small thing and that to make real, non-trivial, production grade software requires a certain discipline, focus and patience.</p>
-
-<p>I had never dealt with something like this before, and set out to discover books/courses that would enlighten me on the topic. Most of the blog posts that I came across told me to keep looking through the code and that eventually I would become good at it. While this is true, none spoke of any specific methods to use to get out of this dilemma. It was then that I came across the course <a href="https://www.coursera.org/course/learning">Learning How To Learn</a>, and after enrolling and seeing it through, I must say I have gained quite an insight into managing large software and even my day to day activities, the course having encompassed a large variety of practtical scenarios.</p>
-
-<p>I have written this blog post for the final assignment of the course, which asks me to share the insights I have gained with people who might be in the same dilemma that I was in. I hope you find it helpful.</p>
-
-<p>When first faced with something that you are not trained to handle, you tend to get overwhelhmed and try to avoid it, even dislike it. But this takes you nowhere close to the goal that you might want to accomplish. You just stagnate in the exact same spot that you initially were in and you never really move ahead.</p>
-
-<p>To move ahead, it is important to focus your energies and force yourself to work on a particular problem for a length of time. But how does one do this? And for what length of time? After taking the course, I learned that the mind, at any time, is basically in two modes of thinking, the focused mode and the diffused mode.</p>
-
-<p>Your mind is in the focused mode when you are intently focusing on, say implementing a tree travelsal algorithm that your professor might have told you to implement. Focused mode is required in situations where you know <em>exactly</em> what you’re looking for and want to devise a method of getting there.</p>
-
-<p>The focused mode, however, is not much use when first faced with a large software project. Focusing on just one aspect of the system the first time will leave you more confused than before and more often than not, any changes that you make will create more problems that you’d want to care about.</p>
-
-<p>Scenarios like these are where the diffused mode comes to the rescue. In the diffused mode, the mind is capable of thinking about many things at a time, maybe not making sense of them all, but creating connections between them nonetheless. It is a phase of light concentration that your mind goes through, with the problem you want to solve lightly running in the background. The diffused mode is what helps in making sense of a large project.</p>
-
-<p>You must first learn to relax, sit back and take stock of the entire project and at the same time keep in mind the new functionality that you want to implement or the bug that you want to quash. Try to simply read the names of the files and folders and try to connect them with your problem. Most Open Source projects use very strict conventions and upon lightly thinking for a while you will stumble upon a particular file or folder that will be relevant to what you are looking for.</p>
-
-<p>The diffused mode will only help you in getting a larger picture of things. Once you have a tentative idea of where you might find the problem area, then it is time to switch to the focused mode and dive into ONLY that particular file/function that you think is the right one. Do not think of anything else while searching in the place your diffused mode has taken you to.</p>
-
-<p>You first think in the diffused mode, and then the focused mode. Keep repeating this procedure until you solve the problem, and you will find that eventually, you can intuitively figure out where a particular line of code might reside.</p>
-
-<p>Thinking in the focused mode requires practice, and you will soon realize that you tend to feel distracted after some focused thinking. This is where certain techniques for focused mode thinking come into play. One of the best and easiest to practice is the ‘Pomodoro’ technique, which advocates being focused for 25 min. and then taking a short break for 5 min., then keep repeating this cycle until you think you’ve had enough. </p>
-
-<p>While focusing it is extremely important to focus ONLY on the problem at hand and nowhere else. You should typically sit in a quiet environment and away from distractions if you want pomodoro to work for you. While taking a break, do some light activity, like taking a walk around your work area or watching a small TED talk. Pomodoro has worked wonders for me and I highly recommend using it. You can use one of the scores of mobile apps available for setting a pomodoro timer.</p>
-
-<p>One of the most dangerous things to be absolutely careful about is procrastination. It is very easy to get carried away by some fancy code that you come across for the first time while tracing method calls  and completely forget about the problem that you are trying to tackle. Procrastination happens when you allow yourself to get carried away. It leads you to think that you’ve done a lot of work, when in reality you have done nothing.</p>
-
-<p>If faced by a somewhat difficult problem, write it down on a Post-It note and stick it in a place that is always within your field of view, like in my case, my desk or the palm rest of my laptop. Keep looking at what’s written on this note and periodically ask yourself, “Am I closer to solving the problem than I was before?”, “Will the particular line of code that I am reading right now be of any use in solving this problem?”. If your answers to these questions are negative, you need to realign yourself and remind yourself to get back to work.</p>
-
-<p>Over and above the techniques mentioned above, also remember to break your problem down into small, manageable chunks, and go after one chunk at a time. Also, be sure to mentally go over these chunks once you’re done with your current session so that things will be more clear next time.If you’re having problems in visualizing an algorithm or the flow of a program, take a piece of paper and write down whatever you understand, and you will find that the rest will become clear once you ponder over what you have written. Theres only so much that your memory can store.</p>
-
-<p>Over and above, have fun programming. Its a great thing to do, really.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -2102,6 +2089,10 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby/">Setting Up a Lexical Analyser and Parser in Ruby</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/08/16/random-thoughts-on-music-theory/">Random Thoughts on Music Theory.</a>
       </li>
     
@@ -2115,10 +2106,6 @@ x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1)
     
       <li class="post">
         <a href="/blog/2016/07/05/making-screencasts-in-debian/">Making Screencasts in Debian</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/16/summary-of-work-this-summer-for-gsoc-2015/">Summary of Work This Summer for GSOC 2015</a>
       </li>
     
   </ul>
