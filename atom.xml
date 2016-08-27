@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2016-08-25T20:11:03+05:30</updated>
+  <updated>2016-08-27T19:24:40+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -12,6 +12,56 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Advice for Future GSOC Students and Mentors Based on My Experience.]]></title>
+    <link href="http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/"/>
+    <updated>2016-08-27T18:04:51+05:30</updated>
+    <id>http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience</id>
+    <content type="html"><![CDATA[<p>This year I was the admin for the GSOC projects of the <a href="">SciRuby foundation</a>. It’s also the first time I mentored a student, having been a student myself last year. Being a mentor is pretty tough task, and for some reason is underestimated by many. I was lucky to have the experience and support of co-admins <a href="">@mohawkjohn</a> and <a href="">@pjotrp</a> throughout the GSOC period.</p>
+
+<p>GSOC has now come to a close. I have learned a great deal myself in the past 3 months, and thought I would share some of my learnings in this blog post in the interest of future GSOC students and mentors.</p>
+
+<h2 id="advice-for-future-students">Advice for future students</h2>
+
+<p><strong>Writing a proposal</strong></p>
+
+<p>Research your ideas at least for a day before asking your first question. Mentors are volunteers and it’s important to respect the time and effort that they’re putting into FOSS. When you do propose an idea, you should also have a good knowledge of why you’re working on that idea in the first place and what kind of long term impact the realization of that idea can have. Putting this across through your proposal can have a positive on your selection. Know how to ask questions on mailing lists. A properly researched question should show that you have first taken an effort to understand the topic and are asking the question only because you got stuck somewhere.</p>
+
+<p><strong>Community bonding</strong></p>
+
+<p>Make sure you figure out what exactly you have to research and learn during the community bonding phase. There’s a lot of things out there that can be learned, but only a few specific things will helpful for your project. Focus on them only. Ask specific questions to your mentor.</p>
+
+<p><strong>Coding</strong></p>
+
+<p>Setup a daily schedule for coding and stick to it. Constantly keep in touch with your mentor and make sure they know your progress as well as you do. If you run into previously unseen problems (frequent in programming), tell mentor about this ASAP and work out a solution together.</p>
+
+<p>Don’t burn yourself out in your enthusiasm. Take regular breaks. Overworking does more harm than good.</p>
+
+<h2 id="advice-for-future-mentors">Advice for future mentors</h2>
+
+<p><strong>Student selection</strong></p>
+
+<p>Short story:
+If you’re unsure about a student, <em>don’t select him</em>. It’s better to have a more quality than quantity.</p>
+
+<p>Long story:
+First and foremost, it is very important to establish some organization-wide procedure that will be followed when selecting a student. As a start, consider making a proposal template that contains all the information and details that the student needs to fill up when submitting the proposal. Have a look at the <a href="https://github.com/SciRuby/sciruby/wiki/GSoC-2016-Student-Application">SciRuby application template</a> as an example.</p>
+
+<p>When students start asking questions on the mailing list, it is important for the org admins to keep a watch on students and get a rough idea of who asks the better questions and who don’t. Community participation is a great measure of understanding whether a student will live upto your expectations or not. A proposal with a bad first draft might just turn out to be great simply because the student is open to feedback and is willing to put it in the effort to work on it.</p>
+
+<p>We have 3 rounds:
+First round every mentor rates their <em>own</em> student only. In the next round all mentors rate <em>all</em> students (students without a mentor and bad proposals drop off).</p>
+
+<p>In each case when rating a student. mentors put in a comment, making sure to tell how a student has interacted in the proposal phase, what his current coding looks like, how responsive he is. Mentors can still push their students to do stuff. We like it when students keep responsive in this phase.</p>
+
+<p>In the 3rd round the <em>org admins</em> make the final ranking to set the number of slots. By this stage we are pretty clear about the individuals involved (and note that mentor activity counts).  When Google  allocates the slots the top-ranked students get in.</p>
+
+<p><strong>Coding period</strong></p>
+
+<p>Make sure you communicate with your student that they are supposed to send you <em>daily</em> updates of their progress. One paragraph about their work that particular day should suffice.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Setting Up a Lexical Analyser and Parser in Ruby]]></title>
@@ -269,6 +319,13 @@ So now create a <code>Rakefile</code> in the same folder and put this code insid
 
 <p>Found some scholarships. Also, I can also enrol as a <a href="http://www.titech.ac.jp/english/graduate_school/international/research_students/privately_funded.html">privately funded research student</a> at Tokyo Tech.</p>
 
+<p><a href="http://www.titech.ac.jp/english/graduate_school/international/research_students/syutugan/data/applicationoutline.pdf">This</a> is a PDF that talks about privately funded research students.</p>
+
+<p>Also checking out <a href="http://www.global.keio.ac.jp/en/education/admissions/graduate.html">Keio University</a> today. They have a program for internation graduate students. Have a look <a href="http://www.st.keio.ac.jp/english/admissions/masters_program/index.html">here</a>.</p>
+
+<p>I also had a look at the <a href="http://www.kyoto-u.ac.jp/en/education-campus/international/students1">Kyoto University IGP</a>. Here’s a <a href="http://www.shanghairanking.com/World-University-Rankings-2014/Japan.html">listing of Japanese universities</a>.</p>
+
+<p>### </p>
 ]]></content>
   </entry>
   
@@ -2817,204 +2874,6 @@ Thus by equation (4), each of them can be calculated with the following sets of 
 
 <p>Stay tuned for day 3!</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[code]Generalized Linear Models: Introduction and Implementation in Ruby.]]></title>
-    <link href="http://v0dro.github.io/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby/"/>
-    <updated>2014-09-21T19:05:21+05:30</updated>
-    <id>http://v0dro.github.io/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby</id>
-    <content type="html"><![CDATA[<h2 id="overview">Overview</h2>
-
-<p>Most of us are well acquainted with linear regression and its use in analysig the relationship of one dataset with another. Linear regression basically shows the (possibly) linear relationship between one or more independent variables and a single dependent variable. But what if this relationship is not linear and the dependent and independent variables are associated with one another through some special function? This is where Generalized Linear Models (or GLMs) come in. This article will explain some core <a href="http://en.wikipedia.org/wiki/Generalized_linear_model">GLM</a> concepts and their implementation in Ruby using the <a href="https://github.com/sciruby/statsample-glm">statsample-glm</a> gem.</p>
-
-<h2 id="generalized-linear-models-basics">Generalized Linear Models Basics</h2>
-
-<p>The basic linear regression equation relating the dependent varible <em>y</em> with the independent variable <em>x</em> looks something like 
-<script type="math/tex">
-\begin{align}
-    y = \beta_{0} + x_{1}*\beta_{1} + x_{2}*\beta_{2}...
-\end{align}
-</script>
-This is the equation of a straight line, with <script type="math/tex"> \beta_{0} </script> denoting the intercept of the line with the Y axis and <script type="math/tex"> \beta_{1} </script> denoting the slope of the line. GLMs take this a step further. They try to establish a relationship between <em>x</em> and <em>y</em> through <em>another function</em> <strong>g(x)</strong>, which is called the <em>link function</em>. This function depends on the probability distribution displayed by the independent variables and their corresponding y values. In its simplest form, it can be denoted as <em>y = g(x)</em>.</p>
-
-<p>GLM can be used to model numerous relations, depending on the distribution of the dependent conditional on the independent variables. We will first explore the various kinds of GLMs and their defining parameters and then understand the different methods employed in finding the co-efficients. The most common GLMs are:</p>
-
-<ul>
-  <li>Logistic (or logit) regression.</li>
-  <li>Normal regression.</li>
-  <li>Poisson regression.</li>
-  <li>Probit regression.</li>
-</ul>
-
-<p>Let’s see all of the above one by one.</p>
-
-<h4 id="logisitic-regression">Logisitic Regression</h4>
-<p>Logistic, or Logit can be said to be one of the most fundamental of the GLMs. It is mainly used in cases where the independent variables show a binomial distribution (conditional on the dependent). In case of the binomial distribution, the number of successes are modelled on a fixed number of tries. The Bernoulli distribution is a special case of binomial where the outcome is either 0 or 1 (which is the case in the example at the bottom of this post). By using logit link function, one can determine the maximum probability of the occurence of each independent random variable. The values so obtained can be used to plot a sigmoid graph of <em>x</em> vs <em>y</em>, using which one can predict the probability of occurence of any random varible not already in the dataset. The defining parameter of the logistic is the probability <em>y</em>.</p>
-
-<p>The logit link function looks something like 
-<script type="math/tex">
-\begin{align}
-    y = \frac{e^{(\beta_{0} + x*\beta_{1})}}{1 + e^{(\beta_{0} + x*\beta_{1})}}
-\end{align}
-</script>
-, where y is the probability for the given value of x.</p>
-
-<p>Of special interest is the meaning of the values of the coefficients. In case on linear regression, <script type="math/tex"> \beta_{0} </script> merely denotes the intercept while <script type="math/tex"> \beta_{1} </script> is the slope of the line. However, here, because of the nature of the link function, the coefficient <script type="math/tex"> \beta_{1} </script> of the independent variable is interpreted as “for every 1 increase in <em>x</em> the odds of <em>y</em> increase by <script type="math/tex"> e^{\beta_{1}} </script> times”.</p>
-
-<p>One thing that puzzled me when I started off with regression was the purpose of having several variables <script type="math/tex"> (x_{1}, x_{2}...) </script> in the same regression model at times. The purpose of multiple independent variables against a single dependent is so that we can compare the odds of <script type="math/tex"> x_{1} </script> against <script type="math/tex"> x_{2} </script>.  So basically, if you have multiple variables, it is to compare the effect on the dependent of one variable, when the others are constant. To compare the effect of one variable without considering the others, one could use an  independent regression for each one.</p>
-
-<p>The logistic graph generally looks like this:</p>
-
-<p><img class="center" src="http://v0dro.github.io/images/glm/logistic.gif" title="&#34;Generic Graph of Logistic Regression.&#34;" alt="&#34;Generic Graph of Logistic Regression.&#34;" /></p>
-
-<h4 id="normal-regression">Normal Regression</h4>
-
-<p>Normal regression is used when the DEPENDENT variable exhibits a normal probability distribution, CONDITIONAL ON THE independent variables. The independents are assumed to be normal even in a simple linear or multiple regression, and the coefficients of a normal are more easily calculated using simple linear regression methods. But since this is another very important and commonly found data set, we will look into it.</p>
-
-<p>Normally distributed data is symmetric about the center and its mean is equal to its median. Commonly found normal distributions are heights of people and errors in measurement. The defining parameters of a normal distribution are the mean <script type="math/tex"> \mu </script> and variance <script type="math/tex"> \sigma^2 </script>. The link function is simply <script type="math/tex"> y = x*\beta_{1} </script> if no constant is present. The coefficient of the independent variable is interpreted in exactly the same manner as it is for linear regression.</p>
-
-<p>A normal regression graph generally looks like this:</p>
-
-<p><img class="center" src="http://v0dro.github.io/images/glm/normal.png" title="&#34;Generic Graph of Normal Regression&#34;" alt="&#34;Generic Graph of Normal Regression&#34;" /></p>
-
-<h4 id="poisson-regression">Poisson Regression</h4>
-
-<p>A dataset often posseses a Poisson distribution when the data is measured by taking a very large number of trials, each with a small probability of success. For example, the number of earthquakes taking place in a region per year. It is mainly used in case of count data and contingency tables. Binomial distributions often converge into Poisson when the number of cases(n) is large and probability of success(p) small.</p>
-
-<p>The poisson is completely defined by the rate parameter <script type="math/tex"> \lambda </script>. The link function is <script type="math/tex"> ln(y) = x*\beta_{1} </script>, which can be written as <script type="math/tex"> y = e^{x*\beta_{1}} </script>. Because the link function is logarithmic, it is also referred to as log-linear regression.</p>
-
-<p>The meaning of the co-efficient in the case of poisson is “for increase 1 of <em>x</em>, <em>y</em> changes <script type="math/tex"> y = e^\beta_{1} </script> times.”.</p>
-
-<p>A poisson graph looks something like this:</p>
-
-<p><img class="center" src="http://v0dro.github.io/images/glm/poisson.png" title="&#34;Graph of Poisson Regression&#34;" alt="&#34;Graph of Poisson Regression&#34;" /></p>
-
-<h4 id="probit-regression">Probit Regression</h4>
-
-<p>Probit is used for modeling binary outcome varialbles. Probit is similar to  logit, the choice between the two largely being a matter of personal preference.</p>
-
-<p>In the probit model, the inverse standard normal distribution of the probability is modeled as a linear combination of the predictors (in simple terms, something like <script type="math/tex"> y = \Phi(\beta_{0} + x_{1}*\beta_{1}...) </script> , where <script type="math/tex"> \Phi </script> is the CDF of the standard normal). Therefore, the link function can be written as <script type="math/tex"> z = \Phi^{-1}(p) </script> where <script type="math/tex"> \Phi(z) </script> is the standard normal cumulative density function (here <em>p</em> is probability of the occurence of a random variable <em>x</em> and <em>z</em> is the z-score of the y value).</p>
-
-<p>The fitted mean values of the probit are calculated by setting the upper limit of the normal CDF integral as <script type="math/tex"> x*\beta_{1} </script>, and lower limit as <script type="math/tex"> -\infty </script>. This is so because evaluating any normally distributed random number over its CDF will yield the probability of its occurence, which is what we expect from the fitted values of a probit.</p>
-
-<p>The coefficient of <em>x</em> is interpreted as “one unit change in <em>x</em> leads to a change <script type="math/tex"> \beta_{1} </script> in the z-score of <em>y</em>”.</p>
-
-<p>Looking at the graph of probit, one can see the similarities between logit and probit:</p>
-
-<p><img class="center" src="http://v0dro.github.io/images/glm/probit.png" /></p>
-
-<h2 id="finding-the-coefficients-of-a-glm">Finding the coefficients of a GLM</h2>
-
-<p>There are two major methods of finding the coefficients of a GLM:</p>
-
-<ul>
-  <li>Maximum Likelihood Estimation (MLE).</li>
-  <li>Iteratively Reweighed Least Squares (IRLS).</li>
-</ul>
-
-<h4 id="maximum-likelihood-estimation">Maximum Likelihood Estimation</h4>
-
-<p>The most obvious way of finding the coefficients of the given regression analysis is by maximizing the likelihood function of the distribution that the independent variables belong to. This becomes much easier when we take the natural logarithm of the likelihood function. Hence, the name ‘Maximum Likelihood Estimation’. The Newton-Raphson method is used to this effect for maximizing the beta values (coefficients) of the log likelihood function.</p>
-
-<p>The first derivative of the log likelihood wrt to <script type="math/tex"> \beta </script> is calculated for all the <script type="math/tex"> x_{i} </script> terms (this is the jacobian matrix), and so is the second derivative (this is the hessian matrix). The coefficient is estimated by first choosing an initial estimate for <script type="math/tex"> x_{old} </script>, and then iteratively correcting this initial estimate by trying to bring the equation</p>
-
-<script type="math/tex; mode=display"> 
-\begin{align}
-x_{new} = x_{old} - inverse(hessian)*jacobian   ..(1) 
-\end{align}
-</script>
-
-<p>to equality (with a pre-set tolerance level). A good implementation of MLE can be found <a href="http://petertessin.com/MaxLik.pdf">here</a>.</p>
-
-<h4 id="iteratively-reweighed-least-squares">Iteratively Reweighed Least Squares</h4>
-
-<p>Another useful but somewhat slower method of estimating the regression coefficients of a dataset is Iteratively Reweighed Least Squares. It is slower mainly because of the number of co-efficients involved and the somewhat extra memory that is taken up by the various matrices used by this method. The upside of IRLS is that it is very easy to implement as is easily extensible to any kind of GLM.</p>
-
-<p>The IRLS method also ultimately boils to the equation of the Newton Raphson (1), but the key difference between the two is that in MLE we try to maximize the likelihood but in IRLS we try to minimize the errors. Therefore, the manner in which the hessian and jacobian matrices are calculated is quite different. The IRLS equation is written as:</p>
-
-<script type="math/tex; mode=display">
-\begin{align}
-    b_{new} = b_{old} - inverse(X'*W*X)*(X'*(y - \mu))
-\end{align}
-</script>
-
-<p>Here, the hessian matrix is <script type="math/tex"> -(X'*W*X) </script> and the jacobian is <script type="math/tex"> (X'*(y - \mu)) </script>. Let’s see the significance of each term in each of these matrices:</p>
-
-<ul>
-  <li><em>X</em> - The matrix of independent variables  <script type="math/tex"> x_{1}, x_{2},... </script> alongwith the constant vector.</li>
-  <li><em>X’</em> - Transpose of X.</li>
-  <li><em>W</em> - The weight matrix. This is the most important entity in the equation and understanding it completely is paramount to gaining an understanding of the IRLS as whole.
-    <ul>
-      <li>The <em>weight</em> matrix is present to reduce favorism of the best fit curve towards larger values of x. Hence, the weight matrix acts as a mediator of sorts between the very small and very large values of x (if any). It is a diagonal matrix with each non-zero value representing the weight for each vector <script type="math/tex"> x_{i} </script> in the sample data.</li>
-      <li>Calculation of the weight matrix is dependent on the probability distribution shown by the independent random variables. The weight expression can be calculated by taking a look at the equation of the hessian matrix. So in the case of logistic regression, the weight matrix is a diagonal matrix with the ith entry as <script type="math/tex"> p(x_{i}, \beta_{old})*(1 - p(x_{i}, \beta_{old})) </script>.</li>
-      <li>The W matrix is (the inverse?) of the variance/covariance matrix. On logistic and Poisson regression, the variance on each case depend on the mean, so that is the meaning of <script type="math/tex"> p(x_{i}, \beta_{old})*(1 - p(x_{i}, \beta_{old})) </script>.</li>
-    </ul>
-  </li>
-  <li><script type="math/tex"> (y - \mu) </script> - This is a matrix whose ith value the is difference between the actual corresponding value on the y-axis minus <script type="math/tex"> \mu = x*b_{old} </script>. The value of this term is crucial in determining the error with which the coefficients have been calculated. Frequently an error of 10e-4 is acceptable.</li>
-</ul>
-
-<h2 id="generalized-linear-models-in-ruby">Generalized Linear Models in Ruby</h2>
-
-<p>Calculating the co-efficients and a host of other properties of a GLM is extremely simple and intuitive in Ruby. Let us see some examples of GLM by using the <code>daru</code> and <code>statsample-glm</code> gems:</p>
-
-<p>First install <code>statsample-glm</code> by running <code>gem install statsample-glm</code>, statsample will be downloaded alongwith it if it is not installed directly. Then download the CSV files from <a href="https://github.com/SciRuby/statsample-glm/blob/master/spec/data/logistic_mle.csv">here</a>.</p>
-
-<p>Statsample-glm supports a variety of GLM methods, giving the choice of both, IRLS and MLE algorithms to the user for almost every distribution, and all this through a simple and intutive API. The primary calling function for all distribtions and algorithms is <code>Statsample::GLM.compute(data_set, dependent, method, options)</code>. We specify the data set, dependent variable, type of regression and finally an options hash in which one can specify a variety of customization options for the computation.</p>
-
-<p>To compute the co-efficients of a logistic regression, try this code:</p>
-
-<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
-<span class="line-number">2</span>
-<span class="line-number">3</span>
-<span class="line-number">4</span>
-<span class="line-number">5</span>
-<span class="line-number">6</span>
-<span class="line-number">7</span>
-<span class="line-number">8</span>
-<span class="line-number">9</span>
-<span class="line-number">10</span>
-<span class="line-number">11</span>
-<span class="line-number">12</span>
-<span class="line-number">13</span>
-<span class="line-number">14</span>
-<span class="line-number">15</span>
-<span class="line-number">16</span>
-<span class="line-number">17</span>
-</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="nb">require</span> <span class="s1">&#39;daru&#39;</span>
-</span><span class="line"><span class="nb">require</span> <span class="s1">&#39;statsample-glm&#39;</span>
-</span><span class="line"><span class="c1"># Code for computing coefficients and related attributes of a logistic regression.</span>
-</span><span class="line">
-</span><span class="line"><span class="n">data_set</span> <span class="o">=</span> <span class="no">Daru</span><span class="o">::</span><span class="no">DataFrame</span><span class="o">.</span><span class="n">from_csv</span> <span class="s2">&quot;logistic_mle.csv&quot;</span>
-</span><span class="line"><span class="n">glm</span> <span class="o">=</span> <span class="no">Statsample</span><span class="o">::</span><span class="no">GLM</span><span class="o">.</span><span class="n">compute</span> <span class="n">data_set</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:logistic</span><span class="p">,</span> <span class="p">{</span><span class="ss">constant</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">algorithm</span><span class="p">:</span> <span class="ss">:mle</span><span class="p">}</span>
-</span><span class="line">
-</span><span class="line"><span class="c1"># Options hash specifying addition of an extra constants </span>
-</span><span class="line"><span class="c1"># vector all of whose values is &#39;1&#39; and also specifying </span>
-</span><span class="line"><span class="c1"># that the MLE algorithm is to be used.</span>
-</span><span class="line">
-</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">coefficients</span>
-</span><span class="line">  <span class="c1">#=&gt; [0.3270, 0.8147, -0.4031,-5.3658]</span>
-</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">standard_error</span>
-</span><span class="line">  <span class="c1">#=&gt; [0.4390, 0.4270, 0.3819,1.9045]</span>
-</span><span class="line"><span class="nb">puts</span> <span class="n">glm</span><span class="o">.</span><span class="n">log_likelihood</span>
-</span><span class="line">  <span class="c1">#=&gt; -38.8669</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-
-<p>Similar to the above code, you can try implementing poisson, normal or probit regression models and use the data files from the link above as sample data. Just go through the tests in the source code on GitHub or read the documentation for further details and feel free to drop me a mail in case you have any doubts/suggestions for improvements.</p>
-
-<p>Cheers!</p>
-
-<hr />
-
-<h6 id="further-reading">Further Reading</h6>
-<ul>
-  <li><a href="https://cise.ufl.edu/class/cis6930sp10esl/downloads/LogisticRegression.pdf">A good explanation of IRLS</a>.</li>
-  <li><a href="http://www.stat.cmu.edu/~cshalizi/402/lectures/14-logistic-regression/lecture-14.pdf">Logistic Regression and Newtons Method</a>.</li>
-  <li><a href="https://files.nyu.edu/mrg217/public/mle_introduction1.pdf">A good resource on the how and why behind the calculation of standard errors</a>.</li>
-  <li><a href="http://www.columbia.edu/~so33/SusDev/Lecture_9.pdf">Logit and Probit</a>.</li>
-  <li><a href="http://www.nesug.org/Proceedings/nesug10/sa/sa04.pdf">A very good explanation of the Poisson regression</a>.</li>
-</ul>
 ]]></content>
   </entry>
   

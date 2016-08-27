@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/</loc>
+    <lastmod>2016-08-27T18:04:51+05:30</lastmod>
+  </url>
+  <url>
     <loc>http://v0dro.github.io/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby/</loc>
     <lastmod>2016-08-21T12:36:05+05:30</lastmod>
   </url>
