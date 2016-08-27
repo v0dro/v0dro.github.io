@@ -4,7 +4,7 @@
   <title><![CDATA[Travel &lt;code&gt; Music]]></title>
   <link href="http://v0dro.github.io/atom.xml" rel="self"/>
   <link href="http://v0dro.github.io/"/>
-  <updated>2016-08-27T19:24:40+05:30</updated>
+  <updated>2016-08-27T19:43:04+05:30</updated>
   <id>http://v0dro.github.io/</id>
   <author>
     <name><![CDATA[Sameer Deshmukh]]></name>
@@ -18,7 +18,7 @@
     <link href="http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/"/>
     <updated>2016-08-27T18:04:51+05:30</updated>
     <id>http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience</id>
-    <content type="html"><![CDATA[<p>This year I was the admin for the GSOC projects of the <a href="">SciRuby foundation</a>. It’s also the first time I mentored a student, having been a student myself last year. Being a mentor is pretty tough task, and for some reason is underestimated by many. I was lucky to have the experience and support of co-admins <a href="">@mohawkjohn</a> and <a href="">@pjotrp</a> throughout the GSOC period.</p>
+    <content type="html"><![CDATA[<p>This year I was the admin for the GSOC projects of the <a href="http://sciruby.com/">SciRuby foundation</a>. It’s also the first time I mentored a student, having been a student myself last year. Being a mentor is pretty tough task, and for some reason is underestimated by many. I was lucky to have the experience and support of co-admins <a href="https://github.com/mohawkjohn">@mohawkjohn</a> and <a href="https://github.com/pjotrp">@pjotrp</a> throughout the GSOC period.</p>
 
 <p>GSOC has now come to a close. I have learned a great deal myself in the past 3 months, and thought I would share some of my learnings in this blog post in the interest of future GSOC students and mentors.</p>
 
