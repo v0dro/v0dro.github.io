@@ -1,113 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/</loc>
-    <lastmod>2016-08-27T18:04:51+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby/</loc>
-    <lastmod>2016-08-21T12:36:05+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2016/08/16/random-thoughts-on-music-theory/</loc>
-    <lastmod>2016-08-16T19:07:01+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2016/08/05/searching-for-graduate-degree-courses-in-usa-and-japan/</loc>
-    <lastmod>2016-08-05T16:29:23+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2016/07/12/random-thoughts-on-bass-tone/</loc>
-    <lastmod>2016-07-12T16:39:06+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2016/07/05/making-screencasts-in-debian/</loc>
-    <lastmod>2016-07-05T13:07:45+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/08/16/summary-of-work-this-summer-for-gsoc-2015/</loc>
-    <lastmod>2015-08-16T13:38:51+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/08/16/elaboration-on-certain-internals-of-daru/</loc>
-    <lastmod>2015-08-16T13:36:34+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/08/03/finding-and-combining-data-in-daru/</loc>
-    <lastmod>2015-08-03T00:22:19+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/07/31/analysis-of-time-series-in-daru/</loc>
-    <lastmod>2015-07-31T18:26:23+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/</loc>
-    <lastmod>2015-07-27T13:21:42+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/</loc>
-    <lastmod>2015-05-12T18:23:46+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/</loc>
-    <lastmod>2015-03-11T13:35:45+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2/</loc>
-    <lastmod>2015-02-24T00:19:08+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/</loc>
-    <lastmod>2014-12-14T11:57:34+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/</loc>
-    <lastmod>2014-11-29T00:23:04+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/</loc>
-    <lastmod>2014-11-25T13:55:13+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/</loc>
-    <lastmod>2014-10-12T18:52:10+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/10/01/an-overview-of-automatic-speech-recognition/</loc>
-    <lastmod>2014-10-01T18:59:11+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/09/28/travel-hampi-bengaluru-allepy-part-2/</loc>
-    <lastmod>2014-09-28T16:14:07+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby/</loc>
-    <lastmod>2014-09-21T19:05:21+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners/</loc>
-    <lastmod>2014-08-27T16:59:16+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/2014/07/30/travel-hampi-bengaluru-allepy-part-1/</loc>
-    <lastmod>2014-07-30T23:31:46+05:30</lastmod>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/blog/archives/</loc>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/</loc>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/about/</loc>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/travel/</loc>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/music/</loc>
-  </url>
-  <url>
-    <loc>http://v0dro.github.io/code/</loc>
-  </url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/11/24/thoughts-on-writing-your-own-compiler/</loc>
+<lastmod>2016-11-24T21:40:55+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/11/24/gsoc-2016-wrap-up-for-sciruby/</loc>
+<lastmod>2016-11-24T09:57:34+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/</loc>
+<lastmod>2016-08-27T18:04:51+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby/</loc>
+<lastmod>2016-08-21T12:36:05+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/08/16/random-thoughts-on-music-theory/</loc>
+<lastmod>2016-08-16T19:07:01+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/08/05/searching-for-graduate-degree-courses-in-usa-and-japan/</loc>
+<lastmod>2016-08-05T16:29:23+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/07/12/random-thoughts-on-bass-tone/</loc>
+<lastmod>2016-07-12T16:39:06+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2016/07/05/making-screencasts-in-debian/</loc>
+<lastmod>2016-07-05T13:07:45+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/08/16/summary-of-work-this-summer-for-gsoc-2015/</loc>
+<lastmod>2015-08-16T13:38:51+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/08/16/elaboration-on-certain-internals-of-daru/</loc>
+<lastmod>2015-08-16T13:36:34+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/08/03/finding-and-combining-data-in-daru/</loc>
+<lastmod>2015-08-03T00:22:19+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/07/31/analysis-of-time-series-in-daru/</loc>
+<lastmod>2015-07-31T18:26:23+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/</loc>
+<lastmod>2015-07-27T13:21:42+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/05/12/making-statsample-work-with-rb-gsl-and-gsl-nmatrix/</loc>
+<lastmod>2015-05-12T18:23:46+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/03/11/interfacing-and-benchmarking-high-performance-linear-algebra-libraries-with-ruby/</loc>
+<lastmod>2015-03-11T13:35:45+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2015/02/24/data-analysis-in-ruby-part-2/</loc>
+<lastmod>2015-02-24T00:19:08+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/12/14/solving-systems-of-linear-equations-in-ruby/</loc>
+<lastmod>2014-12-14T11:57:34+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/11/29/one-dimensional-interpolation-introduction-and-implementation-in-ruby/</loc>
+<lastmod>2014-11-29T00:23:04+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/11/25/data-analysis-in-ruby-basic-data-manipulation-and-plotting/</loc>
+<lastmod>2014-11-25T13:55:13+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/10/12/accessing-matrix-elements-when-expressed-as-a-contiguous-1d-array/</loc>
+<lastmod>2014-10-12T18:52:10+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/10/01/an-overview-of-automatic-speech-recognition/</loc>
+<lastmod>2014-10-01T18:59:11+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/09/28/travel-hampi-bengaluru-allepy-part-2/</loc>
+<lastmod>2014-09-28T16:14:07+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/09/21/code-generalized-linear-models-introduction-and-implementation-in-ruby/</loc>
+<lastmod>2014-09-21T19:05:21+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/08/27/code-managing-large-open-source-projects-for-beginners/</loc>
+<lastmod>2014-08-27T16:59:16+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/2014/07/30/travel-hampi-bengaluru-allepy-part-1/</loc>
+<lastmod>2014-07-30T23:31:46+05:30</lastmod>
+</url>
+<url>
+<loc>http://v0dro.github.io/blog/archives/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/about/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/travel/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/music/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/code/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/posts/2/</loc>
+</url>
+<url>
+<loc>http://v0dro.github.io/posts/3/</loc>
+</url>
 </urlset>

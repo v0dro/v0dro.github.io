@@ -206,7 +206,7 @@ that you might need to write repeatedly. In the above lexer, the macro <code>DIG
 </span><span class="line"><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>As you can see, we’ve put the logic for the parser inside the <code>AddParser</code> class. Notice that in oedipus_lex, only the parsing logic exists inside the class and everything else (i.e under <code>header</code> and <code>inner</code>) exists <em>outside</em> the class. Let’s go over each part of the parser one by one:</p>
+<p>As you can see, we’ve put the logic for the parser inside the <code>AddParser</code> class. Yacc’s <code>$$</code> is the <code>result</code>; <code>$0</code>, <code>$1</code>… is an array called <code>val</code>, and <code>$-1</code>, <code>$-2</code>… is an array called <code>_values</code>. Notice that in racc, only the parsing logic exists inside the class and everything else (i.e under <code>header</code> and <code>inner</code>) exists <em>outside</em> the class. Let’s go over each part of the parser one by one:</p>
 
 <p><strong>class AddParser</strong></p>
 
@@ -334,6 +334,14 @@ So now create a <code>Rakefile</code> in the same folder and put this code insid
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/11/24/thoughts-on-writing-your-own-compiler/">Thoughts on Writing Your Own Compiler.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/24/gsoc-2016-wrap-up-for-sciruby/">GSOC 2016 Wrap Up for SciRuby</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/">Advice for Future GSOC Students and Mentors Based on My Experience.</a>
       </li>
     
@@ -343,14 +351,6 @@ So now create a <code>Rakefile</code> in the same folder and put this code insid
     
       <li class="post">
         <a href="/blog/2016/08/16/random-thoughts-on-music-theory/">Random Thoughts on Music Theory.</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/08/05/searching-for-graduate-degree-courses-in-usa-and-japan/">Searching for Graduate Degree Courses in USA and Japan.</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/07/12/random-thoughts-on-bass-tone/">Random Thoughts on Bass Tone</a>
       </li>
     
   </ul>
@@ -396,7 +396,7 @@ So now create a <code>Rakefile</code> in the same folder and put this code insid
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Sameer Deshmukh -
+  Copyright &copy; 2017 - Sameer Deshmukh -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

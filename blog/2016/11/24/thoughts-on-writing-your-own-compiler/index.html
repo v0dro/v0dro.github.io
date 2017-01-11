@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Thoughts on Writing Your Own Compiler. - Travel &lt;code&gt; Music</title>
+  <meta name="author" content="Sameer Deshmukh">
+
+  
+  <meta name="description" content="I’m writing Rubex. It uses racc, an LALR(1) parser generator. Need to write parsers according to the LALR(1) grammar. Started with a simple &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://v0dro.github.io/blog/2016/11/24/thoughts-on-writing-your-own-compiler">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Travel &lt;code&gt; Music" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-55005305-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX", "output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ['$', '$'] ],
+    displayMath: [ ['$$', '$$']],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  messageStyle: "none",
+  "HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript"></script>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Travel &lt;code&gt; Music</a></h1>
+  
+    <h2>A place where I share my experiences with Travel, Programming and Music</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:v0dro.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/blog/archives">Archive</a></li>
+  <li><a href="/travel">Travel</a></li>
+  <li><a href="/code">Code</a></li>
+  <li><a href="/music">Music</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Thoughts on Writing Your Own Compiler.</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-11-24T21:40:55+05:30'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:40 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I’m writing Rubex. It uses racc, an LALR(1) parser generator. Need to write parsers according to the LALR(1) grammar. Started with a <a href="http://web.cs.dal.ca/~sjackson/lalr1.html">simple description</a> of LALR(1) grammars. Found a grammar checker <a href="http://smlweb.cpsc.ucalgary.ca/start.html">here</a>.</p>
+
+<p>In an LALR(1) grammar, left recursion is often preferred and seems safer.</p>
+
+<p>Parser is just one stage of this, the next challenge is building an AST that can effectively represent your language in such a way that you can easily represent any syntactical and semantic data with the parsed constructs and the different parts of the compiler can communicate effectively with each other.</p>
+
+<p>According to Language Implementation Patterns page 92, ASTs should have the following behaviour:
+- Dense: No unnecessary nodes
+- Convenient: Easy to walk
+- Meaningful: Emphasize operators, operands, and the relationship between them rather than artifacts from the grammar.</p>
+
+<p>Something important to remember when building an AST is that it must be decoupled from the grammar of the language, since grammars change all the time, and this shoul not impact other components of the language. The key idea behind AST structure is that tokens representing operators or operations become subtree roots. All other tokens become operands (children of operator nodes).</p>
+
+<p>Type structure or syntax structure can be enforced by the AST. Whenever a node is being populated, one can know if it is of the right type and raise an error if it is not.</p>
+
+<p>Type declarations can also be recorded in the AST, but we need to create a special ‘imaginary token’ to represent these. So for example, a token like <code>VARDECL</code> can be used for declaring C-like variables that look like <code>int i;</code>. In this case the children of the <code>VARDECL</code> node will be <code>int</code> and <code>i</code>.</p>
+
+<p>There are basically three steps in processing the AST:
+  #  There are 3 phases of parse tree processing, applied in order to
+  #  all the statements in a given scope-block:
+  #
+  #  (1) analyse_declarations
+  #        Make symbol table entries for all declarations at the current
+  #        level, both explicit (def, cdef, etc.) and implicit (assignment
+  #        to an otherwise undeclared name).
+  #
+  #   (2) analyse_expressions
+  #         Determine the result types of expressions and fill in the
+  #         ‘type’ attribute of each ExprNode. Insert coercion nodes into the
+  #         tree where needed to convert to and from Python objects.
+  #         Allocate temporary locals for intermediate results. Fill
+  #         in the ‘result’ attribute of each ExprNode with a C code
+  #         fragment.
+  #
+  #   (3) generate_code
+  #         Emit C code for all declarations, statements and expressions.
+  #         Recursively applies the 3 processing phases to the bodies of
+  #         functions.</p>
+
+<p>I am reading the Pyrex source as a guide of sorts. In this, he has written his own parser. The code is generated by calling the Nodes.ModuleNode.process() method.</p>
+
+<p>Now we also need a symbol table for knowing where each statement exists and what it signifies. This symbol table interacts with the AST and generates entries in the table based on information in the AST. While doing this, the AST is also populated with entries that make it more useful. I am having a look at <a href="http://what-when-how.com/compiler-writing/symbol-table-handling-techniques-compiler-writing-part-1/">this article</a> to understand symbol tables better. The <a href="https://en.wikipedia.org/wiki/Symbol_table">wiki</a> is also nice.</p>
+
+<p>every occurrence of an identifier in a source program requires some symbol-table interactio.</p>
+
+<p>A compiler may use one large symbol table for all symbols or use separated, hierarchical symbol tables for different scopes.</p>
+
+<p>In hierarchical symbol tables, the symbol table entries for Methods have two parts - one which holds the method arguments (the method symbol itself) and the other which holds the locally declared variables of the method.</p>
+
+<p>Now one might think that why is storing information in scopes so necessary if we can store stuff in the nodes of the AST anyway. The reason for this is that, it so happens that the scope needs to be passed around to a lot of objects when the AST is being populated with more information. A lot of these objects might belong somewhere down the hierarchy of the AST and it is important for these objects to have access to the symbols that they operating in to acess more information about them and enhance themselves. Hence, storing information in the hierarchical symbol table is important.</p>
+
+<p>One of the principal requirements of any compiler is type checking and type inference. This is a necessary feature especially if your language is statically typed and knowing the result data type of an expression is necessary. I’m referring to chapter 6.5 (Type Checking) of the Dragon book for this purpose.</p>
+
+<p>A type hierarchy defines which types are wider than which other types. Types lower in the hierarchy can be casted to types higher up in the hierarchy. Other way round is usually not done since it leads to loss of information.</p>
+
+<p>The semantic action for checking an expression E -&gt; E1 + E2 uses two functions mainly:
+- max(t1, t2) - Takes two types t1 and t2 and returns the maximum of the two types in the widening hierarchy. Declares error if either types are not in hierarchy.
+- widen(a,t,w) - generates type conversions if needed to widen the contents of an address a of type t into a value of type w . It returns a itself if t and w are the same type.</p>
+
+<p>One tricky thing is the null rule in the LALR(1) parser. The thing with this is that it basically tells you that if nothing on the stack matches with a rule, and a null rule is present, ‘nothing’ will be reduced to that rule and the respective production will make its way on top of the stack. This rule must be remembered at all times when writing grammars since it can wreak havoc. See this SO answer: http://stackoverflow.com/questions/8242509/how-does-the-yacc-bison-lalr1-algorithm-treat-empty-rules</p>
+
+<p>Another important concept is associativity of operators. The reason why it is important is covered nicely over here: http://stackoverflow.com/questions/930486/what-is-associativity-of-operators-and-why-is-it-important</p>
+
+<p>Take these rules for example:
+bodystmt: stmts opt_terms
+stmts: {} | stmt | stmts terms stmt</p>
+
+<p>When an else block is written as ‘else: kELSE stmts’ it will fail because the ‘stmts terms’ will first get matched and the parser will try to find a ‘stmt’ and it will fail. Replacing that with ‘bodystmt’ will solve the issue since now the parser can get away with matching ‘stmt opt_terms’ (stmts resolves to stmt).</p>
+
+<p>Another eccentricity I noticed right now is with those expr statements.</p>
+
+<p>Garbage Collection:</p>
+
+<p>Since we’re interfacing with Ruby, it is important to keep track of Ruby objects created (if any) and make sure that they get GC’d properly later.</p>
+
+<p>I’m reading this article: https://ruby-hacking-guide.github.io/gc.html for getting a hang of the Ruby GC.</p>
+
+<p>Some more references on garbage collection and memory management:
+http://stackoverflow.com/questions/2003885/garbage-collection-with-ruby-c-extension
+http://stackoverflow.com/questions/21513666/how-to-free-memory-from-char-array-in-c
+http://cjf.io/2014/03/05/adventures-with-the-ruby-garbage-collector-in-nmatrix/</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sameer Deshmukh</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-11-24T21:40:55+05:30'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:40 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://v0dro.github.io/blog/2016/11/24/thoughts-on-writing-your-own-compiler/" data-via="v0dro" data-counturl="http://v0dro.github.io/blog/2016/11/24/thoughts-on-writing-your-own-compiler/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/11/24/gsoc-2016-wrap-up-for-sciruby/" title="Previous Post: GSOC 2016 Wrap Up For SciRuby">&laquo; GSOC 2016 Wrap Up For SciRuby</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/24/thoughts-on-writing-your-own-compiler/">Thoughts on Writing Your Own Compiler.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/24/gsoc-2016-wrap-up-for-sciruby/">GSOC 2016 Wrap Up for SciRuby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/27/advice-for-future-gsoc-students-and-mentors-based-on-my-experience/">Advice for Future GSOC Students and Mentors Based on My Experience.</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/21/setting-up-a-lexical-analyser-and-parser-in-ruby/">Setting Up a Lexical Analyser and Parser in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/08/16/random-thoughts-on-music-theory/">Random Thoughts on Music Theory.</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/v0dro">@v0dro</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'v0dro',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - Sameer Deshmukh -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'v0dro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://v0dro.github.io/blog/2016/11/24/thoughts-on-writing-your-own-compiler/';
+        var disqus_url = 'http://v0dro.github.io/blog/2016/11/24/thoughts-on-writing-your-own-compiler/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
