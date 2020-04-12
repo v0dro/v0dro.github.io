@@ -14,12 +14,6 @@ In beamer terminology, a 'frame' is defined as a slide. Each frame in org-beamer
 can be specified using a heading (starting with `*` or `**` depending on the indentation
 level that you have set).
 
-# Init file
-
-# Latex header modifications for beamer
-
-# Presentation tips and tricks
-
 ## Beamer blocks
 
 ## Adding code to slides

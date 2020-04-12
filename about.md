@@ -4,15 +4,15 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+Hello! Welcome to my world :)
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+I am Sameer, 1st year Ph.D. student at Rio Yokota Lab in Tokyo Insitute of Technology.
+My current research interests are High Performance Computing, Distributed Linear Algebra
+and Low Rank Approximation.
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+Additional links:
 
-
-[jekyll-organization]: https://github.com/jekyll
+* Full resume.
+* GitHub.
+* Twitter.
+* Yokota Lab page.

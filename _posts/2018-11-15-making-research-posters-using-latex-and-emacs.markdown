@@ -21,7 +21,8 @@ Simply use a separate set of `minipage` elements and put the title within those.
 
 ## Changing fonts of the section headings
 
-Use the titlesec package for this [purpose](https://tex.stackexchange.com/questions/59726/change-size-of-section-subsection-subsubsection-paragraph-and-subparagraph-ti).
+Use the titlesec package for this
+[purpose](https://tex.stackexchange.com/questions/59726/change-size-of-section-subsection-subsubsection-paragraph-and-subparagraph-ti).
 
 A typical configuration for titlesec looks like so:
 ```
@@ -70,9 +71,9 @@ https://tex.stackexchange.com/questions/260587/an-arrow-between-two-tikzpictures
 
 ### Dependency graphs
 
-Inspiration can be taken from this state machine [tutorial](http://www.texample.net/tikz/examples/state-machine/) for drawing dependency graphs.
-Basically put things inside a `tikzpicture` block. Use the `\node` command for defining
-a node and the `\path` command for connecting these nodes.
+Inspiration can be taken from this state machine [tutorial](http://www.texample.net/tikz/examples/state-machine/)
+for drawing dependency graphs. Basically put things inside a `tikzpicture` block. Use the `\node`
+command for defining a node and the `\path` command for connecting these nodes.
 
 ### Drawing things on pictures
 
