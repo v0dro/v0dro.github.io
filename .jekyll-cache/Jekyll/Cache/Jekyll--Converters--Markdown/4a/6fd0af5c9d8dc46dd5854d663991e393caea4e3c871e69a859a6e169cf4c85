@@ -1,0 +1,42 @@
+I"a	<p>This post will talk about methods to access different types of matrix elements (diagonals, columns, rows, etc.) when a matrix is expressed as a continguous 1D array.</p>
+
+<p>Recently, I was working on implementing a matrix inversion routine using the Gauss-Jordan elimination technique in C++. This was part of the NMatrix ruby gem, and because of the limitations imposed by trying to interface a dynamic language like Ruby with C++, the elements of the NMatrix object had to expressed as a 1D contiguous C++ array for computation of the inverse.</p>
+
+<p>The in-place Gauss-Jordan matrix inversion technique uses many matrix elements in every pass. Lets see some simple equations that can be used for accessing different types of elements in a matrix in a loop.</p>
+
+<h4 id="diagonals">Diagonals</h4>
+
+<p>Lets say we have a square matrix A with shape <em>M</em>. If <em>k</em> is iterator we are using for going over each diagonal element of the matrix, then the equation will be something like <script type="math/tex">k * (M + 1)</script>.</p>
+
+<p>A for loop using the equation should look like this:</p>
+
+<div class="language-cpp highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+</pre></td>
+  <td class="code"><pre>
+<span style="color:#080;font-weight:bold">for</span> (k = <span style="color:#00D">0</span>; k &lt; M; ++k) {
+    cout &lt;&lt; A[k * (M + <span style="color:#00D">1</span>)];
+}
+
+<span style="color:#777">// This will print all the diagonal elements of a square matrix.</span>
+</pre></td>
+</tr></table>
+</div>
+
+<h4 id="rows">Rows</h4>
+
+<p>To iterate over each element in a given row of a matrix, use <script type="math/tex">row*M + col</script>. Here <code>row</code> is the fixed row and <code>col</code> goes from 0 to M-1.</p>
+
+<h4 id="columns">Columns</h4>
+
+<p>To iterate over each element in a given column of a matrix, use <script type="math/tex">col*M + row</script>. Here <code>col</code> is the fixed column and <code>row</code> goes from 0 to M-1.</p>
+
+<h4 id="general">General</h4>
+
+<p>In general the equation <script type="math/tex">row*NCOLS + col</script> will yield a matrix element with row index <code>row</code> and column index <code>col</code>.</p>
+:ET

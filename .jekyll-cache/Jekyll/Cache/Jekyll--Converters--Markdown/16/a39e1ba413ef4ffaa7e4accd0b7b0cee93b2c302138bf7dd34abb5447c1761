@@ -1,0 +1,98 @@
+I"�<p>In this blog post I will elaborate on how a few of the features in <a href="https://github.com/v0dro/daru">daru</a> were implemeted. Notably I will stress on what spurred a need for that particular design of the code.</p>
+
+<p>This post is primarily intended to serve as documentation for me and future contributors. If readers have any inputs on improving this post, I’d be happy to accept new contributions :)</p>
+
+<h2 id="index-factory-architecture">Index factory architecture</h2>
+
+<p>Daru currently supports three types of indexes, Index, MultiIndex and DateTimeIndex.</p>
+
+<p>It became very tedious to write if statements in the Vector or DataFrame codebase whenever a new data structure was to be created, since there were 3 possible indexes that could be attached with every data set. This mainly depended on what kind of data was present in the index, i.e. tuples would create a MultiIndex, DateTime objects or date-like strings would create a DateTimeIndex, and everything else would create a Daru::Index.</p>
+
+<p>This looked something like the perfect use case for the <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">factory pattern</a>, the only hurdle being that the factory pattern in the pure sense of the term would be a superclass, something called <code>Daru::IndexFactory</code> that created an Index, DateTimeIndex or MultiIndex index using some methods and logic. The problem is that I did not want to call a separate class for creating Indexes. This would break existing code and possibly cause problems in libraries that were already using daru (viz. <a href="https://github.com/SciRuby/statsample">statsample</a>), not to mention confusing users about which class they’re actually supposed to be using.</p>
+
+<p>The solution came after I read <a href="http://blog.sidu.in/2007/12/rubys-new-as-factory.html">this blog post</a>, which demonstrates that the <code>.new</code> method for any class can be overridden. Thus, instead of calling <code>initialize</code> for creating the instance of a class, it calls the overridden <code>new</code>, which can then call initialize for instantiating an instance of that class. It so happens that you can make <code>new</code> return any object you want, unlike initialize which must an instance of the class it is declared in. Thus, for the factory pattern implementation of Daru::Index, we over-ride the <code>.new</code> method of the Daru::Index and write logic such that it manufactures the appropriate kind of index based on the data that is passed to <code>Daru::Index.new(data)</code>. The pseudo code for doing this looks something like this:</p>
+
+<div class="language-ruby highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+<a href="#n9" name="n9">9</a>
+<strong><a href="#n10" name="n10">10</a></strong>
+<a href="#n11" name="n11">11</a>
+<a href="#n12" name="n12">12</a>
+<a href="#n13" name="n13">13</a>
+<a href="#n14" name="n14">14</a>
+<a href="#n15" name="n15">15</a>
+<a href="#n16" name="n16">16</a>
+<a href="#n17" name="n17">17</a>
+<a href="#n18" name="n18">18</a>
+<a href="#n19" name="n19">19</a>
+<strong><a href="#n20" name="n20">20</a></strong>
+</pre></td>
+  <td class="code"><pre>
+<span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">Daru::Index</span>
+  <span style="color:#777"># some stuff...</span>
+
+  <span style="color:#080;font-weight:bold">def</span> <span style="color:#069">self</span>.<span style="color:#06B;font-weight:bold">new</span> *args, &amp;block
+    source = args[<span style="color:#00D">0</span>]
+
+    <span style="color:#080;font-weight:bold">if</span> source_looks_like_a_multi_index
+      create_multi_index_and_return
+    <span style="color:#080;font-weight:bold">elsif</span> source_looks_like_date_time_index
+      create_date_time_index_and_return
+    <span style="color:#080;font-weight:bold">else</span> <span style="color:#777"># Create the Daru::Index by calling initialize</span>
+      i = <span style="color:#069">self</span>.allocate
+      i.send <span style="color:#A60">:initialize</span>, *args, &amp;block
+      i
+    <span style="color:#080;font-weight:bold">end</span>
+  <span style="color:#080;font-weight:bold">end</span>
+
+  <span style="color:#777"># more stuff...</span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></td>
+</tr></table>
+</div>
+
+<p>Also, since over-riding <code>.new</code> tampers with the subclasses of the class as well, <a href="https://github.com/v0dro/daru/blob/master/lib/daru/index.rb#L14">an <code>inherited</code> hook that replaces the over-ridden <code>.new</code></a> of the inherited class with the original one was added to <code>Daru::Index</code>.</p>
+
+<h2 id="working-of-the-where-clause">Working of the where clause</h2>
+
+<p>The where clause in daru lets users query data with a Array containing boolean variables. So whenever you call <code>where</code> on Daru::Vector or DataFrame, and pass in an Array containing true or false values, all the rows corresponding with <code>true</code> will be returned as a Vector or DataFrame respectively.</p>
+
+<p>Since the where clause works in cojunction with the comparator methods of Daru::Vector (which return a Boolean Array), it was essential for these boolean arrays to be combined together such that piecewise AND and OR operations could be performed between multiple boolean arrays. Hence, the <code>Daru::Core::Query::BoolArray</code> class was created, which is specialized for handling boolean arrays and performing piecewise boolean operations.</p>
+
+<p>The BoolArray defines the <code>#&amp;</code> method for piecewise AND operations and it defines the <code>#|</code> method for piecewise OR operations. They work as follows:</p>
+
+<div class="language-ruby highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+<a href="#n9" name="n9">9</a>
+<strong><a href="#n10" name="n10">10</a></strong>
+<a href="#n11" name="n11">11</a>
+</pre></td>
+  <td class="code"><pre>
+require <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">daru</span><span style="color:#710">'</span></span>
+
+a = <span style="color:#036;font-weight:bold">Daru</span>::<span style="color:#036;font-weight:bold">Core</span>::<span style="color:#036;font-weight:bold">Query</span>::<span style="color:#036;font-weight:bold">BoolArray</span>.new([<span style="color:#069">true</span>,<span style="color:#069">false</span>,<span style="color:#069">false</span>,<span style="color:#069">true</span>,<span style="color:#069">false</span>,<span style="color:#069">true</span>])
+<span style="color:#777">#=&gt; (Daru::Core::Query::BoolArray:84314110 bool_arry=[true, false, false, true, false, true])</span>
+b = <span style="color:#036;font-weight:bold">Daru</span>::<span style="color:#036;font-weight:bold">Core</span>::<span style="color:#036;font-weight:bold">Query</span>::<span style="color:#036;font-weight:bold">BoolArray</span>.new([<span style="color:#069">false</span>,<span style="color:#069">true</span>,<span style="color:#069">false</span>,<span style="color:#069">true</span>,<span style="color:#069">false</span>,<span style="color:#069">true</span>])
+<span style="color:#777">#=&gt; (Daru::Core::Query::BoolArray:84143650 bool_arry=[false, true, false, true, false, true])</span>
+a &amp; b
+<span style="color:#777">#=&gt; (Daru::Core::Query::BoolArray:83917880 bool_arry=[false, false, false, true, false, true])</span>
+a | b
+<span style="color:#777">#=&gt; (Daru::Core::Query::BoolArray:83871560 bool_arry=[true, true, false, true, false, true])</span>
+</pre></td>
+</tr></table>
+</div>
+:ET

@@ -1,0 +1,92 @@
+I"%<p>Interpolation involves predicting the co-ordinates of a point given the co-ordinates of points around it. Interpolation can be done in one or more dimensions. In this article I will give you a brief introduction of one-dimensional interpolation and execute it on a sample data set using the <a href="https://github.com/v0dro/interpolation">interpolation</a> gem.</p>
+
+<p>One dimensional interpolation involves considering consecutive points along the X-axis with known Y co-ordinates and predicting the Y co-ordinate for a given X co-ordinate.</p>
+
+<p>There are several types of interpolation depending on the number of known points used for predicting the unknown point, and several methods to compute them, each with their own varying accuracy. Methods for interpolation include the classic Polynomial interpolation with Lagrange’s formula or spline interpolation using the concept of spline equations between points.</p>
+
+<p>The spline method is found to be more accurate and hence that is what is used in the interpolation gem.</p>
+
+<h2 id="common-interpolation-routines">Common Interpolation Routines</h2>
+
+<p>Install the <code>interpolation</code> gem with <code>gem install interpolation</code>. Now lets see a few common interpolation routines and their implementation in Ruby:</p>
+
+<h4 id="linear-interpolation">Linear Interpolation</h4>
+
+<p>This is the simplest kind of interpolation. It involves simply considering two points such that <em>x[j]</em> &lt; <em>num</em> &lt; <em>x[j+1]</em>, where <em>num</em> is the unknown point, and considering the slope of the straight line between <em>(x[j], y[j] )</em> and <em>(x[j+1], y[j+1])</em>, predicts the Y co-ordinate using a simple linear polynomial.</p>
+
+<p>Linear interpolation uses this equation:</p>
+
+<script type="math/tex; mode=display">\begin{align}
+    y = (y[j] + \frac{(interpolant - x[j])}{(x[j + 1] - x[j])} \times (y[j + 1] - y[j])
+\end{align}</script>
+
+<p>Here <em>interpolant</em> is the value of the X co-orinate whose corresponding Y-value needs to found.</p>
+
+<p>Ruby code:</p>
+
+<div class="language-ruby highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+<a href="#n9" name="n9">9</a>
+</pre></td>
+  <td class="code"><pre>
+require <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">interpolation</span><span style="color:#710">'</span></span>
+
+x = (<span style="color:#00D">0</span>..<span style="color:#00D">100</span>).step(<span style="color:#00D">3</span>).to_a
+y = x.map { |a| <span style="color:#036;font-weight:bold">Math</span>.sin(a) }
+
+int = <span style="color:#036;font-weight:bold">Interpolation</span>::<span style="color:#036;font-weight:bold">OneDimensional</span>.new x, y, <span style="color:#606">type</span>: <span style="color:#A60">:linear</span>
+int.interpolate <span style="color:#00D">35</span>
+<span style="color:#777"># =&gt; -0.328</span>
+</pre></td>
+</tr></table>
+</div>
+
+<h4 id="cubic-spline-interpolation">Cubic Spline Interpolation</h4>
+
+<p>Cubic Spline interpolation defines a cubic spline equation for each set of points between the <em>1st</em> and <em>nth</em> points. Each equation is smooth in its first derivative and continuos in its second derivative.</p>
+
+<p>So for example, if the points on a curve are labelled <em>i</em>, where <em>i = 1..n</em>, the equations representing any two points <em>i</em> and <em>i-1</em> will look like this:</p>
+
+<script type="math/tex; mode=display">\begin{align}
+    a_{i}x^3_{i} + b_{i}x^2_{i} + c_{i}x_{i} + d_{i} = y_{i}
+\end{align}</script>
+
+<script type="math/tex; mode=display">\begin{align}
+    a_{i-1}x^3_{i-1} + b_{i-1}x^2_{i-1} + c_{i-1}x_{i-1} + d_{i-1} = y_{i-1}
+\end{align}</script>
+
+<p>Cubic spline interpolation involves finding the second derivative of all points <script type="math/tex">y_{i}</script>, which can then be used for evaluating the cubic spline polynomial, which is a function of <em>x</em>, <em>y</em> and the second derivatives of <em>y</em>.</p>
+
+<p>For more information read <a href="http://mathworld.wolfram.com/CubicSpline.html">this</a> resource.</p>
+
+<div class="language-ruby highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+<a href="#n9" name="n9">9</a>
+</pre></td>
+  <td class="code"><pre>
+require <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">interpolation</span><span style="color:#710">'</span></span>
+
+x = (<span style="color:#00D">0</span>..<span style="color:#00D">9</span>).step(<span style="color:#00D">1</span>).to_a
+y = x.map { |e| <span style="color:#036;font-weight:bold">Math</span>.exp(e) }
+
+f = <span style="color:#036;font-weight:bold">Interpolation</span>::<span style="color:#036;font-weight:bold">OneDimensional</span>.new(<span style="color:#33B">@x</span>, <span style="color:#33B">@y</span>, <span style="color:#606">type</span>: <span style="color:#A60">:cubic</span>, <span style="color:#606">sorted</span>: <span style="color:#069">true</span>)
+f.interpolate(<span style="color:#60E">2.5</span>)
+<span style="color:#777"># =&gt; 12.287</span>
+</pre></td>
+</tr></table>
+</div>
+:ET

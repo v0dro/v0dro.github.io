@@ -1,0 +1,2 @@
+I"†<p>Iâ€™ve just released daru version 0.0.5, which brings in a lot of new features and consolidates existing ones. <a href="https://github.com/SciRuby/nmatrix">NMatrix</a> is now well integrated into Daru and all of the operations that can be performed using Arrays as the underlying implementation can be performed using NMatrix as well (except some operations involving missing data).</p>
+:ET

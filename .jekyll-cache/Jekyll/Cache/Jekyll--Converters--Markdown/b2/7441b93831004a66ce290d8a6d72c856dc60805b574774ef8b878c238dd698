@@ -1,0 +1,360 @@
+I"�P<!--
+.. Title: PyTorch TensorIterator Internals
+.. slug: pytorch-tensoriterator-internals
+.. date: 2020-03-12 22:39:56 UTC-05:00
+.. tags: 
+.. category: 
+.. link: 
+.. description: 
+.. type: text
+-->
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+<p><strong>Table of Contents</strong></p>
+
+<ul>
+  <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#history-of-tensoriterator">History of TensorIterator</a>
+    <ul>
+      <li><a href="#th-iterators">TH iterators</a></li>
+      <li><a href="#limitations-of-th-iterators">Limitations of TH iterators</a></li>
+    </ul>
+  </li>
+  <li><a href="#basics-of-tensoriterator">Basics of TensorIterator</a></li>
+  <li><a href="#performing-iterations">Performing iterations</a>
+    <ul>
+      <li><a href="#iteration-details">Iteration details</a>
+        <ul>
+          <li><a href="#using-kernels-for-iterations">Using kernels for iterations</a></li>
+          <li><a href="#setting-tensor-iteration-dimensions">Setting tensor iteration dimensions</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<!-- markdown-toc end -->
+
+<h1 id="introduction">Introduction</h1>
+
+<p>PyTorch is one of the leading frameworks for deep learning. Its core data structure is
+Tensor, a multi-dimensional array implementation with many advanced features like auto-differentiation. PyTorch is a massive
+codebase (approx. <a href="https://www.openhub.net/p/pytorch">12 GB of files and about a million lines</a> of
+C++, Python and CUDA code), and having a method for iterating over tensors in a very efficient manner that is independent of
+data type, dimension, striding and hardware is a critical feature that can lead to a very
+massive simplification of the codebase and make distributed development much faster and
+smoother. The <a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/TensorIterator.cpp"><code>TensorIterator</code></a> C++ class within PyTorch is a complex yet useful class that
+is used for iterating over the elements of a tensor over any dimension and implicitly
+parallelizing various operations in a device independent manner.</p>
+
+<p>It does this through
+a C++ API that is independent of type and device of the tensor, freeing the programmer
+of having to worry about the datatype or device when writing iteration logic for PyTorch
+tensors. For those coming from the NumPy universe, <code>NpyIter</code> is a close cousin of <code>TensorIterator</code>.</p>
+
+<p>This post is a deep dive into how <code>TensorIterator</code> works, and is
+an essential part of learning to contribute to the PyTorch codebase since iterations
+over tensors in the C++ codebase are extremely commonplace. This post is aimed at someone
+who wants to contribute to PyTorch, and you should at least be familiar with some of the
+basic terminologies of the PyTorch codebase that can be found in Edward Yang’s 
+excellent <a href="http://blog.ezyang.com/2019/05/pytorch-internals/**">blog post</a> on PyTorch internals.
+Although <code>TensorIterator</code> can be used for both CPUs and accelerators, this post has been
+written keeping in mind usage on the CPU. Although there can be some dissimilarities between
+the two, the overall concepts are the same.</p>
+
+<h1 id="history-of-tensoriterator">History of TensorIterator</h1>
+
+<h2 id="th-iterators">TH iterators</h2>
+
+<p>TensorIterator was devised to simplify the implementation of PyTorch’s tensor operations over the <code>TH</code> implementation. <code>TH</code> uses preprocessor macros to write type-independent loops over tensors, instead of C++ templates. For example, consider this simple <code>TH</code> loop
+for computing the product of all the numbers in a particular dimension (find the code 
+<a href="https://github.com/pytorch/pytorch/blob/master/aten/src/TH/generic/THTensorMoreMath.cpp#L350">here</a>):</p>
+
+<div class="language-C highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+</pre></td>
+  <td class="code"><pre>TH_TENSOR_DIM_APPLY2(scalar_t, t, scalar_t, r_, dimension,
+    accreal prod = <span style="color:#00D">1</span>;
+    int64_t i;
+    <span style="color:#080;font-weight:bold">for</span>(i = <span style="color:#00D">0</span>; i &lt; t_size; i++)
+        prod *= t_data[i*t_stride];
+    *r__data = (scalar_t)prod;
+);
+</pre></td>
+</tr></table>
+</div>
+
+<p>The above loop works by following a particular convention for the naming of the
+types and variables. You specify the input type and output type of your tensors in the first
+and third arguments. <code>scalar_t</code> is a type that can generically be used for denoting a PyTorch
+scalar type such as <code>float</code>, <code>double</code>, <code>long</code> etc. Internally, PyTorch uses the <code>scalar_t</code> 
+for compiling the file multiple times for different definitions of <code>scalar_t</code> (as in for different
+data types like <code>float</code>, <code>int</code>, etc.). The input tensor and output tensors are
+specified in the second and fourth arguments (in this case <code>t</code> and <code>r_</code>), and the dimension that
+we want to iterate over is specified as the fifth argument (<code>dimension</code>).</p>
+
+<p>We then follow these arguments with the main body of the iterator (which is accepted as the sixth
+argument into the macro), and denote the data, stride and size of the particular tensor dimension
+by using variables that are suffixed by <code>_data</code>, <code>_stride</code> and <code>_size</code> respectively after the
+variable name that represents the tensor inside the iterator body. For example, the size of the
+input tensor is denoted as <code>t_size</code> in the above example and the pointer to the data of the output
+tensor is denoted as <code>r__data</code>. The <code>accreal</code> in the second line is custom type that specifies
+a real number that is an accumulator (in this case for accumulating the product).</p>
+
+<p>Internally, the <code>TH_TENSOR_DIM_APPLY2</code> macro is expanded for generating various dispatch calls 
+depending on the type of the tensor that needs to be iterated over. The implementation of 
+<code>TH_TENSOR_DIM_APPLY2</code> can be found <a href="https://github.com/pytorch/pytorch/blob/master/aten/src/TH/THTensorDimApply.h#L138">here</a>.</p>
+
+<h2 id="limitations-of-th-iterators">Limitations of TH iterators</h2>
+
+<p>Apart from the obvious complication that arises due to maintaining a codebase that is so dependent
+on such insanely complex macro expansions, TH iterators have some fundamental shortcomings. For
+one thing, they cannot be used for writing iterators in a device independent manner - you will
+need separate iterators for CPU and CUDA. Also, parallelization does not happen implicitly
+inside the iterator, you need to write the parallel looping logic yourself. Moreover, at a deeper
+level <code>TH</code> iterators do not collapse the dimensions of the tensor (as we’ll see later in this
+post) therefore leading to looping that might not be as cache-optimized as possible.</p>
+
+<p>These limitations led to the creation of <code>TensorIterator</code>, which is used by the
+<code>ATen</code> tensor implementation for overcoming some of the shortcomings of the previous <code>TH</code>
+iterators.</p>
+
+<h1 id="basics-of-tensoriterator">Basics of TensorIterator</h1>
+
+<p>A <code>TensorIterator</code> can be created using the default constructor. You must then add the tensors
+that you want as inputs or outputs. A good example can be found from the <code>TensorIterator::binary_op()</code>
+<a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/TensorIterator.cpp#L652">method</a> that
+allows you to create <code>TensorIterator</code> objects for performing point-wise binary operations
+between two tensors. The important parts look like so:</p>
+
+<div class="language-cpp highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+</pre></td>
+  <td class="code"><pre><span style="color:#088;font-weight:bold">auto</span> iter = TensorIterator();
+
+iter.add_output(out);
+iter.add_input(a);
+iter.add_input(b);
+
+iter.build();
+</pre></td>
+</tr></table>
+</div>
+<p>As you can see, you add a tensor called <code>out</code> as the output tensors and <code>a</code> and <code>b</code> as the
+input tensors. Calling <code>build</code> is then mandatory for creating the object and letting
+the class perform other optimizations like collapsing dimensions.</p>
+
+<h1 id="performing-iterations">Performing iterations</h1>
+
+<p>Broadly, iterations using <code>TensorIterator</code> can be classified as point-wise iterations
+or reduction iterations. This plays a fundamental role in how iterations using <code>TensorIterator</code>
+are parallelized - point-wise iterations can be freely parallelized along any dimension
+and grain size while reduction operations have to be either parallelized along dimensions
+that you’re not iterating over or by performing bisect and reduce operations along the
+dimension being iterated. Parallelization can also happen using vectorized operations.</p>
+
+<h2 id="iteration-details">Iteration details</h2>
+
+<p>The simplest iteration operation can be performed using the 
+<a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/TensorIterator.cpp#L525"><code>for_each</code></a> 
+function. This function has two overloads: one takes a function object which iterates over a
+single dimension (<code>loop_t</code>); the other takes a function object which iterates over two
+dimensions simultaneously (<code>loop2d_t</code>). Find their definitions <a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/TensorIterator.h#L166">here</a>. The former can iterate over a loop
+of a single dimension whereas the latter can do so over two dimensions. The simplest
+way of using <code>for_each</code> is to pass it a lambda of type <code>loop_t</code> (or <code>loop2d_t</code>).
+A code snippet using it this way would look like so:</p>
+
+<div class="language-cpp highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+<a href="#n9" name="n9">9</a>
+<strong><a href="#n10" name="n10">10</a></strong>
+<a href="#n11" name="n11">11</a>
+<a href="#n12" name="n12">12</a>
+<a href="#n13" name="n13">13</a>
+<a href="#n14" name="n14">14</a>
+<a href="#n15" name="n15">15</a>
+<a href="#n16" name="n16">16</a>
+<a href="#n17" name="n17">17</a>
+<a href="#n18" name="n18">18</a>
+<a href="#n19" name="n19">19</a>
+<strong><a href="#n20" name="n20">20</a></strong>
+<a href="#n21" name="n21">21</a>
+<a href="#n22" name="n22">22</a>
+</pre></td>
+  <td class="code"><pre><span style="color:#088;font-weight:bold">auto</span> iter = TensorIterator();
+iter.add_output(out);
+iter.add_input(a);
+iter.dont_resize_outputs(); <span style="color:#777">// call if out is allocated.</span>
+iter.dont_compute_common_dtype(); <span style="color:#777">// call if inputs/outputs are of a different type.</span>
+iter.build();
+
+<span style="color:#088;font-weight:bold">auto</span> loop = [&amp;](<span style="color:#0a8;font-weight:bold">char</span> **data, <span style="color:#088;font-weight:bold">const</span> int64_t* strides, int64_t n) {
+    <span style="color:#088;font-weight:bold">auto</span> * out_data_bytes = data[<span style="color:#00D">0</span>];
+    <span style="color:#088;font-weight:bold">auto</span> * in_data_bytes = data[<span style="color:#00D">1</span>];
+    
+    <span style="color:#777">// assume float data type for this example.</span>
+    <span style="color:#080;font-weight:bold">for</span> (<span style="color:#0a8;font-weight:bold">int</span> i = <span style="color:#00D">0</span>; i &lt; n; i++) {
+      *<span style="color:#080;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#0a8;font-weight:bold">float</span>*&gt;(out_data_bytes) +=
+        *<span style="color:#080;font-weight:bold">reinterpret_cast</span>&lt;<span style="color:#0a8;font-weight:bold">float</span>*&gt;(in_data_bytes);
+        
+      out_data_bytes += strides[<span style="color:#00D">0</span>];
+      in_data_bytes += strides[<span style="color:#00D">1</span>];
+    }
+}
+
+iter.for_each(loop);
+</pre></td>
+</tr></table>
+</div>
+<p>In the above example, the <code>char** data</code> gives a pointer to the data within the
+tensor in the same order that you specify when you build the iterator. Note
+that in order to make the implementation agnostic of any particular data type, you
+will always receive the pointer typecast to <code>char</code> (think of it as a bunch of bytes).</p>
+
+<p>The second argument is <code>int64_t* strides</code> which is an array containing the strides of
+each tensor in the dimension that you’re iterating over. We can add this stride to the
+pointer received in order to reach the next element in the tensor. The last argument is
+<code>int64_t n</code> which is the size of the dimension being iterated over.</p>
+
+<p><code>for_each</code> implicitly parallelizes the operation by executing <code>loop</code> in parallel
+if the number of iterations is more than the value of <code>internal::GRAIN_SIZE</code>, which is a value
+that is determined as the ‘right amount’ of data to iterate over in order to gain a significant
+speedup using multi-threaded execution. If you want to explicitly specify that your
+operation <em>must</em> run in serial, then use the <code>serial_for_each</code> loop.</p>
+
+<h3 id="using-kernels-for-iterations">Using kernels for iterations</h3>
+
+<p>Frequently we want to create a kernel that applies a simple point-wise function onto entire tensors.
+<code>TensorIterator</code>
+provides various such generic kernels that can be used for iterating over the elements
+of a tensor without having to worry about the stride, data type of the operands or details
+of the parallelism.</p>
+
+<p>For example, say we want to build a function that performs the point-wise addition
+of two tensors and stores the result in a third tensor, we can use the <code>cpu_kernel</code>
+function. Note that in this example we assume a tensor of <code>float</code> but you can
+use the <code>AT_DISPATCH_ALL_TYPES_AND2</code> macro.</p>
+<div class="language-cpp highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+</pre></td>
+  <td class="code"><pre>TensorIterator iter;
+iter.add_input(a_tensor);
+iter.add_input(b_tensor);
+iter.add_output(c_tensor);
+iter.build();
+cpu_kernel(iter, [] (<span style="color:#0a8;font-weight:bold">float</span> a, <span style="color:#0a8;font-weight:bold">float</span> b) -&gt; <span style="color:#0a8;font-weight:bold">float</span> {
+  <span style="color:#080;font-weight:bold">return</span> a + b;
+});
+</pre></td>
+</tr></table>
+</div>
+<p>Writing the kernel in this way ensures that the value returned by the lambda passed to
+<code>cpu_kernel</code> will populate the corresponding place in the target output tensor.</p>
+
+<h3 id="setting-tensor-iteration-dimensions">Setting tensor iteration dimensions</h3>
+
+<p>The value of the sizes and strides will determine which dimension of the tensor you will iterate over.
+<code>TensorIterator</code> performs optimizations to make sure that at least
+most of the iterations happen on contiguos data to take advantage of hierarchical cache-based
+memory architectures (think dimension coalescing and reordering for maximum data locality).</p>
+
+<p>Now a multi-dimensional tensor will have multiple stride values depending on the dimension
+you want to iterate over, so <code>TensorIterator</code> will directly compute the strides that
+get passed into the loop by
+by itself within the <code>build()</code> function. How exactly it computes the dimension
+to iterate over is something that should be properly understood in order to use <code>TensorIterator</code>
+effectively.</p>
+
+<p>If you’re performing a reduction operation (see the sum code in <a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/ReduceOps.cpp#L384">ReduceOps.cpp</a>),
+<code>TensorIterator</code> will figure out the dimensions that will be reduced depending
+on the shape of the input and output tensor, which determines how the input will be broadcast
+over the output. If you’re
+performing a simple pointwise operation between two tensors (like a <code>addcmul</code> from 
+<a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/PointwiseOps.cpp#L31">PointwiseOps.cpp</a>)
+the iteration will happen over the entire tensor, without providing a choice of the dimension.
+This will allow TensorIterator to freely parallelize the computation, without guarantees of
+the order of execution (since it does not matter anyway).</p>
+
+<p>For something like a cumulative sum operation, where you want be able to choose the dimension
+to reduce but iterate over multiple non-reduced dimensions (possibly in parallel), you
+must first re-stride the tensors, and then use these tensors 
+for creating a <code>TensorIterator</code>. In order to understand how this bit works, lets go over
+the code for the <a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/cpu/ReduceOpsKernel.cpp#L21">kernel</a> that executes the <a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/cpu/ReduceOpsKernel.cpp#L71">cumsum</a> function.</p>
+
+<p>The important bits of this function are like so:</p>
+
+<div class="language-cpp highlighter-coderay"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre><a href="#n1" name="n1">1</a>
+<a href="#n2" name="n2">2</a>
+<a href="#n3" name="n3">3</a>
+<a href="#n4" name="n4">4</a>
+<a href="#n5" name="n5">5</a>
+<a href="#n6" name="n6">6</a>
+<a href="#n7" name="n7">7</a>
+<a href="#n8" name="n8">8</a>
+<a href="#n9" name="n9">9</a>
+<strong><a href="#n10" name="n10">10</a></strong>
+<a href="#n11" name="n11">11</a>
+<a href="#n12" name="n12">12</a>
+</pre></td>
+  <td class="code"><pre><span style="color:#088;font-weight:bold">auto</span> self_sizes = ensure_nonempty_vec(self.sizes().vec());
+self_sizes[dim] = <span style="color:#00D">1</span>;
+
+<span style="color:#088;font-weight:bold">auto</span> result_restrided = restride_dim(result, dim, self_sizes);
+<span style="color:#088;font-weight:bold">auto</span> self_restrided = restride_dim(self, dim, self_sizes);
+
+<span style="color:#088;font-weight:bold">auto</span> iter = TensorIterator();
+iter.dont_compute_common_dtype();
+iter.dont_resize_outputs();
+iter.add_output(result_restrided);
+iter.add_input(self_restrided);
+iter.build();
+</pre></td>
+</tr></table>
+</div>
+<p>You can see that we first change the size of the tensors to <code>1</code> on the
+reduction dimension so that the dimension collapsing logic inside
+<code>TensorIterator#build</code> will know which dimension to skip.
+Setting the dimension in this way is akin to telling <code>TensorIterator</code>
+to skip the dimension. We then restride the tensors using <code>restride_dim</code> and
+then use the restrided tensors for building the <code>TensorIterator</code>. You can
+set any size for inputs/outputs, then <code>TensorIterator</code> with check whether it
+can come up with a common broadcasted size</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>This post was a very short introduction to what <code>TensorIterator</code> is actually
+capable of. If you want to learn more about how it works and what goes into
+things like collapsing the tensor size for optimizing memory access, a good
+place to start would be the <code>build()</code> function in 
+<a href="https://github.com/pytorch/pytorch/blob/master/aten/src/ATen/native/TensorIterator.cpp#L1030">TensorIterator.cpp</a>.
+Also have a look at <a href="https://github.com/pytorch/pytorch/wiki/How-to-use-TensorIterator">this blog post</a> from the PyTorch team
+on using <code>TensorIterator.</code></p>
+:ET

@@ -1,0 +1,62 @@
+I"�<p>Combining org-mode and the Latex beamer package allows us to write high quality
+presentations using the power of both emacs org-mode and beamer.</p>
+
+<p>Here’s my customizations:</p>
+
+<h1 id="getting-started">Getting started</h1>
+
+<p>In beamer terminology, a ‘frame’ is defined as a slide. Each frame in org-beamer-mode
+can be specified using a heading (starting with <code>*</code> or <code>**</code> depending on the indentation
+level that you have set).</p>
+
+<h1 id="init-file">Init file</h1>
+
+<h1 id="latex-header-modifications-for-beamer">Latex header modifications for beamer</h1>
+
+<h1 id="presentation-tips-and-tricks">Presentation tips and tricks</h1>
+
+<h2 id="beamer-blocks">Beamer blocks</h2>
+
+<h2 id="adding-code-to-slides">Adding code to slides</h2>
+
+<p>It is important to set a frame to <code>fragile</code> when you add code (or anything <code>verbatim</code>) to 
+your slides. It can be done using the <code>BEAMER_OPT</code> property. For example:</p>
+<pre><code>:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+</code></pre>
+
+<h2 id="splitting-into-two-columns">Splitting into two columns</h2>
+
+<p>Use <code>beamer blocks</code> using the <code>C-c C-b</code> commands for generating beamer blocks
+via org. For the simplest use case where a beamer block is a column, a heading
+needs to specified as a <code>B_block</code> and a <code>BMCOL</code>. Beamer will then take the heading
+of each column as the heading of the block. A minimal example would look like so:</p>
+<pre><code>** Heading left                                             :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :BEAMER_env: block
+    :END:
+
+    some text.
+    
+** Heading right                                              :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :BEAMER_env: block
+    :END:
+
+    some other text.
+
+</code></pre>
+<p>org-beamer will simply keep adding columns until the <code>BEAMER_col</code> property
+is present. The value supplied to that property is the percentage width that
+the column occupies.</p>
+
+<h1 id="useful-links">Useful links</h1>
+
+<ul>
+  <li>Org Beamer reference card: https://github.com/fniessen/refcard-org-beamer</li>
+  <li>Org dependencies: https://orgmode.org/worg/org-dependencies.html</li>
+</ul>
+:ET

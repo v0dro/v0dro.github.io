@@ -1,0 +1,57 @@
+I"
+<p>In this post I will write the detail the steps I took to reproduce distributed
+LU factorization using the Chameleon library. It is a linear algebra library
+based on the starPU runtime system.</p>
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+<p><strong>Table of Contents</strong></p>
+
+<ul>
+  <li><a href="#installing-chameleon">Installing chameleon</a></li>
+  <li><a href="#compiling-and-linking-your-programs">Compiling and linking your programs</a></li>
+  <li><a href="#distributed-lu-factorization-implmentation">Distributed LU factorization implmentation</a></li>
+</ul>
+
+<!-- markdown-toc end -->
+
+<h1 id="installing-chameleon">Installing chameleon</h1>
+
+<p>Clone the sources from gitlab:</p>
+<pre><code>git clone --recursive https://gitlab.inria.fr/solverstack/chameleon.git
+</code></pre>
+
+<p>Configure with the following for a non-CUDA, MPI-enabled build:</p>
+<pre><code>cd chameleon
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug \
+         -DCMAKE_INSTALL_PREFIX=$HOME/gitrepos/hicma/profiling/chameleon/chameleon/build \
+         -DCHAMELEON_USE_CUDA=OFF \
+         -DCHAMELEON_USE_MPI=ON \
+         -DFXT_DIR=/home/1/17M38101/software/fxt-0.3.8 \
+         -DSTARPU_DIR=/home/1/17M38101/software/starpu-1.3.2-test \
+         -DSTARPU_FIND_COMPONENTS=ON \
+         -DCHAMELEON_ENABLE_TRACING=ON
+make install
+</code></pre>
+<p>Make sure that you’re using openmpi. For some reason chameleon refuses to work with a starpu
+that has been compiled with intel-mpi.</p>
+
+<h1 id="compiling-and-linking-your-programs">Compiling and linking your programs</h1>
+
+<p>Make sure you have starpu and starpumpi configured in your pkg-config path. You can then
+get the compiler flags with <code>pkg-config --cflags chameleon</code> and linker flags with
+<code>pkg-config --libs --static chameleon</code>.</p>
+
+<h1 id="distributed-lu-factorization-implementations">Distributed LU factorization implementations</h1>
+
+<p>The <code>chameleon_pzgetrf_nopiv(CHAM_desc_t*, RUNTIME_sequence_t *, RUNTIME_request_t *)</code>
+function is used for a distributed LU factorization using Chameleon and starpu underneath. It
+implements a right-looking variant of the LU factorization, which is a very common algorithm
+made popular by SCALAPACK.</p>
+
+<p>The <code>chameleon_pzgetrf_incpiv()</code> function is a used for a distributed LU using a newer
+LU algorithm presented in <a href="">this paper</a>. It claims to have superior performance compared
+to right-looking LU since communication and computation can be overlapped better.</p>
+
+:ET

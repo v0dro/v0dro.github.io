@@ -1,0 +1,83 @@
+I"`<p>Using the a0poster package, you can use Latex for designing reserach posters.</p>
+
+<h1 id="helpful-commands">Helpful commands</h1>
+
+<h2 id="various-programming-constructs">Various programming constructs</h2>
+
+<h3 id="variables">Variables</h3>
+
+<p>Add variables or new commands using <code>\newcommand</code>. For example <code>\newcommand{\sidel}{6}</code>.</p>
+
+<p>Link: https://stackoverflow.com/questions/1211888/is-there-any-way-i-can-define-a-variable-in-latex</p>
+
+<h2 id="adding-a-title-to-your-poster">Adding a title to your poster</h2>
+
+<p>Simply use a separate set of <code>minipage</code> elements and put the title within those.</p>
+
+<h2 id="changing-fonts-of-the-section-headings">Changing fonts of the section headings</h2>
+
+<p>Use the titlesec package for this <a href="https://tex.stackexchange.com/questions/59726/change-size-of-section-subsection-subsubsection-paragraph-and-subparagraph-ti">purpose</a>.</p>
+
+<p>A typical configuration for titlesec looks like so:</p>
+<pre><code>\usepackage{titlesec}
+
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat*{\paragraph}{\large\bfseries}
+\titleformat*{\subparagraph}{\large\bfseries}
+</code></pre>
+
+<h2 id="overlaying-text-on-an-image">Overlaying text on an image</h2>
+
+<p>Use the ‘overpic’ package for this. This this link for details:
+https://tex.stackexchange.com/questions/20792/how-to-superimpose-latex-on-a-picture</p>
+
+<p>Overpic full docs: http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/overpic/overpic.pdf</p>
+
+<h2 id="drawing-boxes-filled-with-colors">Drawing boxes filled with colors</h2>
+
+<p>Simpy define a command <code>crule</code> from the <code>rule</code> command. Definition and usage:</p>
+<pre><code>\newcommand\crule[3][black]{\textcolor{#1}{\rule{#2}{#3}}}
+
+\crule{1cm}{1cm} \crule[blue]{1cm}{1cm} \crule[red!50!white!100]{1cm}{1cm}
+</code></pre>
+<p>Link:
+https://tex.stackexchange.com/questions/106984/how-to-draw-a-square-of-1cm-in-latex-filled-with-color</p>
+
+<h2 id="splitting-into-multiple-rows-and-columns">Splitting into multiple rows and columns</h2>
+
+<p>Using <code>minipage</code> for splitting a document into boxes is recommended. The first argument it
+accepts decides how the alignment of the minipage will be. <code>t</code> is top-aligned and <code>b</code> is
+bottom-aligned.</p>
+
+<h2 id="graphics-with-tikz">Graphics with tikz</h2>
+
+<h3 id="lu-decomposition-diagram">LU decomposition diagram</h3>
+
+<p>Drawing two boxes with L &amp; U:
+https://tex.stackexchange.com/questions/317230/lu-factorization-of-a-matrix-with-plot?newreg=991a708140a2446882fdd9bd3c445af9</p>
+
+<p>Drawing an arrow between tikzpicture objects:
+https://tex.stackexchange.com/questions/260587/an-arrow-between-two-tikzpictures</p>
+
+<h3 id="dependency-graphs">Dependency graphs</h3>
+
+<p>Inspiration can be taken from this state machine <a href="http://www.texample.net/tikz/examples/state-machine/">tutorial</a> for drawing dependency graphs.
+Basically put things inside a <code>tikzpicture</code> block. Use the <code>\node</code> command for defining
+a node and the <code>\path</code> command for connecting these nodes.</p>
+
+<h3 id="drawing-things-on-pictures">Drawing things on pictures</h3>
+
+<p>Using tikz one can annonate pictures with various things.</p>
+
+<p>Link:
+https://tex.stackexchange.com/questions/9559/drawing-on-an-image-with-tikz</p>
+
+<h1 id="useful-links">Useful links</h1>
+
+<ul>
+  <li>Getting started PDF: https://www.tug.org/pracjourn/2008-3/morales/morales.pdf</li>
+  <li>Very good sample template poster: https://www.latextemplates.com/template/a0poster-portrait-poster</li>
+</ul>
+:ET

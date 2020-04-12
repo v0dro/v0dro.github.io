@@ -1,0 +1,62 @@
+I"�	<h1 id="basics-of-floating-point-numbers">Basics of floating point numbers</h1>
+
+<p>Links:</p>
+
+<ul>
+  <li>https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html</li>
+</ul>
+
+<h2 id="endianess">Endianess</h2>
+
+<p>Endianess is the sequential order in which bytes are arragned in a machine.</p>
+
+<p>The macro <code>WORDS_BIGENDIAN</code> from gcc can be used for telling whether the machine you are
+on is using big-endian or little-endian encoding.</p>
+
+<p>Link:</p>
+
+<ul>
+  <li></li>
+</ul>
+
+<h1 id="ruby-floating-point-numbers">Ruby floating point numbers</h1>
+
+<p>Most of the functionality for 32-bit and 64-bit floating point numbers (the
+majority types found in scientific computing code) are handled by Ruby.</p>
+
+<p>The RFloat struct contains the value for the floating point number. The definition
+can be found in the <code>internal.h</code> file <a href="https://github.com/ruby/ruby/blob/trunk/internal.h#L654">here</a>.</p>
+
+<p>This is what it looks like:</p>
+<pre><code>struct RFloat {
+    struct RBasic basic;
+    double float_value;
+};
+</code></pre>
+<p>As can be seen, Ruby always stores numbers as <code>double</code> which is 64-bits long on most
+machines. To access the <code>double</code> value of a <code>Float</code> Ruby object, one can use the
+<code>RFLOAT_VALUE(VALUE v)</code> macro that ultimately calls the <code>rb_float_value_inline</code> function
+present in <code>internal.h</code> file. There is no way to have 32-bit or 16-bit floating point numbers
+in Ruby.</p>
+
+<p>In Ruby, the <a href="https://github.com/ruby/ruby/blob/trunk/numeric.c">numeric.c</a> file contains the code for working with floats.</p>
+
+<p>Ruby uses a technique called ‘FLONUM’ for speeding up 64-bit floating point calculations.
+The proposal for this can be found <a href="https://bugs.ruby-lang.org/issues/6763">here</a>. It basically
+reduces the overhead of object creation by giving the same treatment to floats as is given
+to 64-bit integers (treating the VALUE pointer as the value itself).</p>
+
+<p>Links:</p>
+
+<ul>
+  <li>http://patshaughnessy.net/2014/1/9/how-big-is-a-bignum</li>
+  <li>https://www.slideshare.net/burkelibbey/ruby-internals</li>
+  <li>http://gnu.huihoo.org/autoconf-2.13/html_node/autoconf_36.html</li>
+</ul>
+
+<h2 id="the-ieee-formats">The IEEE formats</h2>
+
+<p>Ruby uses the IEEE 754 format by default. If a machine does not contain the headers required
+for this format, Ruby defines them <a href="">here</a>.</p>
+
+:ET
