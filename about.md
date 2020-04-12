@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-![/assets/images/about_photo.JPG][Sameer photo]
+![Sameer photo](/assets/images/about_photo.JPG) 
 
 Hello! Welcome to my world :)
 
