@@ -18,7 +18,8 @@ execution systems for linear algebra kernels using low rank approximation.
 
 I think this is an important problem to solve since gaining analytical insights into program behaviour of memory-bound
 kernels using low rank approximation can allow us to better design future exascale systems and run these
-algorithms more efficiently on current systems.
+algorithms more efficiently on current systems. I execute most of my experiments on the Japanese ABCI and
+TSUBAME supercomputers.
 
 I have been an avid contributor to open source libraries since the past few years. I am currently contributing
 to [PyTorch](https://github.com/pytorch/pytorch/), and in the past have led and maintained several scientific computing libraries
@@ -30,17 +31,25 @@ also mentored several students as part of Google Summer of Code and love writing
 this one.
 
 In a previous life I also played the bass guitar for [Cat Kamikazee](https://www.instagram.com/catkamikazee/),
-and did an India tour and released an EP, which you can hear on [iTunes](), [Spotify]() or [YouTube]().
+and did an India tour and released an EP, which you can hear on [iTunes](https://itunes.apple.com/ph/artist/cat-kamikazee/id1191342110),
+[Spotify](https://open.spotify.com/artist/3WjRnQttu93Ln5P8zWCDsC) or [YouTube](https://www.youtube.com/watch?v=r5BsLMc5h5o).
 
-In my spare time I love to read books, go on hikes, play music or hang out with friends.
+In my spare time I love to read books, go on hikes, learn Japanese or hang out with friends.
 
-Current development setup:
+## Current development setup
 
+* Editor: [emacs](https://github.com/v0dro/unix_env/tree/master/.emacs.d).
+* Operating System: Ubuntu 18.04.
+* Monitor: EIZO FlexScan 27 EV2750-WT.
+* Keyboard: Ergodox EZ Shine.
+* Laptop: Asus K401U.
+* Headphones: Audio-technica ATH-M40x.
 
-Additional links:
-* [Full resume]().
-* [GitHub]().
-* Yokota Lab [page]().
-* [Twitter]().
-* [Instagram]() (not so active).
+## Additional links
+
+* [Full resume](/assets/resume.pdf).
+* [GitHub](https://github.com/v0dro).
+* [Yokota Lab](https://www.rio.gsic.titech.ac.jp/en/index.html).
+* [Twitter](https://twitter.com/v0dro).
+* [Instagram](https://www.instagram.com/v0dro/) (not so active).
 
