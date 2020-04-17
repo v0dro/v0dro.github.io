@@ -7,7 +7,7 @@ date: 2020-02-27 09:00 +0900
 
 The STREAM benchmark is considered an important benchmark for understanding the memory
 bandwidth and access latency of a particular computer. This benchmark was conceptualized
-in the 1995 paper <!-- insert name -->.
+in the 1995 [paper by John McCalpin](http://www.cs.virginia.edu/~mccalpin/papers/bandwidth/bandwidth.html).
 
 # Machine Balance
 
