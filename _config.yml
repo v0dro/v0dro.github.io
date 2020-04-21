@@ -13,7 +13,7 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: "<code>, travel and explore."
+title: "code, travel and explore."
 subtitle: "A place for sharing my life, experiences and reflections."
 email: sameer.deshmukh93@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
@@ -34,6 +34,8 @@ kramdown:
   syntax_highlighter: coderay
   syntax_highlighter_opts:
     line_numbers: table
+  coderay_bold_every: 5
+  parse_span_html: true
 highlighter: pygments.rb # default python pygments have been replaced by pygments.rb
 theme: minima
 plugins:

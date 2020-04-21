@@ -1,2 +1,0 @@
-I"Á<p>daru (Data Analysis in RUby) is a ruby gem for performing various data analysis and manipulation tasks in Ruby. It draws inspiration from pandas (python) and aims to be completely cross-compatible between all ruby implementations (MRI/JRuby etc.) yet leverage the individual benefits that each interpreter offers (for example the speed of C in MRI), while offering a simple and powerful API for data analysis, manipulation and visualization.</p>
-:ET

@@ -1,2 +1,0 @@
-I"r<p>Interpolation involves predicting the co-ordinates of a point given the co-ordinates of points around it. Interpolation can be done in one or more dimensions. In this article I will give you a brief introduction of one-dimensional interpolation and execute it on a sample data set using the <a href="https://github.com/v0dro/interpolation">interpolation</a> gem.</p>
-:ET

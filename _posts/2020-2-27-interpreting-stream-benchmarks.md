@@ -1,3 +1,4 @@
+---
 layout: post
 title: Interpreting the results of the STREAM benchmark
 date: 2020-02-27 09:00 +0900

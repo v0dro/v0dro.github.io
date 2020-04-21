@@ -1,2 +1,0 @@
-I"£<p>For my GSOC project, Iâ€™m trying to build an extension to NMatrix which will interface with a high performance C library for fast linear algebra calculations. Since one of the major problems affecting the usability and portability of NMatrix is the effort taken for installation (adding/removing dependencies etc.), it is imperative to ship the source of this high performance C library alongwith the ruby gem.</p>
-:ET

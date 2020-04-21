@@ -1,2 +1,0 @@
-I"œ<p>Solving systems of linear equations is a very important part of scientific computing (some would say most important), and in this post I will show you how a system of linear equations involving <em>n</em> equations and <em>n</em> unknowns can be solved in Ruby using the <a href="https://github.com/SciRuby/nmatrix">NMatrix</a> gem and the methodology that I used for simplyfying the algorithms involved.</p>
-:ET

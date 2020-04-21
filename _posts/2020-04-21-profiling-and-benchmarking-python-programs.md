@@ -1,0 +1,36 @@
+---
+layout: post
+title: Profiling and benchmarking Python programs
+date: 2020-04-21 17:09 +0900
+---
+
+The number of ways in which one can profile and benchmark Python programs
+is daunting. There's many options out there, and this post is about the ones
+that I found suitable for profiling and benchmarking PRs that I submit to
+PyTorch every now and then. Coming from a land of C++ and Ruby, one annoying
+thing I find about the Python tools is the preference for providing the
+code to profiled inside a string as an argument to profiling tool, so
+I try to directly instrument calls within the code wherever possible.
+
+# Profiling C extensions
+
+Say you want to know the function profiles of the following PyTorch script,
+where we want to know where the `scatter\_` call is spending most of its time:
+``` python
+import torch
+import numpy
+
+nfeat = 50
+nrep = 2
+res = torch.randn(1000, 1000)
+batch = 200
+
+c = torch.randint(3, (batch, nfeat * nrep)).float()
+a = torch.arange(nfeat).repeat_interleave(nrep).unsqueeze(0).expand(batch,a.size(0))
+
+res.scatter_(1,a,c)
+```
+
+## Using cProfile
+
+

@@ -1,8 +1,0 @@
-I"C<p>Old and stable linear algebra libraries like LAPACK and BLAS are showing their age
-with demand for computing solutions to much larger problems that before, and need
-of modern, scalable and human-friendly interfaces. As an answer to this need, various
-labs around the world have come up with their implementations of these libraries,
-with the desire to be become the de facto linear algebra package for replacing LAPACK
-and BLAS. Some of these libraries are PLASMA, CHAMELEON, SLATE, ELEMENTAL, etc.
-Navigating this complex maze can be tough if you’re just starting out.</p>
-:ET
