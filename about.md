@@ -45,6 +45,28 @@ In my spare time I love to read books, go on hikes, learn Japanese or hang out w
 * Laptop: Asus K401U.
 * Headphones: Audio-technica ATH-M40x.
 
+## Talks and presentations 
+
+### 2018
+
+* [Ferrari Driven Development: superfast Ruby with Rubex](https://www.youtube.com/watch?v=7edbdHZvr8k) - Ruby Kaigi, Sendai, Japan.
+* [Ferrari Driven Development: superfast Ruby with Rubex](https://2018.balkanruby.com/speakers/#sameer) - Balkan Ruby Conference, Sofia, Bulgaria.
+
+### 2017
+
+* [Introducing Rubex](https://www.youtube.com/watch?v=5gGhW4vUTfc&feature=youtu.be&list=PLe872Yf6CJWHc6XDdHo_22hktStG866-6) - Ruby Conf India, Kochi, India.
+* [C how to supercharge Ruby with Rubex](https://www.youtube.com/watch?v=pZSuuyiQNZk) - Ruby Kaigi, Hiroshima, Japan.
+
+### 2016
+
+* [Scientific Computing in Ruby](https://www.youtube.com/watch?v=3JWZMT46FSI) - Red Dot Ruby Conference (Singapore).
+* [Data Analysis in Ruby](http://rubykaigi.org/2016/presentations/v0dro.html) - Ruby Kaigi, Kyoto, Japan.
+* [Scientific Computing in Ruby](https://speakerdeck.com/v0dro/scientific-computing-in-ruby-at-ruby-world-conference-1) - Matsue, Shimane, Japan.
+
+### 2015
+
+* [See data clearly with daru](https://www.youtube.com/watch?v=nebhnjBiZrY) - Deccan Ruby Conference, Pune, India.
+
 ## Additional links
 
 * [Full resume](/assets/resume.pdf).
