@@ -33,4 +33,12 @@ res.scatter_(1,a,c)
 
 ## Using cProfile
 
+## Using yep
 
+# Further Reading
+
+* C extentions with PySpy: https://www.benfrederickson.com/profiling-native-python-extensions-with-py-spy/
+* Yep home page: https://pypi.org/project/yep/
+* Speedscope homepage: https://github.com/jlfwong/speedscope
+* Pyspy homepage: https://github.com/benfred/py-spy
+* Google perftools: https://github.com/gperftools/gperftools
