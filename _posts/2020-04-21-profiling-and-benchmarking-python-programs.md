@@ -33,7 +33,24 @@ res.scatter_(1,a,c)
 
 ## Using cProfile
 
+The default
+
 ## Using yep
+
+`yep`is a [utility](https://pypi.org/project/yep/) that uses Google's gperftools underneath and promises to
+show profiles of C/C++ functions made inside Python C extensions. On Ubuntu/Debian, first install the `google-perftools`
+package. Then run `pip install yep`.
+
+You can set a region to profile as follows:
+``` python
+import yep
+
+yep.start("file_name.prof")
+# do something
+yep.stop()
+```
+This generates a file `file_name.prof` that be can be analysed using the `pprof`
+[utility](https://github.com/google/pprof) (which can be installed with `go get -u github.com/google/pprof`).
 
 # Further Reading
 

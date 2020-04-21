@@ -36,15 +36,6 @@ and did an India tour and released an EP, which you can hear on [iTunes](https:/
 
 In my spare time I love to read books, go on hikes, learn Japanese or hang out with friends.
 
-## Current development setup
-
-* Editor: [emacs](https://github.com/v0dro/unix_env/tree/master/.emacs.d).
-* Operating System: Ubuntu 18.04.
-* Monitor: EIZO FlexScan 27 EV2750-WT.
-* Keyboard: Ergodox EZ Shine.
-* Laptop: Asus K401U.
-* Headphones: Audio-technica ATH-M40x.
-
 ## Talks and presentations 
 
 ### 2018
@@ -66,6 +57,15 @@ In my spare time I love to read books, go on hikes, learn Japanese or hang out w
 ### 2015
 
 * [See data clearly with daru](https://www.youtube.com/watch?v=nebhnjBiZrY) - Deccan Ruby Conference, Pune, India.
+
+## Current development setup
+
+* Editor: [emacs](https://github.com/v0dro/unix_env/tree/master/.emacs.d).
+* Operating System: Ubuntu 18.04.
+* Monitor: EIZO FlexScan 27 EV2750-WT.
+* Keyboard: Ergodox EZ Shine.
+* Laptop: Asus K401U.
+* Headphones: Audio-technica ATH-M40x.
 
 ## Additional links
 
