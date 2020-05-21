@@ -23,13 +23,30 @@ A particular course in college called Computational Problem Solving required me 
 - [Strings](#strings)
 - [Zipping in Python](#zipping-in-python)
 - [Weird python keywords](#weird-python-keywords)
+    - [nonlocal](#nonlocal)
     - [in keyword](#in-keyword)
         - [Inside if statements](#inside-if-statements)
         - [Inside for statements](#inside-for-statements)
 - [Mutable (saved) function arguments](#mutable-saved-function-arguments)
 - [Decorators](#decorators)
 - [The super method](#the-super-method)
+- [Special methods](#special-methods)
+    - [Equality of objects](#equality-of-objects)
+    - [Getting items](#getting-items)
 - [The Garbage Collector](#the-garbage-collector)
+- [CLI programs](#cli-programs)
+- [Packaging and creating your own modules](#packaging-and-creating-your-own-modules)
+- [C extensions](#c-extensions)
+    - [Module initialization](#module-initialization)
+    - [Method calling](#method-calling)
+    - [Instance methods](#instance-methods)
+        - [Magic methods](#magic-methods)
+        - [PyMappingMethods](#pymappingmethods)
+    - [Class methods](#class-methods)
+    - [Error handling](#error-handling)
+    - [Specifying class properties](#specifying-class-properties)
+    - [PyCapsule a.k.a providing C API for other extension modules](#pycapsule-aka-providing-c-api-for-other-extension-modules)
+    - [Creating Python objects from C structs](#creating-python-objects-from-c-structs)
 
 <!-- markdown-toc end -->
 
@@ -387,7 +404,40 @@ Link:
 
 # Packaging and creating your own modules
 
-Follow the common directory structure.
+Follow the common directory structure, with the project root containing a folder
+that is same as the name of the library name you're making. For example, if your
+library is called 'sabrina':
+```
+```
+
+## Python eggs
+
+[Python eggs](https://setuptools.readthedocs.io/en/latest/formats.html) are strucutures that embody
+the structure of a Python project, for example its code, metadata and other resources.
+
+## The anaconda package manager
+
+Anaconda provides a great package manager for Python with many useful features like setting up
+environments, using different sources, etc. By default it will install into a folder called
+`anaconda3` in your home directory. The major structure of this directory is as follows:
+```
+anaconda3/
+  ├── bin
+  ├── envs
+  ├── include
+  ├── lib
+  ├── pkgs
+  ├── var
+```
+
+The `pkgs` directory is an important [directory](https://stackoverflow.com/questions/51736615/explain-the-anaconda-folder-structure)
+that installs the default packages that the distribution should contain when you
+first initialize conda. All installed packages for the base environment are first
+stored here using their canonical names.
+
+When you derive a new environment, packages that you want to include in the new
+env are included in the new environment by linking to packages kept in the `pkgs`
+folder.
 
 # C extensions
 
