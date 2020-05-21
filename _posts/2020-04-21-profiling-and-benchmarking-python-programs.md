@@ -15,7 +15,7 @@ I try to directly instrument calls within the code wherever possible.
 # Profiling C extensions
 
 Say you want to know the function profiles of the following PyTorch script,
-where we want to know where the `scatter\_` call is spending most of its time:
+where we want to know where the <code>scatter_</code> call is spending most of its time:
 ``` python
 import torch
 import numpy

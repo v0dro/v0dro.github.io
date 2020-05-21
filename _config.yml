@@ -31,10 +31,11 @@ permalink: /blog/:year/:month/:day/:title/
 markdown: kramdown
 kramdown:
   # enable_coderay: true
-  syntax_highlighter: coderay
+  input: GFM
+  syntax_highlighter: rouge
   syntax_highlighter_opts:
-    line_numbers: table
-  coderay_bold_every: 5
+    span: true
+  # coderay_bold_every: 5
   parse_span_html: true
 highlighter: pygments.rb # default python pygments have been replaced by pygments.rb
 theme: minima
