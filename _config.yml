@@ -32,9 +32,7 @@ markdown: kramdown
 kramdown:
   # enable_coderay: true
   input: GFM
-  syntax_highlighter: rouge
-  syntax_highlighter_opts:
-    span: true
+  syntax_highlighter: coderay
   # coderay_bold_every: 5
   parse_span_html: true
 highlighter: pygments.rb # default python pygments have been replaced by pygments.rb
