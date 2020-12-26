@@ -22,7 +22,7 @@ rickshaw took us to Hampi. The first thing  one notices while riding into Hampi 
 [gopuram](http://en.wikipedia.org/wiki/Gopuram) of the [Virupaksha Temple](http://en.wikipedia.org/wiki/Virupaksha_Temple).
 This is also one of the few temples in Hampi that is still actively used in worship.
 
-![The Virupaksha temple](/assets//assets/images/hampi-bengaluru-allepy/virupaksha.JPG)
+![The Virupaksha temple](/assets/images/hampi-bengaluru-allepy/virupaksha.JPG)
 
 We checked into a hotel which was a 5 minute walk from the Virupaksha temple, which charged us Rs. 800
 per night. Since Hampi is a favorite for foreign tourists, one can find many cafes and restaurants here
@@ -32,16 +32,16 @@ planned for the day's sightseeing.
 We started out toward the Vitthal temple, taking the huge road that was once the Hampi Bazaar. 
 Along the way, we saw the monolithic Nandi statue on the left, and [Matanga hill](http://hampi.in/matunga-hill) on the right.
 
-![/assets/images/hampi-bengaluru-allepy/nandi.JPG]('The Nandi Statue')
-![/assets/images/hampi-bengaluru-allepy/entrance.JPG]('Entrance At The Far End Of Hapmi Bazaar.')
+![The Nandi Statue](/assets/images/hampi-bengaluru-allepy/nandi.JPG
+![Entrance At The Far End Of Hapmi Bazaar.](/assets/images/hampi-bengaluru-allepy/entrance.JPG
 
 A flight of steps lead to a grand entrance which opens at the Achyutraya Temple. This temple was build by the successor of King Krishnadevaraya, Achyuta Deva Raya, and is a temple to Lord Venkateshwara, but its ruins are popularly reffered to by the name of its patron. 
 
-![/assets//images/hampi-bengaluru-allepy/achyutraya_temple.JPG][Achyutraya Temple]
+![Achyutraya Temple](/assets/images/hampi-bengaluru-allepy/achyutraya_temple.JPG)
 
 After walking over some huge rocks by the river, we reached the King's Balance, a stone weighing scale where the King would be weighed against gold, which would then be given away to the priests. We then (finally) reached the Vitthal Temple.
 
-![/assets//images/hampi-bengaluru-allepy/vitthal_front.JPG][The Sun Chariot With The Vitthal Temple In The Background]
+![The Sun Chariot With The Vitthal Temple In The Background](/assets/images/hampi-bengaluru-allepy/vitthal_front.JPG)
 
 The Vithhal Temple is probably one of the grandest in Hampi and possibly in all of India. It is housed inside
 a massive complex with ornately carved walls, entrances and pillars. The complex houses five mantapas, 4 in
@@ -54,7 +54,7 @@ so the sound is fairly diminished now.
 
 The central mantap houses an inner temple, where the actual idols were kept and worshipped. The original idols of Vitthal and Rukumai were taken to Pandharpur in Maharashtra during the invasion of Vijaynagar. One unique feature  of the Vitthal temple is that the place where one performs ['pradakshina'](http://en.wikipedia.org/wiki/Parikrama) is underground.
 
-![/assets//images/hampi-bengaluru-allepy/underground_parikrama.JPG][The Underground Pradakshina Path]
+![The Underground Pradakshina Path](/assets/images/hampi-bengaluru-allepy/underground_parikrama.JPG)
 
 There are tiny inlets for light in the roof, which reflects off a stream of water on the floor, which in turn provides
 illumination for the entire chamber.
