@@ -22,7 +22,7 @@ rickshaw took us to Hampi. The first thing  one notices while riding into Hampi 
 [gopuram](http://en.wikipedia.org/wiki/Gopuram) of the [Virupaksha Temple](http://en.wikipedia.org/wiki/Virupaksha_Temple).
 This is also one of the few temples in Hampi that is still actively used in worship.
 
-![/assets/images/hampi-bengaluru-allepy/virupaksha.JPG]('The Virupaksha Temple'%}
+![The Virupaksha temple](/assets//assets/images/hampi-bengaluru-allepy/virupaksha.JPG)
 
 We checked into a hotel which was a 5 minute walk from the Virupaksha temple, which charged us Rs. 800
 per night. Since Hampi is a favorite for foreign tourists, one can find many cafes and restaurants here
