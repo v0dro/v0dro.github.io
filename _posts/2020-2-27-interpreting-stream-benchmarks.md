@@ -4,6 +4,18 @@ title: Interpreting the results of the STREAM benchmark
 date: 2020-02-27 09:00 +0900
 ---
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [-](#-)
+- [Introduction](#introduction)
+- [Machine Balance](#machine-balance)
+- [STREAM kernels](#stream-kernels)
+- [TRIAD](#triad)
+- [Useful links](#useful-links)
+
+<!-- markdown-toc end -->
+
 # Introduction
 
 The STREAM benchmark is considered an important benchmark for understanding the memory
@@ -23,7 +35,7 @@ However, this definition fails to capture the complexity
 of hierarchical memory structures that use multiple layers of cache and parallelization
 strategies such as pipelining and prefetching. This is because the number of floating point
 operations per cycle can greatly vary depending on the location of the data that is being
-operated on. The peak will be reached when the data resides in registers, whereas for 
+operated on. The peak will be reached when the data resides in registers, whereas for
 data being accessed from memory, the number of cycles taken to execute a single floating
 point operation will be much higher due to latency.
 
@@ -35,6 +47,18 @@ RAM too, and should give an estimate of the average number of floating point ops
 The STREAM benchmark refines the definition of 'machine balance' and defines it as the PEAK
 floating point operations per cycle divided by the number of sustained memory operations per
 cycle.
+
+# STREAM kernels
+
+The benchmark is broken up into a number of kernels, each employing a different set
+of instructions per kernel operation.
+
+## TRIAD
+
+The STREAM TRIAD kernel basically computes a vector operation `A(i) = B(i) + s * C(i)`.
+This operation involves two loads, one store and one FMA instruction per kernel execution.
+If vectorized it will perform a number of such kernel operations per loop iteration.
+
 
 # Useful links
 
