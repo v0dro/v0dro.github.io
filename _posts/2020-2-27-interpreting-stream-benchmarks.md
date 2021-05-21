@@ -59,6 +59,8 @@ The STREAM TRIAD kernel basically computes a vector operation `A(i) = B(i) + s *
 This operation involves two loads, one store and one FMA instruction per kernel execution.
 If vectorized it will perform a number of such kernel operations per loop iteration.
 
+Assuming that we are working with doubles, each iteration uses 24 bytes in reads and writes.
+
 
 # Useful links
 
