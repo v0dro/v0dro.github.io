@@ -7,7 +7,6 @@ date: 2020-02-27 09:00 +0900
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [-](#-)
 - [Introduction](#introduction)
 - [Machine Balance](#machine-balance)
 - [STREAM kernels](#stream-kernels)
@@ -52,6 +51,12 @@ cycle.
 
 The benchmark is broken up into a number of kernels, each employing a different set
 of instructions per kernel operation.
+
+## SUM
+
+The STREAM SUM kernel computes a vector operation `A(i) = B(i) + C(i)`.
+This operation involves 24 bytes of data and 1 floating point addition
+operation. There are two loads and one store per iteration.
 
 ## TRIAD
 
