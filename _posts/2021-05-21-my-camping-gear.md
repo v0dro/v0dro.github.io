@@ -25,7 +25,7 @@ be, I think its good muscle and endurance training!
 # Eating kit
 
 1. [Humangear Fork, knife and chopsticks set.](https://www.amazon.com/humangear-GoBites-Quattro-Parent/dp/B07VNBLKD2)
-2. [Snow Peak 400 ml cup.](https://www.amazon.co.jp/gp/product/B06XX4G5XT/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&psc=1)
+2. [Snow Peak 450 ml cup.](https://www.amazon.co.jp/gp/product/B06XX4G5XT/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&psc=1)
 3. [Overmont Aluminnium 0.8L pot.](https://www.amazon.co.jp/gp/product/B06XFPQ3ZN/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&psc=1)
 4. [Soto stove.](https://www.amazon.co.jp/-/en/ST-310-Regulator-Multi-Case-Exclusive-Activities/dp/B001ADSR56/ref=sr_1_1?dchild=1&keywords=soto+%E3%82%B3%E3%83%B3%E3%83%AD&qid=1621998930&sr=8-1)
 5. [Gas canisters.](https://www.amazon.co.jp/-/en/Iwatani-CB-250-Cassette-Exclusive-Pieces/dp/B0757DQQ74/ref=sr_1_3?dchild=1&keywords=gas+can&qid=1621998985&sr=8-3)
@@ -33,16 +33,14 @@ be, I think its good muscle and endurance training!
 
 # Accessories
 
-1. [Trowel.]()
-2. Toilet tissue roll.
-3. [Antiseptic wet tissues.]()
-4. [Body wet tissues.]()
-5. [North Face fanny pack.]()
-6. [AKASO Bravo 7 LE action camera](https://www.amazon.co.jp/gp/product/B08FCGJKXB/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1) with extra batteries.
-7. [Extra battery for phone.]()
-8. Kindle.
-9. Notebook and pen.
-10. Picnic Mat.
+1. [Antiseptic wet tissues.]()
+2. [Body wet tissues.]()
+3. [North Face fanny pack.]()
+4. [AKASO Bravo 7 LE action camera](https://www.amazon.co.jp/gp/product/B08FCGJKXB/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1) with extra batteries.
+5. [Extra battery for phone.]()
+6. Kindle.
+7. Notebook and pen.
+8. Picnic Mat.
 
 # First Aid Kit
 
