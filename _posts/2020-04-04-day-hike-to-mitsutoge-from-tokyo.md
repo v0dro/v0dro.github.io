@@ -12,11 +12,3 @@ I had a spare day remaining on an old seishun 18 ticket (and not much time to fi
 it) and therefore decided to take most of the route to and from Tokyo by train. I'd recommened
 going by bus if you're not in a situtation like I was.
 
-# Travel Route
-
-
-
-# Access
-
-The JR Chuo Line 
-

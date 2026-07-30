@@ -36,8 +36,3 @@ mpirun -n 4 xterm -hold -e gdb -ex="run" --args matmul
 ```
 The `hold` option does the trick.
 
-# Multiple nodes
-
-If you're using multiple nodes for running your MPI processes, the debugging process is
-slightly different.
-

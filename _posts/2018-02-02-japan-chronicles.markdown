@@ -17,8 +17,8 @@ In this post (which will hopefully be continually upgraded for a long, long time
 
 Since the past 4 months I have been very busy with settling down into a new life and doing some 
 really challenging work at my University. In this subsection I will document my experiences of 
-travelling around the wonderful city of Tokyo. You can of course follow my [instagram]() or 
-[twitter]() for quick updates :)
+travelling around the wonderful city of Tokyo. You can of course follow my [instagram](https://www.instagram.com/v0dro/) or
+[twitter](https://twitter.com/v0dro) for quick updates :)
 
 # Travelling
 

@@ -14,5 +14,3 @@ pass from Tokyo which cost us about 2410 JPY one way.
 The only downside of using the Seishun18 is that it takes longer and you need three transfers.
 This short post is about which trains we took for this particular trip.
 
-# The Journey
-

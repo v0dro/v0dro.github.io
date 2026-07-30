@@ -27,7 +27,7 @@ vector = Daru::Vector.new(1000.times.map {rng.call}, index: index)
 ```
 ![/assets//images/daru_time_series/simple_vector.png][A Simple Vector indexed on DateTimeIndex]
 
-In the above code, the `DateTimeIndex.date_range` function is creating a `DateTimeIndex` starting from a particular date and spanning for 1000 periods, with a frequency of 1 day between period. For a complete coverage of DateTimeIndex see [this]() notebook. For an introduction to the date offsets used by daru see [this blog post](http://v0dro.github.io/blog/2015/07/27/date-offsets-in-daru/).
+In the above code, the `DateTimeIndex.date_range` function is creating a `DateTimeIndex` starting from a particular date and spanning for 1000 periods, with a frequency of 1 day between period. For a complete coverage of DateTimeIndex see [this]() notebook. For an introduction to the date offsets used by daru see [this blog post](https://v0dro.in/blog/2015/07/27/date-offsets-in-daru/).
 
 The index is passed into the Vector like a normal `Daru::Index` object.
 

@@ -30,12 +30,8 @@ permalink: /blog/:year/:month/:day/:title/
 # Build settings
 markdown: kramdown
 kramdown:
-  # enable_coderay: true
   input: GFM
-  syntax_highlighter: coderay
-  # coderay_bold_every: 5
   parse_span_html: true
-highlighter: pygments.rb # default python pygments have been replaced by pygments.rb
 theme: minima
 plugins:
   - jekyll-feed
