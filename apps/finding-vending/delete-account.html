@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finding Vending — Account Deletion Request</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      background: #f7f7f8;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      background: #fff;
+      min-height: 100vh;
+      box-shadow: 0 0 40px rgba(0,0,0,.04);
+    }
+    h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
+    h2 { font-size: 1.25rem; margin: 2rem 0 .5rem; }
+    .updated { color: #666; font-size: .9rem; margin: 0 0 1.5rem; }
+    .lead { font-size: 1.05rem; }
+    ul { padding-left: 1.25rem; }
+    li { margin: .35rem 0; }
+    a { color: #2563eb; }
+    code { background: #eef; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+    .card {
+      background: #f0f7f0;
+      border: 1px solid #cfe6cf;
+      border-radius: 10px;
+      padding: .75rem 1rem;
+      margin: 1.25rem 0;
+    }
+    form { margin: 1.5rem 0; }
+    .field { display: flex; flex-direction: column; margin-bottom: 1rem; }
+    label { font-weight: 600; margin-bottom: .35rem; font-size: .95rem; }
+    input[type="text"], input[type="email"], select, textarea {
+      font: inherit;
+      padding: .6rem .75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      color: inherit;
+    }
+    textarea { min-height: 5rem; resize: vertical; }
+    input[type="text"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .2);
+    }
+    button {
+      font: inherit;
+      font-weight: 600;
+      padding: .65rem 1.25rem;
+      background: #2563eb;
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover { background: #1d4ed8; }
+    .hint { font-size: .85rem; color: #666; margin-top: .35rem; }
+    footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid #eee; color: #666; font-size: .9rem; }
+    @media (prefers-color-scheme: dark) {
+      body { color: #e6e6e6; background: #0e0e10; }
+      main { background: #1a1a1d; box-shadow: none; }
+      h1, h2 { color: #fff; }
+      .updated, footer, .hint { color: #9a9a9a; }
+      a { color: #6ea8fe; }
+      code { background: #2a2a40; }
+      .card { background: #15241a; border-color: #2c4a32; }
+      input[type="text"], input[type="email"], select, textarea {
+        background: #25252a;
+        border-color: #3a3a42;
+        color: #e6e6e6;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Account Deletion Request</h1>
+    <p class="updated">Finding Vending (Find My Drink Japan) &middot; Data &amp; account removal</p>
+
+    <p class="lead">
+      Use this page to delete your Finding Vending account and the data tied to it: your sign-in
+      record, and every machine submission (photo, location, notes, rating) you have shared.
+      Deleted submissions are removed from the public map.
+    </p>
+
+    <div class="card">
+      <strong>Only want to remove what&rsquo;s on your phone?</strong> Uninstalling the app or
+      clearing its data erases the local upload queue, pending photos and your sign-in session.
+      Use this page if you also want your account and shared submissions deleted from the server.
+    </div>
+
+    <h2>Request deletion</h2>
+    <p>
+      Tell us how you sign in so we can find your account. Submitting the form opens your email
+      client with the request pre-filled, addressed to the developer.
+    </p>
+
+    <form id="deletion-form">
+      <div class="field">
+        <label for="method">Sign-in method</label>
+        <select id="method" name="method" required>
+          <option value="">Choose one&hellip;</option>
+          <option>Google</option>
+          <option>Facebook</option>
+          <option>Email and password</option>
+          <option>Anonymous (no sign-in)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="email">Email address used to sign in</label>
+        <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com">
+        <p class="hint">Leave blank for an anonymous account, and instead describe one of your submissions below (roughly where and when) so we can locate it.</p>
+      </div>
+
+      <div class="field">
+        <label for="scope">What to delete</label>
+        <select id="scope" name="scope" required>
+          <option value="account">My account and all of my submissions</option>
+          <option value="submissions">Only specific submissions (describe them below)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="notes">Additional details (optional)</label>
+        <textarea id="notes" name="notes" placeholder="e.g. which machines to remove, approximate location and date"></textarea>
+      </div>
+
+      <button type="submit">Submit deletion request</button>
+    </form>
+
+    <h2>What happens next</h2>
+    <ul>
+      <li>Your email client opens with a pre-filled message to the developer.</li>
+      <li>Send the email to complete the request.</li>
+      <li>Your account and/or submissions are deleted within 30 days: the Firebase sign-in record,
+        the photos and metadata on the photo server, and the entries in the public machine index.</li>
+      <li>You&rsquo;ll receive a confirmation reply once the deletion is done.</li>
+    </ul>
+    <p>
+      Server backups that may contain your data are rotated out within a further 30 days. Nothing
+      other than your submissions and sign-in record is kept about you.
+    </p>
+
+    <h2>Prefer to email directly?</h2>
+    <p>
+      Send your request to
+      <a href="mailto:sameer.deshmukh93@gmail.com?subject=Finding%20Vending%20account%20deletion%20request">sameer.deshmukh93@gmail.com</a>
+      with the sign-in method and email address you use in the app.
+    </p>
+
+    <p style="margin-top: 2rem;">
+      <a href="privacy.html">&larr; Back to Privacy Policy</a>
+    </p>
+
+    <footer>
+      Finding Vending (<code>com.findmydrinkjapan.findingvending</code>) &middot; Account Deletion
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById('deletion-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      var method = document.getElementById('method').value;
+      var email = document.getElementById('email').value.trim();
+      var scope = document.getElementById('scope').value;
+      var notes = document.getElementById('notes').value.trim();
+      if (!method) return;
+
+      var subject = 'Finding Vending account deletion request';
+      var bodyLines = [
+        scope === 'account'
+          ? 'Please delete my Finding Vending account and all of my submissions.'
+          : 'Please delete the Finding Vending submissions described below.',
+        '',
+        'Sign-in method: ' + method,
+        'Email address: ' + (email || '(none / anonymous)')
+      ];
+      if (notes) {
+        bodyLines.push('', 'Additional details:', notes);
+      }
+      var mailto = 'mailto:sameer.deshmukh93@gmail.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+      window.location.href = mailto;
+    });
+  </script>
+</body>
+</html>

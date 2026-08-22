@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finding Vending — Privacy Policy</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      background: #f7f7f8;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      background: #fff;
+      min-height: 100vh;
+      box-shadow: 0 0 40px rgba(0,0,0,.04);
+    }
+    h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
+    h2 { font-size: 1.25rem; margin: 2rem 0 .5rem; }
+    .updated { color: #666; font-size: .9rem; margin: 0 0 1.5rem; }
+    .lead { font-size: 1.05rem; }
+    ul { padding-left: 1.25rem; }
+    li { margin: .35rem 0; }
+    a { color: #2563eb; }
+    code { background: #eef; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
+    th, td { text-align: left; vertical-align: top; padding: .45rem .5rem; border-bottom: 1px solid #e5e5e5; }
+    th { font-weight: 600; }
+    .card {
+      background: #f0f7f0;
+      border: 1px solid #cfe6cf;
+      border-radius: 10px;
+      padding: .75rem 1rem;
+      margin: 1.25rem 0;
+    }
+    footer { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid #eee; color: #666; font-size: .9rem; }
+    @media (prefers-color-scheme: dark) {
+      body { color: #e6e6e6; background: #0e0e10; }
+      main { background: #1a1a1d; box-shadow: none; }
+      h1, h2 { color: #fff; }
+      .updated, footer { color: #9a9a9a; }
+      a { color: #6ea8fe; }
+      code { background: #2a2a40; }
+      th, td { border-color: #333; }
+      .card { background: #15241a; border-color: #2c4a32; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Finding Vending (Find My Drink Japan) &middot; Last updated: 22 August 2026</p>
+
+    <p class="lead">
+      Finding Vending is a crowd-sourced map of drink vending machines in Japan. You browse
+      machines that other people have photographed, and you can add machines yourself by taking a
+      photo and sharing it. This policy explains exactly what data the app handles, where it goes,
+      and what you can do about it.
+    </p>
+
+    <div class="card">
+      <strong>The short version:</strong> Nothing leaves your phone until you tap
+      <em>Share</em>. When you do, the photo you just took, its location, and your optional notes
+      and rating are uploaded to a server run by the developer and &mdash; if the photo passes an
+      automatic &ldquo;is this a vending machine?&rdquo; check &mdash; the machine&rsquo;s location
+      is published on the map for every user. Your name and email are never published. There are no
+      ads, no third-party analytics, and no tracking SDKs.
+    </div>
+
+    <h2>Signing in</h2>
+    <p>
+      The app asks you to sign in so that each submission can be tied to an account (this is what
+      lets us rate-limit abuse and honour deletion requests). You can sign in with
+      <strong>Google</strong>, <strong>Facebook</strong>, an <strong>email address and
+      password</strong>, or continue <strong>anonymously</strong> (an anonymous account is a random
+      identifier with no name or email attached). Authentication is handled by
+      <strong>Firebase Authentication</strong> (Google). When you sign in with Google or Facebook,
+      that provider shares your basic profile (name, email address, profile picture) with Firebase;
+      the app uses it only to show that you are signed in. Signing in with a third-party provider is
+      also subject to that provider&rsquo;s own policy:
+      <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Google Privacy Policy</a>,
+      <a href="https://www.facebook.com/privacy/policy" rel="noopener" target="_blank">Meta Privacy Policy</a>,
+      <a href="https://firebase.google.com/support/privacy" rel="noopener" target="_blank">Firebase privacy and security</a>.
+    </p>
+
+    <h2>What is collected when you share a machine</h2>
+    <p>Only when you tap <em>Share</em> after reviewing a photo, the app uploads:</p>
+    <table>
+      <tr><th>Data</th><th>Why</th></tr>
+      <tr><td>The photo you took of the machine</td><td>Shown in the machine&rsquo;s details and used to check that the photo really shows a vending machine and to identify the drinks it sells.</td></tr>
+      <tr><td>Location (latitude/longitude) of your device when the photo was taken</td><td>Places the machine on the map. The same coordinates are also written into the photo&rsquo;s EXIF metadata.</td></tr>
+      <tr><td>Your notes, rating and the payment methods you selected (optional)</td><td>Shown in the machine&rsquo;s details.</td></tr>
+      <tr><td>The time of the submission</td><td>Ordering and housekeeping.</td></tr>
+      <tr><td>Your account identifier (Firebase user ID)</td><td>Links the submission to your account for rate limiting, moderation and deletion requests. It is stored with the submission but never shown to other users.</td></tr>
+    </table>
+    <p>
+      The upload goes over an encrypted (HTTPS) connection to a server operated by the developer,
+      via Cloudflare, which sees your IP address as part of routing the request. The server records
+      the time, your account identifier and the outcome of each upload in its logs for abuse
+      prevention and debugging.
+    </p>
+
+    <h2>Automatic vending-machine check and publication</h2>
+    <p>
+      Every uploaded photo is scored by an image-recognition model running on the developer&rsquo;s
+      own server (no third-party AI service is involved). If the model is confident the photo shows
+      a vending machine, the machine&rsquo;s <strong>location, notes, rating, payment methods and
+      photo</strong> are published and become visible to every user of the app. If the model is
+      unsure, a human (the developer) looks at the photo and decides. If the photo does not show a
+      vending machine it is not published. Unpublished photos are kept so that the decision can be
+      reviewed and so that a re-sent upload is not processed twice; you can ask for them to be
+      deleted at any time (see below).
+    </p>
+    <p>
+      The developer may also use submitted photos to improve the recognition models used by the app
+      (for example, to detect which drinks a machine sells). Photos are not sold, not used for
+      advertising, and not shared with third parties for their own purposes.
+    </p>
+
+    <h2>Where the data is stored</h2>
+    <ul>
+      <li><strong>Photos and submission metadata</strong> are stored on a server operated by the developer.</li>
+      <li><strong>The published machine index</strong> (locations, notes, ratings, payment methods, account identifier) is stored in
+        <strong>Google Cloud Firestore</strong> so that the app can load the map. Users can only read it; the app itself never writes to it.</li>
+      <li><strong>Account data</strong> (sign-in method, email address where applicable, anonymous identifier) is stored by Firebase Authentication.</li>
+    </ul>
+
+    <h2>Location</h2>
+    <p>
+      The app asks for location permission to centre the map on you and to record the position of a
+      machine when you photograph it. Your location is used on-device while the app is open and is
+      sent to the server only as part of a submission you share. The app does not track your
+      location in the background and does not keep a history of where you have been.
+    </p>
+
+    <h2>Camera and photos</h2>
+    <p>
+      The camera permission is used only to take a photo of a machine when you choose to add one.
+      Photos are kept in the app&rsquo;s private storage on your device until they are uploaded or
+      discarded; the app does not read your existing photo library.
+    </p>
+
+    <h2>Google Maps</h2>
+    <p>
+      The map is provided by the Google Maps SDK, which loads map tiles from Google and is subject
+      to the <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Google Privacy Policy</a>.
+    </p>
+
+    <h2>What is stored on your device</h2>
+    <ul>
+      <li>Photos awaiting upload, and the upload queue itself (so a submission is retried if you lose connectivity).</li>
+      <li>A local diagnostic log (at most 512&nbsp;KB, overwritten as it fills) used for troubleshooting on the device. It is never uploaded automatically.</li>
+      <li>Your sign-in session.</li>
+    </ul>
+    <p>Clearing the app&rsquo;s data or uninstalling the app removes all of the above.</p>
+
+    <h2>Your control over your data</h2>
+    <ul>
+      <li><strong>Submissions you have shared are public by design</strong> (the machine&rsquo;s location and photo), but nothing identifying you is shown with them.</li>
+      <li>To have one or more of your submissions removed from the map and deleted from the server, or to delete your account and everything tied to it, use the
+        <a href="delete-account.html">account deletion request page</a> or email the address below. Requests are processed within 30 days.</li>
+      <li>You can sign out at any time from within the app.</li>
+    </ul>
+
+    <h2>Children</h2>
+    <p>
+      Finding Vending is not directed to children under 13 and does not knowingly collect personal
+      information from them.
+    </p>
+
+    <h2>Changes to this policy</h2>
+    <p>
+      If this policy changes, the updated version will be posted on this page with a new
+      &ldquo;last updated&rdquo; date.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about this policy or your data? Email
+      <a href="mailto:sameer.deshmukh93@gmail.com">sameer.deshmukh93@gmail.com</a>.
+    </p>
+
+    <footer>
+      Finding Vending (<code>com.findmydrinkjapan.findingvending</code>) &middot; Privacy Policy &middot;
+      <a href="https://v0dro.in/apps/finding-vending/privacy.html">https://v0dro.in/apps/finding-vending/privacy.html</a>
+    </footer>
+  </main>
+</body>
+</html>
