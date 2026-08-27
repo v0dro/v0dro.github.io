@@ -25,7 +25,7 @@
 <body>
 <main>
 <h1>Privacy Policy</h1>
-<p class="sub">Finding Vending · effective 24 August 2026</p>
+<p class="sub">Finding Vending · effective 27 August 2026</p>
 
 <p>Finding Vending is a crowdsourced map of vending machines in Japan. This policy
 explains exactly what the app collects, why, and how to get rid of it. There is no
@@ -47,6 +47,15 @@ advertising, no analytics SDK, and no tracking across other apps or websites.</p
       provider gives us.</li>
   <li><strong>Reports you send</strong> through the in-app report button: the machine
       identifier, your account identifier, the reason and your comment.</li>
+  <li><strong>Technical diagnostics.</strong> When a step inside the app fails — the
+      camera returns no photo, a crop cannot be saved, an upload is rejected — the app
+      records a short, fixed-format note and sends it to our own server in the
+      background. Each note holds the name of the step that failed, the time, your app
+      version, your Android or iOS version, your phone's model name, and a handful of
+      numbers such as a file size or a status code, signed with the same account
+      identifier as your submissions. It never contains free text, photo contents,
+      filenames, file paths, coordinates, or anything you typed. Without these notes a
+      failure that happens on your phone is invisible to us and we cannot fix it.</li>
 </ul>
 
 <p>Before a photo leaves your phone the app strips the EXIF tags that identify the
@@ -57,7 +66,9 @@ name. The location tags and the image orientation are deliberately kept.</p>
 <ul>
   <li>No contacts, calendars, microphone, health data or advertising identifier.</li>
   <li>No background location. Location is used only while the app is open.</li>
-  <li>No analytics, crash-reporting or attribution SDKs.</li>
+  <li>No <em>third-party</em> analytics, crash-reporting or attribution SDKs. Nothing on
+      your phone reports to Google Analytics, Firebase Analytics, Crashlytics, Sentry or
+      anything similar; the technical diagnostics above go only to our own server.</li>
   <li>Nothing is sold or shared with data brokers.</li>
 </ul>
 
@@ -79,6 +90,8 @@ The photo is used only for automated and human review of the submission.</p>
 <p>Machine data stays as long as the machine is on the map. Deleted submissions are
 moved to a holding area and removed permanently on a retention schedule; encrypted
 backups may retain a copy for a limited period after that.</p>
+
+<p>Diagnostic notes are deleted when you delete your account.</p>
 
 <h2>Deleting your account</h2>
 <p>Open the app, tap your profile picture at the top right, then
